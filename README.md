@@ -75,7 +75,7 @@ pnpm dev
 ## Project Structure
 
 ```
-moodtracker/
+mindpalette/
 ├── app/                 # Next.js app directory
 │   ├── page.tsx        # Day view (home page)
 │   ├── year/           # Year overview page
@@ -115,3 +115,9 @@ MIT
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 🤝 Connect
+
+- **GitHub**: [@DivyanshM30](https://github.com/DivyanshM30)
+- **LinkedIn**: [DivyanshM30](https://linkedin.com/in/DivyanshM30)
+- **Email**: divyanshm.code@gmail.com
