@@ -1,26 +1,43 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    /* Soft Gradients */
+    --gradient-a: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    /* Example Teal-Pink */
+    --gradient-b: linear-gradient(135deg, #febbcc 0%, #ff9a9e 100%);
+    /* Warm */
+    --gradient-c: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+    /* Lavender */
+    --gradient-d: linear-gradient(135deg, #fad0c4 0%, #ffd1ff 100%);
+    /* Peach */
+    --gradient-f: linear-gradient(135deg, #dad4ec 0%, #f3e7e9 100%);
+    /* Greyish */
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  @apply bg-background text-foreground;
+  font-feature-settings: "rlig" 1, "calt" 1;
+}
+
+/* Glassmorphism Utility */
+.glass {
+  @apply bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl border border-white/40 dark:border-white/10 shadow-xl;
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+}
+
+.dark .glass {
+  @apply bg-gray-900/80 border-white/10;
 }
