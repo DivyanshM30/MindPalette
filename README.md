@@ -35,7 +35,7 @@ A beautiful, personal mood tracking application built with Next.js 14, TypeScrip
 1. Clone the repository:
 ```bash
 git clone https://github.com/DivyanshM30/MindPalette.git
-cd moodtracker
+cd MindPalette
 ```
 
 2. Install dependencies:
