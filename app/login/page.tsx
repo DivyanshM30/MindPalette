@@ -148,7 +148,7 @@ export default function LoginPage() {
                 </form>
 
                 <div className="mt-6 text-center text-sm text-gray-500">
-                    {isSignUp ? 'Already have an account?' : "Don't have an account?"} {' '}
+                    {isSignUp ? 'Already have an account?' : "Don&apos;t have an account?"} {' '}
                     <button
                         onClick={() => setIsSignUp(!isSignUp)}
                         className="text-purple-600 dark:text-purple-400 font-semibold hover:underline"
