@@ -1,4 +1,4 @@
-# Mood Tracker 2026
+# MindPalette
 
 A beautiful, personal mood tracking application built with Next.js 14, TypeScript, and Supabase. Track your daily moods, reflect on your day, and visualize your emotional journey throughout the year.
 
