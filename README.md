@@ -101,12 +101,111 @@ mindpalette/
 
 ## Deployment
 
-The easiest way to deploy is using [Vercel](https://vercel.com):
+### 🚀 Deploy to Vercel (Recommended)
 
-1. Push your code to GitHub
-2. Import your repository in Vercel
-3. Add your environment variables
-4. Deploy!
+Vercel is the best option for Next.js applications as it's created by the Next.js team and offers seamless integration.
+
+#### Step 1: Prepare Your Repository
+Ensure all your code is pushed to GitHub:
+```bash
+git add .
+git commit -m "Prepare for deployment"
+git push origin main
+```
+
+#### Step 2: Create Vercel Account
+1. Go to [vercel.com](https://vercel.com) and sign up (you can use your GitHub account)
+2. Verify your email if required
+
+#### Step 3: Import Project
+1. Click **"Add New..."** → **"Project"**
+2. Import your `MindPalette` repository from GitHub
+3. Vercel will auto-detect Next.js settings
+
+#### Step 4: Configure Environment Variables
+Before deploying, add these environment variables in Vercel:
+
+1. Go to **Settings** → **Environment Variables**
+2. Add the following:
+   - `NEXT_PUBLIC_SUPABASE_URL` - Your Supabase project URL
+     - Find it in: Supabase Dashboard → Project Settings → API → Project URL
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` - Your Supabase anonymous key
+     - Find it in: Supabase Dashboard → Project Settings → API → Project API keys → `anon` `public`
+
+#### Step 5: Configure Supabase for Production
+1. Go to your Supabase Dashboard → **Authentication** → **URL Configuration**
+2. Add your Vercel deployment URL to **Redirect URLs**:
+   - `https://your-app.vercel.app/auth/callback`
+   - `https://your-app.vercel.app/**` (for wildcard)
+3. Add your Vercel URL to **Site URL**: `https://your-app.vercel.app`
+
+#### Step 6: Deploy
+1. Click **"Deploy"**
+2. Wait for the build to complete (usually 1-2 minutes)
+3. Your app will be live at `https://your-app.vercel.app`
+
+#### Step 7: Set Up Custom Domain (Optional)
+1. Go to **Settings** → **Domains**
+2. Add your custom domain
+3. Follow DNS configuration instructions
+
+---
+
+### 🌐 Alternative Deployment Options
+
+#### Netlify
+1. Sign up at [netlify.com](https://netlify.com)
+2. Connect your GitHub repository
+3. Build settings:
+   - **Build command**: `npm run build`
+   - **Publish directory**: `.next`
+4. Add environment variables (same as Vercel)
+5. Deploy!
+
+#### Railway
+1. Sign up at [railway.app](https://railway.app)
+2. Create new project → Deploy from GitHub
+3. Select your repository
+4. Add environment variables
+5. Railway auto-detects Next.js and deploys
+
+#### Render
+1. Sign up at [render.com](https://render.com)
+2. New → Web Service → Connect GitHub
+3. Settings:
+   - **Build Command**: `npm install && npm run build`
+   - **Start Command**: `npm start`
+4. Add environment variables
+5. Deploy!
+
+---
+
+### 📝 Post-Deployment Checklist
+
+- [ ] Environment variables are set correctly
+- [ ] Supabase redirect URLs are configured
+- [ ] Database schema is set up (run `supabase_schema.sql`)
+- [ ] Test authentication (sign up/login)
+- [ ] Test mood tracking functionality
+- [ ] Verify dark mode works
+- [ ] Check mobile responsiveness
+
+### 🔧 Troubleshooting
+
+**Build fails?**
+- Check that all environment variables are set
+- Verify Node.js version (should be 18+)
+- Check build logs in Vercel dashboard
+
+**Authentication not working?**
+- Verify Supabase redirect URLs include your production URL
+- Check that environment variables are correct
+- Ensure `auth/callback` route is accessible
+
+**Database errors?**
+- Make sure you've run the SQL schema in Supabase
+- Check Row Level Security policies are enabled
+- Verify your Supabase project is active
 
 ## License
 
