@@ -26,10 +26,10 @@ export default function YearView() {
   }
 
   return (
-    <div className="w-full space-y-8">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 w-full space-y-8">
       <div className="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-800">
         <div className="flex items-center gap-4">
-          <Link 
+          <Link
             href="/"
             className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             title="Back to day view"

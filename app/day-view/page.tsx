@@ -29,7 +29,7 @@ export default function DayViewPage() {
     if (!user) return null
 
     return (
-        <div className="w-full space-y-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 w-full space-y-8">
             <div className="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-800">
                 <div>
                     <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">

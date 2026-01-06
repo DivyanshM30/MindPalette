@@ -23,7 +23,7 @@ export default function Footer() {
                             <Github size={20} />
                         </a>
                         <a
-                            href="https://linkedin.com/in/divyansh-mishra30"
+                            href="https://linkedin.com/in/DivyanshM30"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-400 hover:text-blue-600"
@@ -32,7 +32,7 @@ export default function Footer() {
                             <Linkedin size={20} />
                         </a>
                         <a
-                            href="mailto:devdivyansh17063010@gmail.com"
+                            href="mailto:divyanshm.code@gmail.com"
                             className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-400 hover:text-purple-600"
                             title="Email"
                         >
