@@ -106,7 +106,7 @@ export default function DayView() {
         setSaving(true)
         try {
             const dateStr = selectedDate.toLocaleDateString('en-CA')
-            
+
             if (mood) {
                 const { error } = await supabase
                     .from('moods')
@@ -157,7 +157,7 @@ export default function DayView() {
                 >
                     <ChevronLeft size={24} className="text-gray-600 dark:text-gray-300" />
                 </button>
-                
+
                 <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -177,6 +177,19 @@ export default function DayView() {
                 >
                     <ChevronRight size={24} className="text-gray-600 dark:text-gray-300" />
                 </button>
+
+                {!isToday && (
+                    <motion.button
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => setSelectedDate(new Date())}
+                        className="ml-2 px-4 py-2 rounded-xl bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-sm font-bold shadow-sm hover:shadow-md transition-all border border-purple-200 dark:border-purple-800"
+                    >
+                        Today
+                    </motion.button>
+                )}
             </div>
 
             {/* Main Content Card */}
@@ -201,11 +214,11 @@ export default function DayView() {
                         onClick={() => setShowMoodSelector(!showMoodSelector)}
                         className="w-full px-6 py-4 rounded-xl bg-gray-50 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 hover:border-purple-400 dark:hover:border-purple-500 transition-all text-left flex items-center justify-between group"
                     >
-                                    <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-3">
                             {moodData?.mood ? (
                                 <>
-                                    <div className={`w-12 h-12 rounded-xl ${MOODS[moodData.mood].color} flex items-center justify-center text-white font-bold text-lg shadow-md`}>
-                                        {moodData.mood}
+                                    <div className={`w-12 h-12 rounded-xl ${MOODS[moodData.mood].color} flex items-center justify-center font-bold text-lg shadow-md`}>
+                                        <span className="text-2xl">{MOODS[moodData.mood].emoji}</span>
                                     </div>
                                     <span className="text-lg font-semibold text-gray-900 dark:text-white">
                                         {MOODS[moodData.mood].emoji} {MOODS[moodData.mood].label}
@@ -215,8 +228,8 @@ export default function DayView() {
                                 <span className="text-gray-500 dark:text-gray-400">Choose a mood...</span>
                             )}
                         </div>
-                        <ChevronRight 
-                            size={20} 
+                        <ChevronRight
+                            size={20}
                             className={`text-gray-400 transition-transform ${showMoodSelector ? 'rotate-90' : ''}`}
                         />
                     </motion.button>
@@ -236,14 +249,13 @@ export default function DayView() {
                                         whileHover={{ scale: 1.1, y: -4 }}
                                         whileTap={{ scale: 0.95 }}
                                         onClick={() => handleMoodSelect(grade)}
-                                        className={`flex flex-col items-center gap-2 p-3 rounded-xl transition-all ${
-                                            moodData?.mood === grade
-                                                ? 'bg-purple-100 dark:bg-purple-900/30 ring-2 ring-purple-400 dark:ring-purple-500'
-                                                : 'bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700'
-                                        }`}
+                                        className={`flex flex-col items-center gap-2 p-3 rounded-xl transition-all ${moodData?.mood === grade
+                                            ? 'bg-purple-100 dark:bg-purple-900/30 ring-2 ring-purple-400 dark:ring-purple-500'
+                                            : 'bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700'
+                                            }`}
                                     >
-                                        <div className={`w-12 h-12 rounded-xl ${data.color} flex items-center justify-center text-white font-bold text-lg shadow-md`}>
-                                            {grade}
+                                        <div className={`w-12 h-12 rounded-xl ${data.color} flex items-center justify-center font-bold text-lg shadow-md`}>
+                                            <span className="text-2xl">{data.emoji}</span>
                                         </div>
                                         <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
                                             {data.emoji} {data.label}

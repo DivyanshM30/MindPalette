@@ -3,12 +3,13 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import Header from '@/components/Header'
+import Footer from '@/components/Footer'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Mood Tracker 2026',
-  description: 'Your personal emotional journey',
+  title: 'MindPalette - Track Your Mood',
+  description: 'A beautiful, personal space to log your daily moods and see your year in pixels',
 }
 
 export default function RootLayout({
@@ -25,6 +26,7 @@ export default function RootLayout({
             <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-8">
               {children}
             </main>
+            <Footer />
           </div>
         </ThemeProvider>
       </body>

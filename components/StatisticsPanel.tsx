@@ -80,7 +80,7 @@ export default function StatisticsPanel({ moodData, user }: StatisticsPanelProps
                 className="w-full grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"
             >
                 {/* Vibe Overview Card */}
-                <motion.div 
+                <motion.div
                     whileHover={{ y: -4 }}
                     className="glass rounded-2xl p-6 md:p-8 flex flex-col justify-between relative overflow-hidden group border border-white/50 dark:border-white/10 shadow-lg hover:shadow-xl transition-all duration-300"
                 >
@@ -99,22 +99,35 @@ export default function StatisticsPanel({ moodData, user }: StatisticsPanelProps
                             You&apos;re mostly feeling <span className="font-bold text-gray-800 dark:text-gray-100">{MOODS[stats.primaryVibe].description.toLowerCase()}</span> this year.
                         </p>
                     </div>
-                    <div className="mt-8 flex items-end gap-1.5 h-36 relative z-10">
-                        {(Object.entries(stats.counts) as [MoodGrade, number][]).map(([grade, count]) => (
-                            <div key={grade} className="flex-1 flex flex-col items-center justify-end group/bar hover:scale-105 transition-transform">
-                                <div className="text-xs font-bold text-gray-700 dark:text-gray-200 mb-1.5 opacity-80">{count}</div>
-                                <div
-                                    className={`w-full rounded-t-lg transition-all duration-1000 ${MOODS[grade].color} shadow-md hover:shadow-lg`}
-                                    style={{ height: `${Math.max((count / stats.total) * 100, 8)}%`, minHeight: '8%' }}
-                                />
-                                <div className="text-xs font-bold text-gray-800 dark:text-gray-200 mt-2">{grade}</div>
-                            </div>
-                        ))}
+                    <div className="mt-6 flex items-end gap-3 relative z-10" style={{ height: '120px' }}>
+                        {(Object.entries(stats.counts) as [MoodGrade, number][]).map(([grade, count]) => {
+                            const maxCount = Math.max(...Object.values(stats.counts), 1);
+                            // Use pixel heights: max 80px, min 12px for bars with 0 count
+                            const barHeight = count > 0 ? Math.max((count / maxCount) * 80, 20) : 12;
+                            // More saturated colors for better visibility
+                            const barColors: Record<MoodGrade, string> = {
+                                'A': 'bg-emerald-500',
+                                'B': 'bg-amber-500',
+                                'C': 'bg-purple-500',
+                                'D': 'bg-orange-500',
+                                'F': 'bg-slate-500'
+                            };
+                            return (
+                                <div key={grade} className="flex-1 flex flex-col items-center justify-end group/bar hover:scale-105 transition-transform">
+                                    <div className="text-xs font-bold text-gray-700 dark:text-gray-200 mb-1">{count}</div>
+                                    <div
+                                        className={`w-full max-w-[40px] rounded-lg transition-all duration-700 ${barColors[grade]} shadow-md hover:shadow-lg`}
+                                        style={{ height: `${barHeight}px` }}
+                                    />
+                                    <div className="text-lg mt-2">{MOODS[grade].emoji}</div>
+                                </div>
+                            );
+                        })}
                     </div>
                 </motion.div>
 
                 {/* Streak Card */}
-                <motion.div 
+                <motion.div
                     whileHover={{ y: -4 }}
                     className="glass rounded-2xl p-6 md:p-8 flex flex-col justify-center items-center text-center relative overflow-hidden border border-white/50 dark:border-white/10 shadow-lg hover:shadow-xl transition-all duration-300"
                 >
@@ -133,7 +146,7 @@ export default function StatisticsPanel({ moodData, user }: StatisticsPanelProps
                 </motion.div>
 
                 {/* Total Check-ins */}
-                <motion.div 
+                <motion.div
                     whileHover={{ y: -4 }}
                     className="glass rounded-2xl p-6 md:p-8 flex flex-col justify-center items-center text-center relative overflow-hidden border border-white/50 dark:border-white/10 shadow-lg hover:shadow-xl transition-all duration-300"
                 >

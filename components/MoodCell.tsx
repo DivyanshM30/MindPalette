@@ -31,9 +31,8 @@ export default function MoodCell({ date, mood, onClick, disabled }: MoodCellProp
             title={date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
         >
             {mood ? (
-                <span className="text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)] dark:drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)] flex items-center gap-1">
-                    <span className="text-xs">{MOODS[mood].emoji}</span>
-                    <span>{mood}</span>
+                <span className="text-lg drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]">
+                    {MOODS[mood].emoji}
                 </span>
             ) : (
                 <span className="opacity-0 group-hover:opacity-60 transition-opacity text-xs font-bold text-gray-500 dark:text-gray-400">
