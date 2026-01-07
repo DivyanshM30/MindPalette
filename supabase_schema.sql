@@ -5,6 +5,7 @@ create table moods (
   date date not null,
   mood text not null, -- 'A', 'B', 'C', 'D', 'F'
   note text,
+  positive_note text,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null,
   unique(user_id, date)
 );
