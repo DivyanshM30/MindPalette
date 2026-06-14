@@ -19,16 +19,19 @@ export default function AuthButton() {
         }
         getUser()
 
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
             setUser(session?.user ?? null)
+            if (event === 'SIGNED_OUT') {
+                router.push('/login')
+            }
         })
 
         return () => subscription.unsubscribe()
-    }, [supabase])
+    }, [supabase, router])
 
     const handleSignOut = async () => {
         await supabase.auth.signOut()
-        router.refresh()
+        router.push('/login')
     }
 
     const handleSignIn = () => {

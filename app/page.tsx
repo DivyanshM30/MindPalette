@@ -3,8 +3,9 @@ import { createClient } from '@/lib/supabase'
 import { User } from '@supabase/supabase-js'
 import { useEffect, useState, useCallback } from 'react'
 import Link from 'next/link'
-import { ArrowRight, Sparkles, Calendar, CalendarDays, Loader2 } from 'lucide-react'
+import { ArrowRight, Sparkles, Calendar, CalendarDays, Loader2, BarChart3 } from 'lucide-react'
 import StatisticsPanel from '@/components/StatisticsPanel'
+import Onboarding from '@/components/Onboarding'
 import { Mood, MoodGrade } from '@/lib/types'
 
 export default function Home() {
@@ -89,6 +90,11 @@ export default function Home() {
           </>
         ) : (
           <div className="w-full text-left space-y-8">
+            {/* Onboarding for new users */}
+            {Object.keys(moodData).length === 0 && (
+              <Onboarding userName={user.user_metadata?.full_name || user.email?.split('@')[0] || 'there'} />
+            )}
+
             {/* Statistics First */}
             <StatisticsPanel moodData={moodData} user={user} />
 
@@ -122,6 +128,21 @@ export default function Home() {
                   <div className="text-sm text-gray-500 dark:text-gray-400">See your year in pixels</div>
                 </div>
                 <ArrowRight className="ml-auto text-indigo-400 group-hover:translate-x-1 transition-transform relative z-10" size={20} />
+              </Link>
+
+              <Link
+                href="/insights"
+                className="group relative overflow-hidden px-6 py-5 rounded-2xl bg-white dark:bg-gray-900 border-2 border-emerald-200 dark:border-emerald-800 hover:border-emerald-400 dark:hover:border-emerald-600 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] flex items-center gap-4"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-teal-500/5 group-hover:from-emerald-500/10 group-hover:to-teal-500/10 transition-all" />
+                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-white shadow-lg shadow-emerald-500/30 relative z-10">
+                  <BarChart3 size={28} />
+                </div>
+                <div className="text-left relative z-10">
+                  <div className="text-lg font-bold text-gray-900 dark:text-white">Insights</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">Monthly trends & stats</div>
+                </div>
+                <ArrowRight className="ml-auto text-emerald-400 group-hover:translate-x-1 transition-transform relative z-10" size={20} />
               </Link>
             </div>
           </div>

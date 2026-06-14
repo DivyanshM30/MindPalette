@@ -3,13 +3,14 @@ import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import AuthButton from '@/components/AuthButton'
 import ThemeToggle from '@/components/ThemeToggle'
-import { Calendar, CalendarDays, Home } from 'lucide-react'
+import { Calendar, CalendarDays, Home, BarChart3 } from 'lucide-react'
 
 export default function Header() {
   const pathname = usePathname()
   const isHome = pathname === '/'
   const isYearView = pathname === '/year'
   const isDayView = pathname === '/day-view'
+  const isInsights = pathname === '/insights'
   const isLogin = pathname === '/login'
 
   // Hide header on login page for a clean, immersive auth experience
@@ -53,6 +54,16 @@ export default function Header() {
             >
               <Calendar size={16} />
               <span className="hidden sm:inline">Year View</span>
+            </Link>
+          )}
+          {!isInsights && (
+            <Link
+              href="/insights"
+              className="px-3 py-1.5 rounded-lg hover:bg-white/50 dark:hover:bg-white/5 transition-all text-sm font-medium text-gray-600 dark:text-gray-300 flex items-center gap-2"
+              title="Insights"
+            >
+              <BarChart3 size={16} />
+              <span className="hidden sm:inline">Insights</span>
             </Link>
           )}
           <ThemeToggle />
