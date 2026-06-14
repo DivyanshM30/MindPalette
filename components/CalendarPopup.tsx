@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, ChevronLeft, ChevronRight } from 'lucide-react'
 import { MoodGrade } from '@/lib/types'
@@ -15,6 +15,18 @@ interface CalendarPopupProps {
 
 export default function CalendarPopup({ isOpen, onClose, selectedDate, onDateSelect, moodData }: CalendarPopupProps) {
     const [currentMonth, setCurrentMonth] = useState(new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1))
+
+    // Handle Escape key to close
+    const handleKeyDown = useCallback((e: KeyboardEvent) => {
+        if (e.key === 'Escape') onClose()
+    }, [onClose])
+
+    useEffect(() => {
+        if (isOpen) {
+            document.addEventListener('keydown', handleKeyDown)
+            return () => document.removeEventListener('keydown', handleKeyDown)
+        }
+    }, [isOpen, handleKeyDown])
     
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
     const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
@@ -76,6 +88,9 @@ export default function CalendarPopup({ isOpen, onClose, selectedDate, onDateSel
                             animate={{ scale: 1, opacity: 1, y: 0 }}
                             exit={{ scale: 0.9, opacity: 0, y: 20 }}
                             onClick={(e) => e.stopPropagation()}
+                            role="dialog"
+                            aria-modal="true"
+                            aria-label="Calendar date picker"
                             className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-white/20"
                         >
                             {/* Header */}
@@ -83,6 +98,7 @@ export default function CalendarPopup({ isOpen, onClose, selectedDate, onDateSel
                                 <div className="flex items-center gap-4">
                                     <button
                                         onClick={handlePrevMonth}
+                                        aria-label="Previous month"
                                         className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                                     >
                                         <ChevronLeft size={20} className="text-gray-600 dark:text-gray-300" />
@@ -92,6 +108,7 @@ export default function CalendarPopup({ isOpen, onClose, selectedDate, onDateSel
                                     </h3>
                                     <button
                                         onClick={handleNextMonth}
+                                        aria-label="Next month"
                                         className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                                     >
                                         <ChevronRight size={20} className="text-gray-600 dark:text-gray-300" />
@@ -99,6 +116,7 @@ export default function CalendarPopup({ isOpen, onClose, selectedDate, onDateSel
                                 </div>
                                 <button
                                     onClick={onClose}
+                                    aria-label="Close calendar"
                                     className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
                                 >
                                     <X size={20} className="text-gray-600 dark:text-gray-300" />

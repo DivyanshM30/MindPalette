@@ -7,6 +7,7 @@ import { Mood, MoodGrade } from '@/lib/types'
 import { Calendar, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react'
 import { MOODS } from '@/lib/utils'
 import CalendarPopup from './CalendarPopup'
+import { useToast } from './Toast'
 
 export default function DayView() {
     const [selectedDate, setSelectedDate] = useState(new Date())
@@ -19,6 +20,7 @@ export default function DayView() {
     const [showMoodSelector, setShowMoodSelector] = useState(false)
 
     const supabase = createClient()
+    const { showToast } = useToast()
 
     const fetchDayData = useCallback(async () => {
         try {
@@ -119,9 +121,11 @@ export default function DayView() {
                     }, { onConflict: 'user_id,date' })
 
                 if (error) throw error
+                showToast('Mood saved successfully! ✨')
             }
         } catch (error) {
             console.error('Error saving data:', error)
+            showToast('Failed to save. Please try again.', 'error')
         } finally {
             setSaving(false)
         }
@@ -221,7 +225,7 @@ export default function DayView() {
                                         <span className="text-2xl">{MOODS[moodData.mood].emoji}</span>
                                     </div>
                                     <span className="text-lg font-semibold text-gray-900 dark:text-white">
-                                        {MOODS[moodData.mood].emoji} {MOODS[moodData.mood].label}
+                                        {MOODS[moodData.mood].label}
                                     </span>
                                 </>
                             ) : (
@@ -258,7 +262,7 @@ export default function DayView() {
                                             <span className="text-2xl">{data.emoji}</span>
                                         </div>
                                         <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                                            {data.emoji} {data.label}
+                                            {data.label}
                                         </span>
                                     </motion.button>
                                 ))}

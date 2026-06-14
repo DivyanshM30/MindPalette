@@ -1,4 +1,5 @@
 'use client'
+import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Calendar } from 'lucide-react'
 import { MOODS, MoodGrade, cn } from '@/lib/utils'
@@ -14,10 +15,35 @@ interface MoodDialogProps {
 
 export default function MoodDialog({ isOpen, onClose, onSelect, date, currentMood, currentNote }: MoodDialogProps) {
     const sortedMoods = Object.entries(MOODS) as [MoodGrade, typeof MOODS[MoodGrade]][]
+    const [localNote, setLocalNote] = useState(currentNote || '')
+
+    // Sync local note when dialog opens or currentNote changes
+    useEffect(() => {
+        setLocalNote(currentNote || '')
+    }, [currentNote, isOpen])
 
     // Prevent click propagation to overlay
     const handleContentClick = (e: React.MouseEvent) => {
         e.stopPropagation()
+    }
+
+    // Handle Escape key to close dialog
+    const handleKeyDown = useCallback((e: KeyboardEvent) => {
+        if (e.key === 'Escape') onClose()
+    }, [onClose])
+
+    useEffect(() => {
+        if (isOpen) {
+            document.addEventListener('keydown', handleKeyDown)
+            return () => document.removeEventListener('keydown', handleKeyDown)
+        }
+    }, [isOpen, handleKeyDown])
+
+    const handleSaveAndClose = () => {
+        if (currentMood) {
+            onSelect(currentMood, localNote)
+        }
+        onClose()
     }
 
     return (
@@ -38,6 +64,9 @@ export default function MoodDialog({ isOpen, onClose, onSelect, date, currentMoo
                             animate={{ scale: 1, opacity: 1, y: 0 }}
                             exit={{ scale: 0.9, opacity: 0, y: 20 }}
                             onClick={handleContentClick}
+                            role="dialog"
+                            aria-modal="true"
+                            aria-label="Select mood"
                             className="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl w-full max-w-md overflow-hidden border border-white/20"
                         >
                             {/* Header */}
@@ -81,17 +110,17 @@ export default function MoodDialog({ isOpen, onClose, onSelect, date, currentMoo
                                         Add a note
                                     </label>
                                     <textarea
-                                        value={currentNote || ''}
-                                        onChange={(e) => onSelect(currentMood || 'C', e.target.value)}
+                                        value={localNote}
+                                        onChange={(e) => setLocalNote(e.target.value)}
                                         placeholder="What made today memorable?"
                                         className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-800 border-none focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-900 resize-none h-24 text-sm transition-all"
-                                        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking textarea
+                                        onClick={(e) => e.stopPropagation()}
                                     />
                                 </div>
 
                                 <div className="flex justify-end">
                                     <button
-                                        onClick={onClose}
+                                        onClick={handleSaveAndClose}
                                         className="px-6 py-2 rounded-full bg-black text-white dark:bg-white dark:text-black font-medium text-sm hover:scale-105 active:scale-95 transition-all shadow-lg"
                                     >
                                         Save & Close

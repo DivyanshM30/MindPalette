@@ -1,4 +1,7 @@
 -- Moods Table
+-- Ensure required Postgres extensions
+create extension if not exists pgcrypto;
+
 create table moods (
   id uuid default gen_random_uuid() primary key,
   user_id uuid references auth.users not null,

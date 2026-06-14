@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, User, Loader2, CheckCircle2 } from 'lucide-react'
@@ -15,6 +15,7 @@ export default function ProfileDialog({ isOpen, onClose, initialName }: ProfileD
     const [name, setName] = useState(initialName)
     const [loading, setLoading] = useState(false)
     const [success, setSuccess] = useState(false)
+    const [error, setError] = useState<string | null>(null)
     const [mounted, setMounted] = useState(false)
     const supabase = createClient()
 
@@ -25,6 +26,7 @@ export default function ProfileDialog({ isOpen, onClose, initialName }: ProfileD
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault()
         setLoading(true)
+        setError(null)
         try {
             const { error } = await supabase.auth.updateUser({
                 data: { full_name: name }
@@ -35,13 +37,25 @@ export default function ProfileDialog({ isOpen, onClose, initialName }: ProfileD
                 setSuccess(false)
                 onClose()
             }, 1500)
-        } catch (error) {
-            console.error('Error updating profile:', error)
-            alert('Failed to update profile')
+        } catch (err) {
+            console.error('Error updating profile:', err)
+            setError(err instanceof Error ? err.message : 'Failed to update profile')
         } finally {
             setLoading(false)
         }
     }
+
+    // Handle Escape key to close dialog
+    const handleKeyDown = useCallback((e: KeyboardEvent) => {
+        if (e.key === 'Escape') onClose()
+    }, [onClose])
+
+    useEffect(() => {
+        if (isOpen) {
+            document.addEventListener('keydown', handleKeyDown)
+            return () => document.removeEventListener('keydown', handleKeyDown)
+        }
+    }, [isOpen, handleKeyDown])
 
     if (!mounted) return null
 
@@ -60,9 +74,12 @@ export default function ProfileDialog({ isOpen, onClose, initialName }: ProfileD
                         initial={{ scale: 0.9, opacity: 0, y: 20 }}
                         animate={{ scale: 1, opacity: 1, y: 0 }}
                         exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                        role="dialog"
+                        aria-modal="true"
+                        aria-label="Edit profile"
                         className="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden relative border border-white/20 p-8 z-10"
                     >
-                        <button onClick={onClose} className="absolute top-4 right-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full text-gray-500 transition-colors">
+                        <button onClick={onClose} aria-label="Close dialog" className="absolute top-4 right-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full text-gray-500 transition-colors">
                             <X size={20} />
                         </button>
 
@@ -89,6 +106,12 @@ export default function ProfileDialog({ isOpen, onClose, initialName }: ProfileD
                                     />
                                 </div>
                             </div>
+
+                            {error && (
+                                <div className="p-3 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm border border-red-100 dark:border-red-900/30">
+                                    {error}
+                                </div>
+                            )}
 
                             <button
                                 type="submit"

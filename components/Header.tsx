@@ -10,6 +10,10 @@ export default function Header() {
   const isHome = pathname === '/'
   const isYearView = pathname === '/year'
   const isDayView = pathname === '/day-view'
+  const isLogin = pathname === '/login'
+
+  // Hide header on login page for a clean, immersive auth experience
+  if (isLogin) return null
 
   return (
     <header className="sticky top-0 z-50 w-full glass border-b border-white/20 dark:border-white/5">
