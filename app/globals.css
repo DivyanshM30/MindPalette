@@ -6,18 +6,6 @@
   :root {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
-
-    /* Soft Gradients */
-    --gradient-a: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-    /* Example Teal-Pink */
-    --gradient-b: linear-gradient(135deg, #febbcc 0%, #ff9a9e 100%);
-    /* Warm */
-    --gradient-c: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
-    /* Lavender */
-    --gradient-d: linear-gradient(135deg, #fad0c4 0%, #ffd1ff 100%);
-    /* Peach */
-    --gradient-f: linear-gradient(135deg, #dad4ec 0%, #f3e7e9 100%);
-    /* Greyish */
   }
 
   .dark {

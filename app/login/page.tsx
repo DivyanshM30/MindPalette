@@ -43,8 +43,9 @@ export default function LoginPage() {
                 router.push('/')
                 router.refresh()
             }
-        } catch (error: any) {
-            setMessage({ text: error.message || 'An error occurred', type: 'error' })
+        } catch (err) {
+            const message = err instanceof Error ? err.message : 'An error occurred'
+            setMessage({ text: message, type: 'error' })
         } finally {
             setLoading(false)
         }
@@ -57,8 +58,9 @@ export default function LoginPage() {
             const { error } = await supabase.auth.signInWithOtp({ email })
             if (error) throw error
             setMessage({ text: 'Magic link sent to your email!', type: 'success' })
-        } catch (error: any) {
-            setMessage({ text: error.message, type: 'error' })
+        } catch (err) {
+            const message = err instanceof Error ? err.message : 'An error occurred'
+            setMessage({ text: message, type: 'error' })
         } finally {
             setLoading(false)
         }

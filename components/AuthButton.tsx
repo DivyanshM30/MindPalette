@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase'
 import { User } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { LogOut, User as UserIcon, Settings } from 'lucide-react'
+import { LogOut, User as UserIcon } from 'lucide-react'
 import ProfileDialog from './ProfileDialog'
 
 export default function AuthButton() {
