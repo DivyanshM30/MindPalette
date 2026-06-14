@@ -56,11 +56,7 @@ export default function StatisticsPanel({ moodData, user }: StatisticsPanelProps
         return { total, counts, currentStreak, bestStreak, primaryVibe }
     }, [moodData])
 
-    if (!stats) return null
-
-    const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'there'
-
-    // Streak celebration milestones
+    // Streak celebration milestones (hooks must be before any return)
     const celebratedRef = useRef<number>(0)
     useEffect(() => {
         if (!stats) return
@@ -75,9 +71,13 @@ export default function StatisticsPanel({ moodData, user }: StatisticsPanelProps
                     origin: { y: 0.6 },
                     colors: ['#a855f7', '#ec4899', '#f59e0b', '#10b981', '#3b82f6'],
                 })
-            }).catch(() => {}) // silently fail if confetti not installed
+            }).catch(() => {})
         }
     }, [stats])
+
+    if (!stats) return null
+
+    const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'there'
 
     const getStreakMilestone = (streak: number) => {
         if (streak >= 100) return { emoji: '💎', label: 'Diamond!' }
