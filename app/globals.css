@@ -9,7 +9,7 @@
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
+    --background: 230 20% 4%;
     --foreground: 210 40% 98%;
   }
 }
@@ -27,5 +27,6 @@ body {
 }
 
 .dark .glass {
-  @apply bg-gray-900/80 border-white/10;
+  @apply bg-[#12121a]/80 border-purple-500/5;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }

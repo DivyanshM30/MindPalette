@@ -75,34 +75,7 @@ export default function DayView() {
         fetchDayData()
     }, [fetchDayData])
 
-    const handleDateChange = (newDate: Date) => {
-        setSelectedDate(newDate)
-        setShowCalendar(false)
-    }
-
-    const handlePrevDay = () => {
-        const prev = new Date(selectedDate)
-        prev.setDate(prev.getDate() - 1)
-        setSelectedDate(prev)
-    }
-
-    const handleNextDay = () => {
-        const next = new Date(selectedDate)
-        next.setDate(next.getDate() + 1)
-        setSelectedDate(next)
-    }
-
-    const handleMoodSelect = async (mood: MoodGrade) => {
-        setMoodData(prev => prev ? { ...prev, mood } : { mood, note: '', positive: '' })
-        setShowMoodSelector(false)
-        await saveData(mood, moodData?.note || '', moodData?.positive || '')
-    }
-
-    const handleNoteChange = (field: 'note' | 'positive', value: string) => {
-        setMoodData(prev => prev ? { ...prev, [field]: value } : { mood: null, note: '', positive: '', [field]: value })
-    }
-
-    const saveData = async (mood: MoodGrade | null, note: string, positive: string) => {
+    const saveData = useCallback(async (mood: MoodGrade | null, note: string, positive: string) => {
         if (!user) return
 
         setSaving(true)
@@ -129,7 +102,56 @@ export default function DayView() {
         } finally {
             setSaving(false)
         }
+    }, [user, selectedDate, supabase, showToast])
+
+    const handleDateChange = (newDate: Date) => {
+        setSelectedDate(newDate)
+        setShowCalendar(false)
     }
+
+    const handlePrevDay = useCallback(() => {
+        setSelectedDate(prev => {
+            const d = new Date(prev)
+            d.setDate(d.getDate() - 1)
+            return d
+        })
+    }, [])
+
+    const handleNextDay = useCallback(() => {
+        setSelectedDate(prev => {
+            const d = new Date(prev)
+            d.setDate(d.getDate() + 1)
+            return d
+        })
+    }, [])
+
+    const handleMoodSelect = useCallback(async (mood: MoodGrade) => {
+        setMoodData(prev => prev ? { ...prev, mood } : { mood, note: '', positive: '' })
+        setShowMoodSelector(false)
+        await saveData(mood, moodData?.note || '', moodData?.positive || '')
+    }, [moodData, saveData])
+
+    const handleNoteChange = (field: 'note' | 'positive', value: string) => {
+        setMoodData(prev => prev ? { ...prev, [field]: value } : { mood: null, note: '', positive: '', [field]: value })
+    }
+
+    // Keyboard shortcuts: ← → navigate days, 1-5 select moods, T = today
+    useEffect(() => {
+        const handleKeyboard = (e: KeyboardEvent) => {
+            const tag = (e.target as HTMLElement).tagName
+            if (tag === 'INPUT' || tag === 'TEXTAREA') return
+            if (showCalendar) return
+
+            const moodKeys: Record<string, MoodGrade> = { '1': 'A', '2': 'B', '3': 'C', '4': 'D', '5': 'F' }
+
+            if (e.key === 'ArrowLeft') { e.preventDefault(); handlePrevDay() }
+            else if (e.key === 'ArrowRight') { e.preventDefault(); handleNextDay() }
+            else if (e.key.toLowerCase() === 't') { setSelectedDate(new Date()) }
+            else if (moodKeys[e.key]) { handleMoodSelect(moodKeys[e.key]) }
+        }
+        window.addEventListener('keydown', handleKeyboard)
+        return () => window.removeEventListener('keydown', handleKeyboard)
+    }, [showCalendar, handlePrevDay, handleNextDay, handleMoodSelect])
 
     const handleSave = async () => {
         if (!moodData?.mood) return
@@ -196,8 +218,20 @@ export default function DayView() {
                 )}
             </div>
 
+            {/* Keyboard shortcut hint */}
+            <div className="text-center text-xs text-gray-400 dark:text-gray-600 -mt-4 hidden md:block">
+                <kbd className="px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 font-mono text-[10px]">←</kbd>
+                <kbd className="px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 font-mono text-[10px] ml-1">→</kbd>
+                <span className="mx-2">navigate</span>
+                <kbd className="px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 font-mono text-[10px]">1</kbd>-<kbd className="px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 font-mono text-[10px]">5</kbd>
+                <span className="mx-2">mood</span>
+                <kbd className="px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 font-mono text-[10px]">T</kbd>
+                <span className="ml-2">today</span>
+            </div>
+
             {/* Main Content Card */}
             <motion.div
+                key={selectedDate.toISOString().split('T')[0]}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="glass rounded-2xl p-8 md:p-10 border border-white/50 dark:border-white/10 shadow-xl"

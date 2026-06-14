@@ -1,5 +1,5 @@
 'use client'
-import { useMemo } from 'react'
+import { useMemo, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { MoodGrade, MOODS } from '@/lib/utils'
 import { User } from '@supabase/supabase-js'
@@ -59,6 +59,37 @@ export default function StatisticsPanel({ moodData, user }: StatisticsPanelProps
     if (!stats) return null
 
     const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'there'
+
+    // Streak celebration milestones
+    const celebratedRef = useRef<number>(0)
+    useEffect(() => {
+        if (!stats) return
+        const milestones = [3, 7, 14, 30, 50, 100]
+        const milestone = milestones.find(m => stats.currentStreak >= m)
+        if (milestone && milestone > celebratedRef.current) {
+            celebratedRef.current = milestone
+            import('canvas-confetti').then(({ default: confetti }) => {
+                confetti({
+                    particleCount: milestone >= 30 ? 150 : 80,
+                    spread: milestone >= 30 ? 100 : 70,
+                    origin: { y: 0.6 },
+                    colors: ['#a855f7', '#ec4899', '#f59e0b', '#10b981', '#3b82f6'],
+                })
+            }).catch(() => {}) // silently fail if confetti not installed
+        }
+    }, [stats])
+
+    const getStreakMilestone = (streak: number) => {
+        if (streak >= 100) return { emoji: '💎', label: 'Diamond!' }
+        if (streak >= 50) return { emoji: '👑', label: 'Royal!' }
+        if (streak >= 30) return { emoji: '🔥', label: 'On fire!' }
+        if (streak >= 14) return { emoji: '⭐', label: 'Amazing!' }
+        if (streak >= 7) return { emoji: '🌟', label: 'One week!' }
+        if (streak >= 3) return { emoji: '✨', label: 'Nice start!' }
+        return null
+    }
+
+    const milestone = getStreakMilestone(stats.currentStreak)
 
     return (
         <div className="space-y-8">
@@ -146,6 +177,16 @@ export default function StatisticsPanel({ moodData, user }: StatisticsPanelProps
                     <div className="mt-2 text-xs font-bold text-orange-600 dark:text-orange-400 px-4 py-1.5 rounded-full bg-orange-100/80 dark:bg-orange-900/30 relative z-10 border border-orange-200 dark:border-orange-800">
                         Best: {stats.bestStreak} days
                     </div>
+                    {milestone && (
+                        <motion.div
+                            initial={{ scale: 0, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{ type: 'spring', stiffness: 300, delay: 0.5 }}
+                            className="mt-3 text-sm font-bold text-orange-500 dark:text-orange-300 relative z-10"
+                        >
+                            {milestone.emoji} {milestone.label}
+                        </motion.div>
+                    )}
                 </motion.div>
 
                 {/* Total Check-ins */}

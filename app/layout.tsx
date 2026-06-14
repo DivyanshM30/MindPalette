@@ -39,7 +39,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${inter.className} min-h-screen bg-neutral-50 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100 transition-colors duration-300`}>
+      <body className={`${inter.className} min-h-screen bg-neutral-50 dark:bg-[#0a0a0f] text-neutral-900 dark:text-neutral-100 transition-colors duration-300`}>
         <ThemeProvider>
           <ToastProvider>
             <div className="flex flex-col min-h-screen">
