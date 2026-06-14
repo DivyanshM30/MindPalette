@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/components/ThemeProvider'
@@ -9,9 +9,27 @@ import { Analytics } from '@vercel/analytics/react'
 
 const inter = Inter({ subsets: ['latin'] })
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: '#a855f7',
+}
+
 export const metadata: Metadata = {
   title: 'MindPalette - Track Your Mood',
   description: 'A beautiful, personal space to log your daily moods and see your year in pixels',
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'MindPalette',
+  },
+  icons: {
+    icon: '/icons/favicon.png',
+    apple: '/icons/favicon.png',
+  },
 }
 
 export default function RootLayout({

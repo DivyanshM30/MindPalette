@@ -1,0 +1,19 @@
+{
+  "name": "MindPalette",
+  "short_name": "MindPalette",
+  "description": "A beautiful, personal space to log your daily moods and see your year in pixels",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0f",
+  "theme_color": "#a855f7",
+  "orientation": "portrait-primary",
+  "categories": ["health", "lifestyle", "productivity"],
+  "icons": [
+    {
+      "src": "/icons/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
