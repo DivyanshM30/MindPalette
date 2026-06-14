@@ -43,7 +43,7 @@ export default function Home() {
     } finally {
       setLoading(false)
     }
-  }, [supabase])
+  }, [supabase, currentYear])
 
   useEffect(() => {
     fetchMoods()
