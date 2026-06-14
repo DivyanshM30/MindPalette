@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Calendar, ArrowLeft } from 'lucide-react'
 import MoodGrid from '@/components/MoodGrid'
-import StatisticsPanel from '@/components/StatisticsPanel'
 
 export default function YearView() {
   const [user, setUser] = useState<User | null>(null)
@@ -39,7 +38,7 @@ export default function YearView() {
           <div>
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
               <Calendar size={32} className="text-purple-500" />
-              Year Overview 2026
+              Year Overview {new Date().getFullYear()}
             </h1>
             <p className="text-gray-600 dark:text-gray-400 mt-1">Your complete mood journey at a glance</p>
           </div>
@@ -52,7 +51,7 @@ export default function YearView() {
         </Link>
       </div>
 
-      <MoodGrid />
+      <MoodGrid showStats={false} />
     </div>
   )
 }

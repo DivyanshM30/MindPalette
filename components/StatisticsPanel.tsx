@@ -70,7 +70,7 @@ export default function StatisticsPanel({ moodData, user }: StatisticsPanelProps
                 <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">
                     Hey, {displayName}! 👋
                 </h2>
-                <p className="text-gray-600 dark:text-gray-400 text-base">Here&apos;s how your 2026 is looking so far.</p>
+                <p className="text-gray-600 dark:text-gray-400 text-base">Here&apos;s how your {new Date().getFullYear()} is looking so far.</p>
             </motion.div>
 
             <motion.div
@@ -92,8 +92,11 @@ export default function StatisticsPanel({ moodData, user }: StatisticsPanelProps
                             </div>
                             <span className="text-xs font-semibold uppercase tracking-wider">Primary Vibe</span>
                         </div>
-                        <h3 className="text-4xl md:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 dark:from-white dark:via-gray-200 dark:to-white mb-2">
-                            {MOODS[stats.primaryVibe].emoji} {MOODS[stats.primaryVibe].label}
+                        <h3 className="text-4xl md:text-5xl font-extrabold mb-2 flex items-center gap-3">
+                            <span className="text-5xl md:text-6xl">{MOODS[stats.primaryVibe].emoji}</span>
+                            <span className="bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 dark:from-white dark:via-gray-200 dark:to-white">
+                                {MOODS[stats.primaryVibe].label}
+                            </span>
                         </h3>
                         <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
                             You&apos;re mostly feeling <span className="font-bold text-gray-800 dark:text-gray-100">{MOODS[stats.primaryVibe].description.toLowerCase()}</span> this year.

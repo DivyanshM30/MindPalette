@@ -13,6 +13,8 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
 
+  const currentYear = new Date().getFullYear()
+
   const fetchMoods = useCallback(async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser()
@@ -26,8 +28,8 @@ export default function Home() {
         .from('moods')
         .select('*')
         .eq('user_id', user.id)
-        .gte('date', '2026-01-01')
-        .lte('date', '2026-12-31')
+        .gte('date', `${currentYear}-01-01`)
+        .lte('date', `${currentYear}-12-31`)
 
       if (error) throw error
 

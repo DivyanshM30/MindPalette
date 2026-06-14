@@ -12,8 +12,12 @@ import StatisticsPanel from './StatisticsPanel'
 // Helper to get days in a month
 const getDaysInMonth = (year: number, month: number) => new Date(year, month + 1, 0).getDate()
 
-export default function MoodGrid() {
-    const [year] = useState(2026)
+interface MoodGridProps {
+    showStats?: boolean
+}
+
+export default function MoodGrid({ showStats = true }: MoodGridProps) {
+    const [year] = useState(new Date().getFullYear())
     const [user, setUser] = useState<User | null>(null)
     const [moodData, setMoodData] = useState<Record<string, { mood: MoodGrade, note: string }>>({})
     const [loading, setLoading] = useState(true)
@@ -116,7 +120,7 @@ export default function MoodGrid() {
 
     return (
         <div className="w-full space-y-8">
-            {user && <StatisticsPanel moodData={moodData} user={user} />}
+            {showStats && user && <StatisticsPanel moodData={moodData} user={user} />}
 
             <div className="w-full overflow-x-auto pb-6 -mx-2 px-2">
                 <div className="min-w-[800px] glass rounded-2xl p-6 md:p-8 border border-white/50 dark:border-white/10 shadow-xl">

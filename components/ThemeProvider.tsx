@@ -11,18 +11,16 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  // Always start with 'light' to match server render and avoid hydration mismatch.
+  // The blocking script in layout.tsx handles the visual appearance before React loads.
   const [theme, setTheme] = useState<Theme>('light')
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    // Sync React state with what the blocking script already set on the DOM
+    const isDark = document.documentElement.classList.contains('dark')
+    setTheme(isDark ? 'dark' : 'light')
     setMounted(true)
-    // Check localStorage first, then system preference
-    const savedTheme = localStorage.getItem('theme') as Theme | null
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-    
-    const initialTheme = savedTheme || (systemPrefersDark ? 'dark' : 'light')
-    setTheme(initialTheme)
-    applyTheme(initialTheme)
   }, [])
 
   const applyTheme = (newTheme: Theme) => {

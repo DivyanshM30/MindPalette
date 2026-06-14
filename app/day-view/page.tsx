@@ -2,13 +2,14 @@
 import { createClient } from '@/lib/supabase'
 import { User } from '@supabase/supabase-js'
 import { useEffect, useState } from 'react'
-import { redirect } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import DayView from '@/components/DayView'
 
 export default function DayViewPage() {
     const [user, setUser] = useState<User | null>(null)
     const [loading, setLoading] = useState(true)
     const supabase = createClient()
+    const router = useRouter()
 
     useEffect(() => {
         const checkUser = async () => {
@@ -16,11 +17,11 @@ export default function DayViewPage() {
             setUser(user)
             setLoading(false)
             if (!user) {
-                redirect('/login')
+                router.push('/login')
             }
         }
         checkUser()
-    }, [supabase])
+    }, [supabase, router])
 
     if (loading) {
         return <div className="flex h-[50vh] items-center justify-center"><div className="animate-pulse text-purple-400">Loading your space...</div></div>
