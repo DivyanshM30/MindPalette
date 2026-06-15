@@ -190,7 +190,7 @@ export default function InsightsPage() {
                             <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
                                 <TrendingUp size={18} className="text-purple-500" /> Monthly Mood Trend
                             </h2>
-                            <p className="text-xs text-gray-400 mt-0.5">Click a dot to explore that month's breakdown</p>
+                            <p className="text-xs text-gray-400 mt-0.5">Click a dot to explore that month&apos;s breakdown</p>
                         </div>
 
                         {(() => {
