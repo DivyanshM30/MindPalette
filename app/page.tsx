@@ -63,32 +63,215 @@ export default function Home() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 w-full">
-      <div className="flex flex-col items-center justify-center min-h-[70vh] text-center space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      <div className="flex flex-col items-center animate-in fade-in slide-in-from-bottom-4 duration-700">
 
-        {!user ? (
-          <>
-            <div className="space-y-4 max-w-2xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-100 text-purple-600 text-xs font-medium dark:bg-purple-900/30 dark:text-purple-300 mb-4 animate-bounce">
-                <Sparkles size={12} /> Your 2026 Emotional Journey
+        {!user ? (<>
+            {/* ── HERO ── */}
+            <div className="relative w-full flex flex-col items-center text-center pt-8 pb-4 space-y-6">
+              {/* Background aura */}
+              <div className="absolute -z-10 top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-gradient-to-br from-purple-500/20 via-pink-500/10 to-teal-500/10 rounded-full blur-[100px]" />
+
+              {/* Badge */}
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-purple-300/50 dark:border-purple-700/50 bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-300 text-xs font-semibold tracking-wide uppercase">
+                <Sparkles size={12} className="animate-pulse" /> Your {new Date().getFullYear()} Emotional Journey
               </div>
-              <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-gray-900 dark:text-white">
-                Track your <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500">Vibe</span>
+
+              {/* Headline */}
+              <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[1.05]">
+                <span className="text-gray-900 dark:text-white">Understand your</span>
+                <br />
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400">inner world</span>
               </h1>
-              <p className="text-xl text-gray-500 dark:text-gray-400 max-w-lg mx-auto">
-                A beautiful, personal space to log your daily moods, understand your emotions, and see your year in pixels.
+
+              {/* Subheadline */}
+              <p className="text-lg md:text-xl text-gray-500 dark:text-gray-400 max-w-xl leading-relaxed">
+                MindPalette turns your daily feelings into a living, breathing canvas of color — one pixel per day, one year at a time.
               </p>
+
+              {/* CTAs */}
+              <div className="flex flex-wrap gap-4 justify-center pt-2">
+                <Link
+                  href="/login"
+                  className="group px-8 py-4 rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold text-base shadow-2xl shadow-purple-500/30 hover:shadow-purple-500/50 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2"
+                >
+                  Start Tracking Free <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                </Link>
+                <a
+                  href="#features"
+                  className="px-8 py-4 rounded-2xl border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-semibold text-base hover:border-purple-400 dark:hover:border-purple-600 hover:scale-105 active:scale-95 transition-all duration-300"
+                >
+                  See how it works ↓
+                </a>
+              </div>
+
+              {/* Animated pixel grid preview */}
+              <div className="mt-8 w-full max-w-2xl">
+                <div className="glass rounded-3xl border border-white/20 dark:border-white/10 p-6 shadow-2xl">
+                  <div className="flex items-center gap-2 mb-4 text-left">
+                    <div className="w-3 h-3 rounded-full bg-red-400" />
+                    <div className="w-3 h-3 rounded-full bg-yellow-400" />
+                    <div className="w-3 h-3 rounded-full bg-green-400" />
+                    <span className="ml-2 text-xs text-gray-400 font-mono">mindpalette.app — Your 2025</span>
+                  </div>
+                  {/* Pixel grid demo */}
+                  <div className="grid gap-1" style={{ gridTemplateColumns: 'repeat(26, 1fr)' }}>
+                    {Array.from({ length: 182 }).map((_, i) => {
+                      const colors = [
+                        'bg-emerald-400', 'bg-amber-400', 'bg-violet-400',
+                        'bg-orange-400', 'bg-slate-400', 'bg-teal-400', 'bg-pink-400'
+                      ]
+                      const hasEntry = Math.random() > 0.15
+                      const color = colors[Math.floor(Math.random() * colors.length)]
+                      return (
+                        <div
+                          key={i}
+                          className={`aspect-square rounded-sm ${hasEntry ? color + ' opacity-80' : 'bg-gray-200 dark:bg-gray-800 opacity-30'}`}
+                          style={{ animationDelay: `${i * 8}ms` }}
+                        />
+                      )
+                    })}
+                  </div>
+                  <div className="flex items-center justify-between mt-4">
+                    <span className="text-xs text-gray-400">Jan 2025</span>
+                    <span className="text-xs text-gray-400 font-medium">182 days tracked ✨</span>
+                    <span className="text-xs text-gray-400">Jun 2025</span>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div className="flex gap-4">
-              <Link href="/login" className="px-8 py-4 rounded-full bg-black text-white font-medium hover:scale-105 active:scale-95 transition-all text-lg shadow-xl shadow-purple-500/20 flex items-center gap-2 dark:bg-white dark:text-black">
-                Get Started <ArrowRight size={20} />
+            {/* ── FEATURES ── */}
+            <div id="features" className="w-full pt-16 pb-8 space-y-8">
+              <div className="text-center space-y-2">
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">Everything you need to know yourself</h2>
+                <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto">Built for reflection, not obsession. Simple daily check-ins, beautiful long-term patterns.</p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5 w-full">
+                {[
+                  {
+                    icon: '✍️',
+                    gradient: 'from-purple-500 to-pink-500',
+                    glow: 'shadow-purple-500/20',
+                    title: '30-Second Check-ins',
+                    desc: 'Pick your mood, add an optional note. No journaling pressure — just a quick pulse check every day.',
+                    tag: 'Daily habit'
+                  },
+                  {
+                    icon: '📊',
+                    gradient: 'from-blue-500 to-teal-500',
+                    glow: 'shadow-blue-500/20',
+                    title: 'Monthly Insights',
+                    desc: 'See your mood trends, best days, toughest stretches, and average score — all visualized beautifully.',
+                    tag: 'Smart analytics'
+                  },
+                  {
+                    icon: '🔥',
+                    gradient: 'from-orange-500 to-amber-500',
+                    glow: 'shadow-orange-500/20',
+                    title: 'Streaks & Milestones',
+                    desc: "Build the habit of reflection. Celebrate when you hit 7, 30, or 100 days — you'll be surprised how it feels.",
+                    tag: 'Motivation'
+                  }
+                ].map((f) => (
+                  <div key={f.title} className="glass rounded-2xl p-6 border border-white/30 dark:border-white/10 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-left group">
+                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${f.gradient} flex items-center justify-center text-2xl mb-4 shadow-lg ${f.glow}`}>
+                      {f.icon}
+                    </div>
+                    <div className="text-xs font-semibold uppercase tracking-widest text-purple-500 dark:text-purple-400 mb-1">{f.tag}</div>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{f.title}</h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{f.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* ── YEAR IN PIXELS SHOWCASE ── */}
+            <div className="w-full py-12">
+              <div className="glass rounded-3xl border border-white/20 dark:border-white/10 p-8 md:p-12 shadow-2xl relative overflow-hidden">
+                <div className="absolute -z-10 top-0 right-0 w-64 h-64 bg-gradient-to-bl from-purple-500/20 to-transparent rounded-full blur-[60px]" />
+                <div className="absolute -z-10 bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-teal-500/10 to-transparent rounded-full blur-[60px]" />
+
+                <div className="flex flex-col md:flex-row items-center gap-10">
+                  <div className="flex-1 space-y-4 text-left">
+                    <div className="text-xs font-semibold uppercase tracking-widest text-emerald-500">Year in Pixels</div>
+                    <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white leading-tight">
+                      Your whole year,<br />painted in feeling
+                    </h2>
+                    <p className="text-gray-500 dark:text-gray-400 leading-relaxed">
+                      Every day becomes a colored square. Fill your year with greens, golds, and purples. Spot patterns you never noticed. Celebrate the good days. Learn from the hard ones.
+                    </p>
+                    <Link
+                      href="/login"
+                      className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold hover:shadow-lg hover:shadow-purple-500/25 hover:scale-105 transition-all"
+                    >
+                      Start your canvas <ArrowRight size={16} />
+                    </Link>
+                  </div>
+                  {/* Decorative large pixel grid */}
+                  <div className="flex-shrink-0">
+                    <div className="grid gap-1.5" style={{ gridTemplateColumns: 'repeat(12, 1fr)', width: '240px' }}>
+                      {[
+                        'bg-emerald-400','bg-emerald-500','bg-amber-400','bg-emerald-400','bg-violet-400','bg-emerald-300',
+                        'bg-amber-400','bg-emerald-400','bg-emerald-400','bg-orange-400','bg-emerald-500','bg-emerald-400',
+                        'bg-violet-400','bg-amber-300','bg-emerald-400','bg-emerald-400','bg-slate-400','bg-violet-400',
+                        'bg-orange-400','bg-amber-400','bg-emerald-400','bg-violet-300','bg-emerald-400','bg-teal-400',
+                        'bg-emerald-400','bg-emerald-400','bg-orange-300','bg-emerald-400','bg-amber-400','bg-emerald-500',
+                        'bg-slate-400','bg-violet-400','bg-emerald-400','bg-emerald-400','bg-amber-400','bg-orange-400',
+                        'bg-emerald-400','bg-teal-400','bg-amber-400','bg-emerald-400','bg-violet-400','bg-emerald-400',
+                        'bg-amber-400','bg-emerald-400','bg-emerald-300','bg-orange-400','bg-emerald-400','bg-amber-300',
+                      ].map((color, i) => (
+                        <div key={i} className={`w-full aspect-square rounded-md ${color} opacity-90 shadow-sm`} />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* ── TRUST BADGES ── */}
+            <div className="w-full py-6 flex flex-col items-center gap-4">
+              <p className="text-sm text-gray-400 font-medium uppercase tracking-widest">Why people love it</p>
+              <div className="flex flex-wrap justify-center gap-4">
+                {[
+                  { icon: '🔒', text: 'Private & secure' },
+                  { icon: '✨', text: 'Free forever' },
+                  { icon: '📱', text: 'Install as an app' },
+                  { icon: '🌙', text: 'Dark & light mode' },
+                  { icon: '⌨️', text: 'Keyboard shortcuts' },
+                ].map((b) => (
+                  <div key={b.text} className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 dark:bg-gray-800/60 text-gray-600 dark:text-gray-300 text-sm font-medium">
+                    <span>{b.icon}</span> {b.text}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* ── FINAL CTA ── */}
+            <div className="w-full py-12 flex flex-col items-center text-center space-y-5">
+              <div className="relative">
+                <div className="absolute -z-10 inset-0 w-[400px] h-[200px] left-1/2 -translate-x-1/2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 blur-[60px] rounded-full" />
+                <h2 className="text-3xl md:text-5xl font-black text-gray-900 dark:text-white">
+                  Ready to understand<br />
+                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">yourself better?</span>
+                </h2>
+              </div>
+              <p className="text-gray-500 dark:text-gray-400 max-w-sm">
+                Takes 30 seconds a day. Gives you a lifetime of self-awareness.
+              </p>
+              <Link
+                href="/login"
+                className="group px-10 py-4 rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold text-lg shadow-2xl shadow-purple-500/30 hover:shadow-purple-500/50 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-3"
+              >
+                Start Tracking Today
+                <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
               </Link>
+              <p className="text-xs text-gray-400">No credit card. No nonsense. Just you and your moods.</p>
             </div>
 
-            {/* Visual Preview / Aura Blur */}
-            <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-tr from-purple-300/30 to-pink-300/30 rounded-full blur-[120px]" />
-          </>
-        ) : (
+            {/* Background aura */}
+            <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-tr from-purple-300/10 to-pink-300/10 rounded-full blur-[120px]" />
+          </>) : (
           <div className="w-full text-left space-y-8">
             {/* Onboarding for new users */}
             {Object.keys(moodData).length === 0 && (
