@@ -33,7 +33,7 @@ export default function AuthButton() {
             </button>
             <button
                 onClick={handleSignOut}
-                className="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all text-sm font-medium"
+                className="flex items-center gap-2 px-4 py-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-white/50 dark:hover:bg-white/5 border border-gray-200 dark:border-gray-700 hover:border-red-300 dark:hover:border-red-500/30 hover:text-red-600 dark:hover:text-red-400 transition-all text-sm font-medium"
             >
                 <LogOut size={16} />
                 <span className="hidden sm:inline">Log out</span>

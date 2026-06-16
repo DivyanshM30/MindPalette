@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { ArrowLeft, BarChart3, TrendingUp, Calendar, Smile, Frown, Loader2, Flame } from 'lucide-react'
 import { Mood, MoodGrade } from '@/lib/types'
-import { MOODS, MOOD_SCORES, MOOD_GRADIENTS, MONTH_NAMES } from '@/lib/utils'
+import { MOODS, MOOD_SCORES, MOOD_GRADIENTS, MONTH_NAMES, BAR_COLORS } from '@/lib/utils'
 import { useUser } from '@/contexts/UserContext'
 
 export default function InsightsPage() {
@@ -207,7 +207,7 @@ export default function InsightsPage() {
                                     <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ height: 240 }}>
                                         <defs>
                                             {/* Glow filter per color */}
-                                            {['#10b981','#f59e0b','#a855f7','#f97316','#94a3b8'].map((c, ci) => (
+                                            {['#10b981', '#f59e0b', '#a855f7', '#f97316', '#94a3b8'].map((c, ci) => (
                                                 <filter key={ci} id={`glow${ci}`} x="-50%" y="-50%" width="200%" height="200%">
                                                     <feGaussianBlur stdDeviation="3" result="blur" />
                                                     <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
@@ -216,9 +216,9 @@ export default function InsightsPage() {
                                         </defs>
 
                                         {/* Y-axis grid lines */}
-                                        {[1,2,3,4,5].map(score => {
+                                        {[1, 2, 3, 4, 5].map(score => {
                                             const y = PAD + ((5 - score) / 4) * (H - PAD * 2)
-                                            const labels: Record<number,string> = {5:'Great',4:'Good',3:'Okay',2:'Bad',1:'Awful'}
+                                            const labels: Record<number, string> = { 5: 'Great', 4: 'Good', 3: 'Okay', 2: 'Bad', 1: 'Awful' }
                                             return (
                                                 <g key={score}>
                                                     <line x1={PAD} y1={y} x2={W - PAD} y2={y}
@@ -294,7 +294,7 @@ export default function InsightsPage() {
 
                                     {/* Legend */}
                                     <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 px-1">
-                                        {([['#10b981','Great (A)'],['#f59e0b','Good (B)'],['#a855f7','Okay (C)'],['#f97316','Bad (D)'],['#94a3b8','Awful (F)']] as [string,string][]).map(([c,l]) => (
+                                        {([['#10b981', 'Great (A)'], ['#f59e0b', 'Good (B)'], ['#a855f7', 'Okay (C)'], ['#f97316', 'Bad (D)'], ['#94a3b8', 'Awful (F)']] as [string, string][]).map(([c, l]) => (
                                             <div key={l} className="flex items-center gap-1.5">
                                                 <div className="w-2 h-2 rounded-full" style={{ backgroundColor: c }} />
                                                 <span className="text-[10px] text-gray-400">{l}</span>
@@ -327,13 +327,6 @@ export default function InsightsPage() {
                                         {(Object.entries(MOODS) as [MoodGrade, typeof MOODS[MoodGrade]][]).map(([grade, data]) => {
                                             const count = monthStats.counts[grade]
                                             const pct = monthStats.total > 0 ? (count / monthStats.total) * 100 : 0
-                                            const BAR_COLORS: Record<MoodGrade, string> = {
-                                                A: 'bg-emerald-500',
-                                                B: 'bg-amber-500',
-                                                C: 'bg-purple-500',
-                                                D: 'bg-orange-500',
-                                                F: 'bg-slate-500',
-                                            }
                                             return (
                                                 <div key={grade} className="flex items-center gap-3">
                                                     <span className="text-xl w-7 text-center flex-shrink-0">{data.emoji}</span>
@@ -348,11 +341,10 @@ export default function InsightsPage() {
                                                         {/* Percentage label — always visible */}
                                                         {count > 0 && (
                                                             <span
-                                                                className={`absolute top-1/2 -translate-y-1/2 text-[11px] font-bold ${
-                                                                    pct > 60
+                                                                className={`absolute top-1/2 -translate-y-1/2 text-[11px] font-bold ${pct > 60
                                                                         ? 'text-white'
                                                                         : 'text-gray-700 dark:text-gray-300'
-                                                                }`}
+                                                                    }`}
                                                                 style={{ left: `calc(${pct > 60 ? pct - 6 : Math.max(pct, 4) + 1.5}% + ${pct > 60 ? '0px' : '4px'})` }}
                                                             >
                                                                 {Math.round(pct)}%

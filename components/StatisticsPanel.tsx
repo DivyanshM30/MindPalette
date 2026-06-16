@@ -1,7 +1,7 @@
 'use client'
 import { useMemo, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { MoodGrade, MOODS, getDisplayName } from '@/lib/utils'
+import { MoodGrade, MOODS, getDisplayName, BAR_COLORS } from '@/lib/utils'
 import { User } from '@supabase/supabase-js'
 import { Trophy, TrendingUp, Activity } from 'lucide-react'
 
@@ -138,19 +138,11 @@ export default function StatisticsPanel({ moodData, user }: StatisticsPanelProps
                             const maxCount = Math.max(...Object.values(stats.counts), 1);
                             // Use pixel heights: max 80px, min 12px for bars with 0 count
                             const barHeight = count > 0 ? Math.max((count / maxCount) * 80, 20) : 12;
-                            // More saturated colors for better visibility
-                            const barColors: Record<MoodGrade, string> = {
-                                'A': 'bg-emerald-500',
-                                'B': 'bg-amber-500',
-                                'C': 'bg-purple-500',
-                                'D': 'bg-orange-500',
-                                'F': 'bg-slate-500'
-                            };
                             return (
                                 <div key={grade} className="flex-1 flex flex-col items-center justify-end group/bar hover:scale-105 transition-transform">
                                     <div className="text-xs font-bold text-gray-700 dark:text-gray-200 mb-1">{count}</div>
                                     <div
-                                        className={`w-full max-w-[40px] rounded-lg transition-all duration-700 ${barColors[grade]} shadow-md hover:shadow-lg`}
+                                        className={`w-full max-w-[40px] rounded-lg transition-all duration-700 ${BAR_COLORS[grade]} shadow-md hover:shadow-lg`}
                                         style={{ height: `${barHeight}px` }}
                                     />
                                     <div className="text-lg mt-2">{MOODS[grade].emoji}</div>

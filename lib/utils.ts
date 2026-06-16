@@ -26,6 +26,14 @@ export const MOOD_GRADIENTS: Record<MoodGrade, string> = {
     F: 'from-slate-400 to-slate-500',
 };
 
+export const BAR_COLORS: Record<MoodGrade, string> = {
+    A: 'bg-emerald-500',
+    B: 'bg-amber-500',
+    C: 'bg-purple-500',
+    D: 'bg-orange-500',
+    F: 'bg-slate-500',
+};
+
 export const MONTH_NAMES = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'

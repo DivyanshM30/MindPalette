@@ -44,8 +44,8 @@ export default function LoginPage() {
                 router.refresh()
             }
         } catch (err) {
-            const message = err instanceof Error ? err.message : 'An error occurred'
-            setMessage({ text: message, type: 'error' })
+            const errMsg = err instanceof Error ? err.message : 'An error occurred'
+            setMessage({ text: errMsg, type: 'error' })
         } finally {
             setLoading(false)
         }
@@ -59,8 +59,8 @@ export default function LoginPage() {
             if (error) throw error
             setMessage({ text: 'Magic link sent to your email!', type: 'success' })
         } catch (err) {
-            const message = err instanceof Error ? err.message : 'An error occurred'
-            setMessage({ text: message, type: 'error' })
+            const errMsg = err instanceof Error ? err.message : 'An error occurred'
+            setMessage({ text: errMsg, type: 'error' })
         } finally {
             setLoading(false)
         }

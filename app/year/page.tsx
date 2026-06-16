@@ -1,15 +1,24 @@
 'use client'
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Calendar, ArrowLeft } from 'lucide-react'
 import MoodGrid from '@/components/MoodGrid'
 import { useUser } from '@/contexts/UserContext'
 
 export default function YearView() {
-  const { loading } = useUser()
+  const { user, loading } = useUser()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (!loading && !user) router.push('/login')
+  }, [loading, user, router])
 
   if (loading) {
     return <div className="flex h-[50vh] items-center justify-center"><div className="animate-pulse text-purple-400">Loading your year...</div></div>
   }
+
+  if (!user) return null
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 w-full space-y-8">
