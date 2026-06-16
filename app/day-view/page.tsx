@@ -1,27 +1,19 @@
 'use client'
-import { createClient } from '@/lib/supabase'
-import { User } from '@supabase/supabase-js'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import DayView from '@/components/DayView'
+import { useUser } from '@/contexts/UserContext'
+import { getDisplayName } from '@/lib/utils'
 
 export default function DayViewPage() {
-    const [user, setUser] = useState<User | null>(null)
-    const [loading, setLoading] = useState(true)
-    const supabase = createClient()
+    const { user, loading } = useUser()
     const router = useRouter()
 
     useEffect(() => {
-        const checkUser = async () => {
-            const { data: { user } } = await supabase.auth.getUser()
-            setUser(user)
-            setLoading(false)
-            if (!user) {
-                router.push('/login')
-            }
+        if (!loading && !user) {
+            router.push('/login')
         }
-        checkUser()
-    }, [supabase, router])
+    }, [loading, user, router])
 
     if (loading) {
         return <div className="flex h-[50vh] items-center justify-center"><div className="animate-pulse text-purple-400">Loading your space...</div></div>
@@ -34,7 +26,7 @@ export default function DayViewPage() {
             <div className="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-800">
                 <div>
                     <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">
-                        Welcome back, {user.user_metadata?.full_name || user.email?.split('@')[0]}
+                        Welcome back, {getDisplayName(user)}
                     </h1>
                     <p className="text-gray-600 dark:text-gray-400">Track your daily mood and reflections.</p>
                 </div>

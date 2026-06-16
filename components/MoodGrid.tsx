@@ -2,15 +2,13 @@
 import { motion } from 'framer-motion'
 import { useEffect, useState, useCallback } from 'react'
 import { createClient } from '@/lib/supabase'
-import { User } from '@supabase/supabase-js'
 import { Mood, MoodGrade } from '@/lib/types'
+import { getDaysInMonth, MONTH_NAMES } from '@/lib/utils'
 import { Loader2 } from 'lucide-react'
 import MoodCell from './MoodCell'
 import MoodDialog from './MoodDialog'
 import StatisticsPanel from './StatisticsPanel'
-
-// Helper to get days in a month
-const getDaysInMonth = (year: number, month: number) => new Date(year, month + 1, 0).getDate()
+import { useUser } from '@/contexts/UserContext'
 
 interface MoodGridProps {
     showStats?: boolean
@@ -18,26 +16,20 @@ interface MoodGridProps {
 
 export default function MoodGrid({ showStats = true }: MoodGridProps) {
     const [year] = useState(new Date().getFullYear())
-    const [user, setUser] = useState<User | null>(null)
+    const { user, loading: userLoading } = useUser()
     const [moodData, setMoodData] = useState<Record<string, { mood: MoodGrade, note: string }>>({})
-    const [loading, setLoading] = useState(true)
+    const [moodLoading, setMoodLoading] = useState(true)
     const [dialogOpen, setDialogOpen] = useState(false)
     const [selectedDate, setSelectedDate] = useState<Date | null>(null)
 
     const supabase = createClient()
 
-    const months = [
-        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-    ]
+    const months = MONTH_NAMES.map(m => m.slice(0, 3))
 
     // Fetch Moods
     const fetchMoods = useCallback(async () => {
+        if (!user) { setMoodLoading(false); return }
         try {
-            const { data: { user } } = await supabase.auth.getUser()
-            setUser(user)
-            if (!user) return
-
             const { data, error } = await supabase
                 .from('moods')
                 .select('*')
@@ -55,13 +47,13 @@ export default function MoodGrid({ showStats = true }: MoodGridProps) {
         } catch (error) {
             console.error('Error fetching moods:', error)
         } finally {
-            setLoading(false)
+            setMoodLoading(false)
         }
-    }, [supabase, year])
+    }, [supabase, year, user])
 
     useEffect(() => {
-        fetchMoods()
-    }, [fetchMoods])
+        if (!userLoading) fetchMoods()
+    }, [fetchMoods, userLoading])
 
     // Optimize date interactions
     const handleCellClick = useCallback((monthIndex: number, day: number) => {
@@ -77,10 +69,9 @@ export default function MoodGrid({ showStats = true }: MoodGridProps) {
     }, [year])
 
     const handleSaveMood = async (mood: MoodGrade, note: string) => {
-        if (!selectedDate) return
+        if (!selectedDate || !user) return
 
-        // Format to YYYY-MM-DD local time approach
-        const dateStr = selectedDate.toLocaleDateString('en-CA') // YYYY-MM-DD format
+        const dateStr = selectedDate.toLocaleDateString('en-CA')
 
         // Optimistic Update
         const previousData = { ...moodData }
@@ -88,9 +79,6 @@ export default function MoodGrid({ showStats = true }: MoodGridProps) {
         setDialogOpen(false)
 
         try {
-            const { data: { user } } = await supabase.auth.getUser()
-            if (!user) throw new Error('No user')
-
             const { error } = await supabase
                 .from('moods')
                 .upsert({
@@ -107,7 +95,7 @@ export default function MoodGrid({ showStats = true }: MoodGridProps) {
         }
     }
 
-    if (loading) {
+    if (userLoading || moodLoading) {
         return (
             <div className="w-full aspect-[2/1] rounded-3xl border border-gray-200 dark:border-gray-800 flex items-center justify-center bg-gray-50/50 dark:bg-gray-900/50">
                 <div className="flex flex-col items-center gap-2 text-gray-400">

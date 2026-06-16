@@ -1,42 +1,31 @@
 'use client'
 import { createClient } from '@/lib/supabase'
-import { User } from '@supabase/supabase-js'
 import { useEffect, useState, useMemo, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { ArrowLeft, BarChart3, TrendingUp, Calendar, Smile, Frown, Loader2, Flame } from 'lucide-react'
 import { Mood, MoodGrade } from '@/lib/types'
-import { MOODS } from '@/lib/utils'
-
-const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December']
-
-const MOOD_SCORES: Record<MoodGrade, number> = { A: 5, B: 4, C: 3, D: 2, F: 1 }
-const MOOD_GRADIENTS: Record<MoodGrade, string> = {
-    A: 'from-emerald-400 to-emerald-500',
-    B: 'from-amber-400 to-yellow-500',
-    C: 'from-violet-400 to-purple-500',
-    D: 'from-orange-400 to-red-400',
-    F: 'from-slate-400 to-slate-500',
-}
+import { MOODS, MOOD_SCORES, MOOD_GRADIENTS, MONTH_NAMES } from '@/lib/utils'
+import { useUser } from '@/contexts/UserContext'
 
 export default function InsightsPage() {
-    const [user, setUser] = useState<User | null>(null)
+    const { user, loading: userLoading } = useUser()
     const [moodData, setMoodData] = useState<Mood[]>([])
-    const [loading, setLoading] = useState(true)
+    const [moodLoading, setMoodLoading] = useState(true)
     const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth())
 
     const supabase = createClient()
     const router = useRouter()
     const currentYear = new Date().getFullYear()
 
-    const fetchMoods = useCallback(async () => {
-        try {
-            const { data: { user } } = await supabase.auth.getUser()
-            setUser(user)
-            if (!user) { router.push('/login'); return }
+    useEffect(() => {
+        if (!userLoading && !user) router.push('/login')
+    }, [userLoading, user, router])
 
+    const fetchMoods = useCallback(async () => {
+        if (!user) { setMoodLoading(false); return }
+        try {
             const { data, error } = await supabase
                 .from('moods')
                 .select('*')
@@ -50,11 +39,13 @@ export default function InsightsPage() {
         } catch (error) {
             console.error('Error fetching moods:', error)
         } finally {
-            setLoading(false)
+            setMoodLoading(false)
         }
-    }, [supabase, currentYear, router])
+    }, [supabase, currentYear, user])
 
-    useEffect(() => { fetchMoods() }, [fetchMoods])
+    useEffect(() => { if (!userLoading) fetchMoods() }, [fetchMoods, userLoading])
+
+    const loading = userLoading || moodLoading
 
     const monthlyData = useMemo(() => {
         const months: Record<number, Mood[]> = {}
@@ -336,21 +327,37 @@ export default function InsightsPage() {
                                         {(Object.entries(MOODS) as [MoodGrade, typeof MOODS[MoodGrade]][]).map(([grade, data]) => {
                                             const count = monthStats.counts[grade]
                                             const pct = monthStats.total > 0 ? (count / monthStats.total) * 100 : 0
+                                            const BAR_COLORS: Record<MoodGrade, string> = {
+                                                A: 'bg-emerald-500',
+                                                B: 'bg-amber-500',
+                                                C: 'bg-purple-500',
+                                                D: 'bg-orange-500',
+                                                F: 'bg-slate-500',
+                                            }
                                             return (
                                                 <div key={grade} className="flex items-center gap-3">
                                                     <span className="text-xl w-7 text-center flex-shrink-0">{data.emoji}</span>
                                                     <span className="text-sm font-semibold text-gray-600 dark:text-gray-300 w-14 flex-shrink-0">{data.label}</span>
-                                                    <div className="flex-1 h-7 bg-gray-50 dark:bg-gray-800 rounded-lg overflow-hidden border border-gray-100 dark:border-gray-700">
+                                                    <div className="flex-1 h-8 bg-gray-100 dark:bg-gray-800/60 rounded-lg overflow-hidden relative">
                                                         <motion.div
                                                             initial={{ width: 0 }}
-                                                            animate={{ width: `${pct}%` }}
+                                                            animate={{ width: `${Math.max(pct, count > 0 ? 4 : 0)}%` }}
                                                             transition={{ duration: 0.9, delay: 0.1, ease: 'easeOut' }}
-                                                            className={`h-full rounded-lg bg-gradient-to-r ${MOOD_GRADIENTS[grade]} flex items-center justify-end pr-2`}
-                                                        >
-                                                            {pct > 18 && (
-                                                                <span className="text-[11px] font-black text-white">{Math.round(pct)}%</span>
-                                                            )}
-                                                        </motion.div>
+                                                            className={`h-full rounded-lg ${BAR_COLORS[grade]}`}
+                                                        />
+                                                        {/* Percentage label — always visible */}
+                                                        {count > 0 && (
+                                                            <span
+                                                                className={`absolute top-1/2 -translate-y-1/2 text-[11px] font-bold ${
+                                                                    pct > 60
+                                                                        ? 'text-white'
+                                                                        : 'text-gray-700 dark:text-gray-300'
+                                                                }`}
+                                                                style={{ left: `calc(${pct > 60 ? pct - 6 : Math.max(pct, 4) + 1.5}% + ${pct > 60 ? '0px' : '4px'})` }}
+                                                            >
+                                                                {Math.round(pct)}%
+                                                            </span>
+                                                        )}
                                                     </div>
                                                     <span className="text-sm font-black text-gray-700 dark:text-gray-200 w-5 text-right flex-shrink-0">{count}</span>
                                                 </div>
@@ -361,17 +368,17 @@ export default function InsightsPage() {
 
                                 {/* Right column: avg + best/worst */}
                                 <div className="space-y-4">
-                                    {/* Average mood - dark glass */}
-                                    <div className="rounded-2xl bg-gray-950 dark:bg-gray-950 border border-purple-500/30 p-5 text-center shadow-lg shadow-purple-500/10 relative overflow-hidden">
+                                    {/* Average mood */}
+                                    <div className="rounded-2xl bg-white dark:bg-gray-950 border border-purple-200 dark:border-purple-500/30 p-5 text-center shadow-lg shadow-purple-500/10 relative overflow-hidden">
                                         <div className="absolute inset-0 bg-purple-500/5 rounded-2xl" />
                                         <div className="relative z-10">
-                                            <div className="text-xs font-bold uppercase tracking-widest text-purple-400 mb-3">Average Mood</div>
-                                            <div className="text-6xl font-black text-white leading-none">{monthStats.avgScore.toFixed(1)}</div>
-                                            <div className="text-xs text-gray-500 mt-1.5">out of 5.0</div>
+                                            <div className="text-xs font-bold uppercase tracking-widest text-purple-500 dark:text-purple-400 mb-3">Average Mood</div>
+                                            <div className="text-6xl font-black text-gray-900 dark:text-white leading-none">{monthStats.avgScore.toFixed(1)}</div>
+                                            <div className="text-xs text-gray-400 dark:text-gray-500 mt-1.5">out of 5.0</div>
                                             <div className="text-4xl mt-4">
                                                 {monthStats.avgScore >= 4.5 ? '🤩' : monthStats.avgScore >= 3.5 ? '😊' : monthStats.avgScore >= 2.5 ? '🙂' : monthStats.avgScore >= 1.5 ? '😔' : '😢'}
                                             </div>
-                                            <div className="mt-3 h-1 rounded-full bg-gray-800 overflow-hidden">
+                                            <div className="mt-3 h-1.5 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
                                                 <motion.div initial={{ width: 0 }} animate={{ width: `${((monthStats.avgScore - 1) / 4) * 100}%` }}
                                                     transition={{ duration: 1, ease: 'easeOut' }}
                                                     className="h-full rounded-full bg-purple-500" />

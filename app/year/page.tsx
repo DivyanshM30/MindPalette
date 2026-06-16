@@ -1,24 +1,11 @@
 'use client'
-import { createClient } from '@/lib/supabase'
-import { User } from '@supabase/supabase-js'
-import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Calendar, ArrowLeft } from 'lucide-react'
 import MoodGrid from '@/components/MoodGrid'
+import { useUser } from '@/contexts/UserContext'
 
 export default function YearView() {
-  const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
-  const supabase = createClient()
-
-  useEffect(() => {
-    const checkUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      setUser(user)
-      setLoading(false)
-    }
-    checkUser()
-  }, [supabase])
+  const { loading } = useUser()
 
   if (loading) {
     return <div className="flex h-[50vh] items-center justify-center"><div className="animate-pulse text-purple-400">Loading your year...</div></div>
@@ -55,4 +42,3 @@ export default function YearView() {
     </div>
   )
 }
-

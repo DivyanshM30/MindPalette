@@ -23,7 +23,7 @@ export default function Header() {
         <Link href="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
           <Image src="/icons/logo.png" alt="MindPalette" width={128} height={128} className="w-9 h-9 rounded-lg" />
           <span className="font-bold text-xl tracking-tight">
-            <span className="text-white">Mind</span><span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-400 via-orange-400 via-40% via-yellow-300 via-50% to-teal-400">Palette</span>
+            <span className="text-gray-900 dark:text-white">Mind</span><span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-400 via-orange-400 via-40% via-yellow-300 via-50% to-teal-400">Palette</span>
           </span>
         </Link>
         <div className="flex items-center gap-3">

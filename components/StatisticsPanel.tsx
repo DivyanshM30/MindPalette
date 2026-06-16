@@ -1,7 +1,7 @@
 'use client'
 import { useMemo, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { MoodGrade, MOODS } from '@/lib/utils'
+import { MoodGrade, MOODS, getDisplayName } from '@/lib/utils'
 import { User } from '@supabase/supabase-js'
 import { Trophy, TrendingUp, Activity } from 'lucide-react'
 
@@ -77,7 +77,7 @@ export default function StatisticsPanel({ moodData, user }: StatisticsPanelProps
 
     if (!stats) return null
 
-    const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'there'
+    const displayName = getDisplayName(user)
 
     const getStreakMilestone = (streak: number) => {
         if (streak >= 100) return { emoji: '💎', label: 'Diamond!' }

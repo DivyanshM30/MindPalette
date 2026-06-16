@@ -1,30 +1,41 @@
 'use client'
 import { createClient } from '@/lib/supabase'
-import { User } from '@supabase/supabase-js'
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useMemo } from 'react'
 import Link from 'next/link'
 import { ArrowRight, Sparkles, Calendar, CalendarDays, Loader2, BarChart3 } from 'lucide-react'
 import StatisticsPanel from '@/components/StatisticsPanel'
 import Onboarding from '@/components/Onboarding'
 import { Mood, MoodGrade } from '@/lib/types'
+import { useUser } from '@/contexts/UserContext'
+import { getDisplayName } from '@/lib/utils'
 
 export default function Home() {
-  const [user, setUser] = useState<User | null>(null)
+  const { user, loading: userLoading } = useUser()
   const [moodData, setMoodData] = useState<Record<string, { mood: MoodGrade, note: string }>>({})
-  const [loading, setLoading] = useState(true)
+  const [moodLoading, setMoodLoading] = useState(true)
   const supabase = createClient()
 
   const currentYear = new Date().getFullYear()
 
-  const fetchMoods = useCallback(async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser()
-      setUser(user)
-      if (!user) {
-        setLoading(false)
-        return
+  // Stable random grid for landing page (fixes U5 flicker)
+  const pixelGrid = useMemo(() =>
+    Array.from({ length: 182 }, () => {
+      const colors = [
+        'bg-emerald-400', 'bg-amber-400', 'bg-violet-400',
+        'bg-orange-400', 'bg-slate-400', 'bg-teal-400', 'bg-pink-400'
+      ]
+      return {
+        hasEntry: Math.random() > 0.15,
+        color: colors[Math.floor(Math.random() * colors.length)]
       }
+    }), [])
 
+  const fetchMoods = useCallback(async () => {
+    if (!user) {
+      setMoodLoading(false)
+      return
+    }
+    try {
       const { data, error } = await supabase
         .from('moods')
         .select('*')
@@ -42,13 +53,15 @@ export default function Home() {
     } catch (error) {
       console.error('Error fetching moods:', error)
     } finally {
-      setLoading(false)
+      setMoodLoading(false)
     }
-  }, [supabase, currentYear])
+  }, [supabase, currentYear, user])
 
   useEffect(() => {
-    fetchMoods()
-  }, [fetchMoods])
+    if (!userLoading) fetchMoods()
+  }, [fetchMoods, userLoading])
+
+  const loading = userLoading || moodLoading
 
   if (loading) {
     return (
@@ -115,21 +128,13 @@ export default function Home() {
                   </div>
                   {/* Pixel grid demo */}
                   <div className="grid gap-1" style={{ gridTemplateColumns: 'repeat(26, 1fr)' }}>
-                    {Array.from({ length: 182 }).map((_, i) => {
-                      const colors = [
-                        'bg-emerald-400', 'bg-amber-400', 'bg-violet-400',
-                        'bg-orange-400', 'bg-slate-400', 'bg-teal-400', 'bg-pink-400'
-                      ]
-                      const hasEntry = Math.random() > 0.15
-                      const color = colors[Math.floor(Math.random() * colors.length)]
-                      return (
-                        <div
-                          key={i}
-                          className={`aspect-square rounded-sm ${hasEntry ? color + ' opacity-80' : 'bg-gray-200 dark:bg-gray-800 opacity-30'}`}
-                          style={{ animationDelay: `${i * 8}ms` }}
-                        />
-                      )
-                    })}
+                    {pixelGrid.map((cell, i) => (
+                      <div
+                        key={i}
+                        className={`aspect-square rounded-sm ${cell.hasEntry ? cell.color + ' opacity-80' : 'bg-gray-200 dark:bg-gray-800 opacity-30'}`}
+                        style={{ animationDelay: `${i * 8}ms` }}
+                      />
+                    ))}
                   </div>
                   <div className="flex items-center justify-between mt-4">
                     <span className="text-xs text-gray-400">Jan 2025</span>
@@ -275,7 +280,7 @@ export default function Home() {
           <div className="w-full text-left space-y-8">
             {/* Onboarding for new users */}
             {Object.keys(moodData).length === 0 && (
-              <Onboarding userName={user.user_metadata?.full_name || user.email?.split('@')[0] || 'there'} />
+              <Onboarding userName={getDisplayName(user)} />
             )}
 
             {/* Statistics First */}

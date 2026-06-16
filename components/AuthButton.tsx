@@ -1,40 +1,21 @@
 'use client'
 import { createClient } from '@/lib/supabase'
-import { User } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { LogOut, User as UserIcon } from 'lucide-react'
+import { useUser } from '@/contexts/UserContext'
+import { getDisplayName } from '@/lib/utils'
 import ProfileDialog from './ProfileDialog'
+import Link from 'next/link'
 
 export default function AuthButton() {
-    const [user, setUser] = useState<User | null>(null)
+    const { user } = useUser()
     const [isProfileOpen, setIsProfileOpen] = useState(false)
     const supabase = createClient()
     const router = useRouter()
 
-    useEffect(() => {
-        const getUser = async () => {
-            const { data: { user } } = await supabase.auth.getUser()
-            setUser(user)
-        }
-        getUser()
-
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-            setUser(session?.user ?? null)
-            if (event === 'SIGNED_OUT') {
-                router.push('/login')
-            }
-        })
-
-        return () => subscription.unsubscribe()
-    }, [supabase, router])
-
     const handleSignOut = async () => {
         await supabase.auth.signOut()
-        router.push('/login')
-    }
-
-    const handleSignIn = () => {
         router.push('/login')
     }
 
@@ -47,7 +28,7 @@ export default function AuthButton() {
             >
                 <UserIcon size={16} />
                 <span className="hidden sm:inline">
-                    {user.user_metadata?.full_name || user.email?.split('@')[0]}
+                    {getDisplayName(user)}
                 </span>
             </button>
             <button
@@ -65,11 +46,11 @@ export default function AuthButton() {
             />
         </div>
     ) : (
-        <button
-            onClick={handleSignIn}
+        <Link
+            href="/login"
             className="px-6 py-2 rounded-full bg-black text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200 transition-all font-medium text-sm shadow-md hover:shadow-lg hover:scale-105 active:scale-95"
         >
             Log In
-        </button>
+        </Link>
     )
 }
