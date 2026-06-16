@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, ChevronLeft, ChevronRight } from 'lucide-react'
 import { MoodGrade } from '@/lib/types'
-import { MOODS } from '@/lib/utils'
+import { MOODS, MONTH_NAMES, getDaysInMonth } from '@/lib/utils'
 
 interface CalendarPopupProps {
     isOpen: boolean
@@ -28,12 +28,7 @@ export default function CalendarPopup({ isOpen, onClose, selectedDate, onDateSel
         }
     }, [isOpen, handleKeyDown])
     
-    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
     const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-
-    const getDaysInMonth = (date: Date) => {
-        return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()
-    }
 
     const getFirstDayOfMonth = (date: Date) => {
         return new Date(date.getFullYear(), date.getMonth(), 1).getDay()
@@ -52,7 +47,7 @@ export default function CalendarPopup({ isOpen, onClose, selectedDate, onDateSel
         onDateSelect(newDate)
     }
 
-    const daysInMonth = getDaysInMonth(currentMonth)
+    const daysInMonth = getDaysInMonth(currentMonth.getFullYear(), currentMonth.getMonth())
     const firstDay = getFirstDayOfMonth(currentMonth)
     const days = Array.from({ length: daysInMonth }, (_, i) => i + 1)
     const emptyDays = Array.from({ length: firstDay }, (_, i) => i)
@@ -104,7 +99,7 @@ export default function CalendarPopup({ isOpen, onClose, selectedDate, onDateSel
                                         <ChevronLeft size={20} className="text-gray-600 dark:text-gray-300" />
                                     </button>
                                     <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-                                        {months[currentMonth.getMonth()]} {currentMonth.getFullYear()}
+                                        {MONTH_NAMES[currentMonth.getMonth()]} {currentMonth.getFullYear()}
                                     </h3>
                                     <button
                                         onClick={handleNextMonth}
