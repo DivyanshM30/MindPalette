@@ -1,7 +1,7 @@
 'use client'
 import { motion } from 'framer-motion'
 import { useEffect, useState, useCallback } from 'react'
-import { createClient } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase'
 import { Mood, MoodGrade } from '@/lib/types'
 import { getDaysInMonth, MONTH_NAMES } from '@/lib/utils'
 import { Loader2 } from 'lucide-react'
@@ -22,7 +22,7 @@ export default function MoodGrid({ showStats = true }: MoodGridProps) {
     const [dialogOpen, setDialogOpen] = useState(false)
     const [selectedDate, setSelectedDate] = useState<Date | null>(null)
 
-    const supabase = createClient()
+
 
     const months = MONTH_NAMES.map(m => m.slice(0, 3))
 
@@ -49,7 +49,7 @@ export default function MoodGrid({ showStats = true }: MoodGridProps) {
         } finally {
             setMoodLoading(false)
         }
-    }, [supabase, year, user])
+    }, [year, user])
 
     useEffect(() => {
         if (!userLoading) fetchMoods()

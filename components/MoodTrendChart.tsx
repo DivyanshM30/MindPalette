@@ -86,7 +86,16 @@ export default function MoodTrendChart({ monthlyTrend, selectedMonth, onSelectMo
                     const color = p.avg ? DOT_COLOR(p.avg) : '#e5e7eb'
                     const isSelected = p.i === selectedMonth
                     return (
-                        <g key={p.i} onClick={() => onSelectMonth(p.i)} style={{ cursor: 'pointer' }}>
+                        <g
+                            key={p.i}
+                            onClick={() => onSelectMonth(p.i)}
+                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelectMonth(p.i) } }}
+                            tabIndex={0}
+                            role="button"
+                            aria-label={`${MONTH_NAMES[p.i]}: ${p.avg ? `average score ${p.avg.toFixed(1)}` : 'no data'}`}
+                            style={{ cursor: 'pointer', outline: 'none' }}
+                            className="focus-visible:outline-2 focus-visible:outline-purple-500"
+                        >
                             {p.y !== null ? (
                                 <>
                                     {/* Glow ring */}

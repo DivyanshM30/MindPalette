@@ -1,5 +1,5 @@
 'use client'
-import { createClient } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { LogOut, User as UserIcon } from 'lucide-react'
@@ -11,7 +11,6 @@ import Link from 'next/link'
 export default function AuthButton() {
     const { user } = useUser()
     const [isProfileOpen, setIsProfileOpen] = useState(false)
-    const supabase = createClient()
     const router = useRouter()
 
     const handleSignOut = async () => {

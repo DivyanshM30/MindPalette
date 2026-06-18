@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { createClient } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase'
 import { Mood, MoodGrade } from '@/lib/types'
 import { Calendar, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react'
 import { MOODS } from '@/lib/utils'
@@ -19,7 +19,7 @@ export default function DayView() {
     const [showCalendar, setShowCalendar] = useState(false)
     const [showMoodSelector, setShowMoodSelector] = useState(false)
 
-    const supabase = createClient()
+
     const { showToast } = useToast()
 
     const fetchDayData = useCallback(async () => {
@@ -65,7 +65,7 @@ export default function DayView() {
         } finally {
             setLoading(false)
         }
-    }, [supabase, selectedDate, user])
+    }, [selectedDate, user])
 
     useEffect(() => {
         if (!userLoading) {
@@ -101,7 +101,7 @@ export default function DayView() {
         } finally {
             setSaving(false)
         }
-    }, [user, selectedDate, supabase, showToast])
+    }, [user, selectedDate, showToast])
 
     const handleDateChange = (newDate: Date) => {
         setSelectedDate(newDate)

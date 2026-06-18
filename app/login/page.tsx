@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { createClient } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import { Mail, Lock, Loader2, ArrowRight, User } from 'lucide-react'
 
@@ -13,7 +13,7 @@ export default function LoginPage() {
     const [isSignUp, setIsSignUp] = useState(false)
 
     const router = useRouter()
-    const supabase = createClient()
+
 
     const handleAuth = async (e: React.FormEvent) => {
         e.preventDefault()

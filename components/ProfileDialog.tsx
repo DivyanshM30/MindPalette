@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, User, Loader2, CheckCircle2 } from 'lucide-react'
-import { createClient } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase'
 
 interface ProfileDialogProps {
     isOpen: boolean
@@ -17,7 +17,6 @@ export default function ProfileDialog({ isOpen, onClose, initialName }: ProfileD
     const [success, setSuccess] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [mounted, setMounted] = useState(false)
-    const supabase = createClient()
 
     useEffect(() => {
         setMounted(true)

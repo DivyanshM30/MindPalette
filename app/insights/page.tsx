@@ -1,5 +1,5 @@
 'use client'
-import { createClient } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase'
 import { useEffect, useState, useMemo, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -16,7 +16,7 @@ export default function InsightsPage() {
     const [moodLoading, setMoodLoading] = useState(true)
     const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth())
 
-    const supabase = createClient()
+
     const router = useRouter()
     const currentYear = new Date().getFullYear()
 
@@ -42,7 +42,7 @@ export default function InsightsPage() {
         } finally {
             setMoodLoading(false)
         }
-    }, [supabase, currentYear, user])
+    }, [currentYear, user])
 
     useEffect(() => { if (!userLoading) fetchMoods() }, [fetchMoods, userLoading])
 

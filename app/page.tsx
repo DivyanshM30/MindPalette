@@ -1,5 +1,5 @@
 'use client'
-import { createClient } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase'
 import { useEffect, useState, useCallback, useMemo } from 'react'
 import Link from 'next/link'
 import { ArrowRight, Sparkles, Calendar, CalendarDays, Loader2, BarChart3 } from 'lucide-react'
@@ -14,7 +14,7 @@ export default function Home() {
   const { user, loading: userLoading } = useUser()
   const [moodData, setMoodData] = useState<Record<string, { mood: MoodGrade, note: string }>>({})
   const [moodLoading, setMoodLoading] = useState(true)
-  const supabase = createClient()
+
 
   const currentYear = new Date().getFullYear()
 
@@ -56,7 +56,7 @@ export default function Home() {
     } finally {
       setMoodLoading(false)
     }
-  }, [supabase, currentYear, user])
+  }, [currentYear, user])
 
   useEffect(() => {
     if (!userLoading) fetchMoods()
