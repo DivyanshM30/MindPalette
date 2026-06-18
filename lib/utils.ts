@@ -1,12 +1,13 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { User } from "@supabase/supabase-js"
+import { MoodGrade } from "./types"
+
+export type { MoodGrade }
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
 }
-
-export type MoodGrade = 'A' | 'B' | 'C' | 'D' | 'F';
 
 export const MOODS: Record<MoodGrade, { label: string; color: string; description: string; emoji: string }> = {
     'A': { label: 'Great', color: 'bg-gradient-to-br from-emerald-300 to-emerald-500', description: 'Amazing day', emoji: '😊' },

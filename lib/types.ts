@@ -1,5 +1,4 @@
-import { MoodGrade } from "./utils";
-export type { MoodGrade };
+export type MoodGrade = 'A' | 'B' | 'C' | 'D' | 'F';
 
 export interface Mood {
     id: string;

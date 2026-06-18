@@ -5,9 +5,11 @@ import Image from 'next/image'
 import AuthButton from '@/components/AuthButton'
 import ThemeToggle from '@/components/ThemeToggle'
 import { Calendar, CalendarDays, Home, BarChart3 } from 'lucide-react'
+import { useUser } from '@/contexts/UserContext'
 
 export default function Header() {
   const pathname = usePathname()
+  const { user } = useUser()
   const isHome = pathname === '/'
   const isYearView = pathname === '/year'
   const isDayView = pathname === '/day-view'
@@ -27,7 +29,7 @@ export default function Header() {
           </span>
         </Link>
         <div className="flex items-center gap-3">
-          {!isHome && (
+          {user && !isHome && (
             <Link
               href="/"
               className="px-3 py-1.5 rounded-lg hover:bg-white/50 dark:hover:bg-white/5 transition-all text-sm font-medium text-gray-600 dark:text-gray-300 flex items-center gap-2"
@@ -37,7 +39,7 @@ export default function Header() {
               <span className="hidden sm:inline">Dashboard</span>
             </Link>
           )}
-          {!isDayView && (
+          {user && !isDayView && (
             <Link
               href="/day-view"
               className="px-3 py-1.5 rounded-lg hover:bg-white/50 dark:hover:bg-white/5 transition-all text-sm font-medium text-gray-600 dark:text-gray-300 flex items-center gap-2"
@@ -47,7 +49,7 @@ export default function Header() {
               <span className="hidden sm:inline">Day View</span>
             </Link>
           )}
-          {!isYearView && (
+          {user && !isYearView && (
             <Link
               href="/year"
               className="px-3 py-1.5 rounded-lg hover:bg-white/50 dark:hover:bg-white/5 transition-all text-sm font-medium text-gray-600 dark:text-gray-300 flex items-center gap-2"
@@ -57,7 +59,7 @@ export default function Header() {
               <span className="hidden sm:inline">Year View</span>
             </Link>
           )}
-          {!isInsights && (
+          {user && !isInsights && (
             <Link
               href="/insights"
               className="px-3 py-1.5 rounded-lg hover:bg-white/50 dark:hover:bg-white/5 transition-all text-sm font-medium text-gray-600 dark:text-gray-300 flex items-center gap-2"

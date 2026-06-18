@@ -2,16 +2,16 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { createClient } from '@/lib/supabase'
-import { User } from '@supabase/supabase-js'
 import { Mood, MoodGrade } from '@/lib/types'
 import { Calendar, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react'
 import { MOODS } from '@/lib/utils'
 import CalendarPopup from './CalendarPopup'
 import { useToast } from './Toast'
+import { useUser } from '@/contexts/UserContext'
 
 export default function DayView() {
+    const { user, loading: userLoading } = useUser()
     const [selectedDate, setSelectedDate] = useState(new Date())
-    const [user, setUser] = useState<User | null>(null)
     const [moodData, setMoodData] = useState<{ mood: MoodGrade | null, note: string, positive: string } | null>(null)
     const [allMoodData, setAllMoodData] = useState<Record<string, { mood: MoodGrade, note: string }>>({})
     const [loading, setLoading] = useState(true)
@@ -23,11 +23,8 @@ export default function DayView() {
     const { showToast } = useToast()
 
     const fetchDayData = useCallback(async () => {
+        if (!user) { setLoading(false); return }
         try {
-            const { data: { user } } = await supabase.auth.getUser()
-            setUser(user)
-            if (!user) return
-
             const dateStr = selectedDate.toLocaleDateString('en-CA')
             const { data, error } = await supabase
                 .from('moods')
@@ -68,12 +65,14 @@ export default function DayView() {
         } finally {
             setLoading(false)
         }
-    }, [supabase, selectedDate])
+    }, [supabase, selectedDate, user])
 
     useEffect(() => {
-        setLoading(true)
-        fetchDayData()
-    }, [fetchDayData])
+        if (!userLoading) {
+            setLoading(true)
+            fetchDayData()
+        }
+    }, [fetchDayData, userLoading])
 
     const saveData = useCallback(async (mood: MoodGrade | null, note: string, positive: string) => {
         if (!user) return
