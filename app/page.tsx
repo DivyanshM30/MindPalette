@@ -125,7 +125,7 @@ export default function Home() {
                     <div className="w-3 h-3 rounded-full bg-red-400" />
                     <div className="w-3 h-3 rounded-full bg-yellow-400" />
                     <div className="w-3 h-3 rounded-full bg-green-400" />
-                    <span className="ml-2 text-xs text-gray-400 font-mono">mindpalette.app — Your 2025</span>
+                    <span className="ml-2 text-xs text-gray-400 font-mono">mindpalette.app — Your {currentYear}</span>
                   </div>
                   {/* Pixel grid demo */}
                   <div className="grid gap-1" style={{ gridTemplateColumns: 'repeat(26, 1fr)' }}>
@@ -138,9 +138,9 @@ export default function Home() {
                     ))}
                   </div>
                   <div className="flex items-center justify-between mt-4">
-                    <span className="text-xs text-gray-400">Jan 2025</span>
+                    <span className="text-xs text-gray-400">Jan {currentYear}</span>
                     <span className="text-xs text-gray-400 font-medium">182 days tracked ✨</span>
-                    <span className="text-xs text-gray-400">Jun 2025</span>
+                    <span className="text-xs text-gray-400">Jun {currentYear}</span>
                   </div>
                 </div>
               </div>

@@ -22,7 +22,7 @@ export default function LoginPage() {
 
         try {
             if (isSignUp) {
-                const { error } = await supabase.auth.signUp({
+                const { data, error } = await supabase.auth.signUp({
                     email,
                     password,
                     options: {
@@ -33,7 +33,12 @@ export default function LoginPage() {
                     },
                 })
                 if (error) throw error
-                setMessage({ text: 'Check your email for the confirmation link!', type: 'success' })
+                // Supabase returns a user with empty identities when the email already exists
+                if (data.user && data.user.identities && data.user.identities.length === 0) {
+                    setMessage({ text: 'An account with this email already exists. Try signing in instead!', type: 'error' })
+                } else {
+                    setMessage({ text: 'Check your email for the confirmation link!', type: 'success' })
+                }
             } else {
                 const { error } = await supabase.auth.signInWithPassword({
                     email,
