@@ -1,6 +1,5 @@
 'use client'
-import { supabase } from '@/lib/supabase'
-import { useEffect, useState, useMemo, useCallback } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
@@ -8,48 +7,23 @@ import { AlertTriangle, ArrowLeft, BarChart3, TrendingUp, Calendar, Smile, Frown
 import { Mood, MoodGrade } from '@/lib/types'
 import { MOODS, MOOD_SCORES, MONTH_NAMES, BAR_COLORS } from '@/lib/utils'
 import { useUser } from '@/contexts/UserContext'
+import { useMoods, useEarliestYear } from '@/lib/hooks/useMoods'
+import YearSwitcher from '@/components/YearSwitcher'
 import MoodTrendChart from '@/components/MoodTrendChart'
 
 export default function InsightsPage() {
     const { user, loading: userLoading } = useUser()
-    const [moodData, setMoodData] = useState<Mood[]>([])
-    const [moodLoading, setMoodLoading] = useState(true)
-    const [fetchError, setFetchError] = useState(false)
     const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth())
-
 
     const router = useRouter()
     const currentYear = new Date().getFullYear()
+    const [year, setYear] = useState(currentYear)
+    const earliestYear = useEarliestYear()
+    const { moods: moodData, loading, error: fetchError, refetch } = useMoods(year)
 
     useEffect(() => {
         if (!userLoading && !user) router.push('/login')
     }, [userLoading, user, router])
-
-    const fetchMoods = useCallback(async () => {
-        if (!user) { setMoodLoading(false); return }
-        setFetchError(false)
-        try {
-            const { data, error } = await supabase
-                .from('moods')
-                .select('*')
-                .eq('user_id', user.id)
-                .gte('date', `${currentYear}-01-01`)
-                .lte('date', `${currentYear}-12-31`)
-                .order('date', { ascending: true })
-
-            if (error) throw error
-            setMoodData(data || [])
-        } catch (error) {
-            console.error('Error fetching moods:', error)
-            setFetchError(true)
-        } finally {
-            setMoodLoading(false)
-        }
-    }, [currentYear, user])
-
-    useEffect(() => { if (!userLoading) fetchMoods() }, [fetchMoods, userLoading])
-
-    const loading = userLoading || moodLoading
 
     const monthlyData = useMemo(() => {
         const months: Record<number, Mood[]> = {}
@@ -112,7 +86,7 @@ export default function InsightsPage() {
                         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Check your connection and try again.</p>
                     </div>
                     <button
-                        onClick={() => { setMoodLoading(true); fetchMoods() }}
+                        onClick={refetch}
                         className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold shadow-lg hover:shadow-xl transition-all hover:scale-105 active:scale-95"
                     >
                         <RotateCcw size={16} /> Try again
@@ -138,8 +112,11 @@ export default function InsightsPage() {
                         Mood Insights
                     </h1>
                     <p className="text-gray-500 dark:text-gray-400 text-sm mt-1 ml-[52px]">
-                        Your patterns for {currentYear}
+                        Your patterns for {year}
                     </p>
+                </div>
+                <div className="ml-auto">
+                    <YearSwitcher year={year} minYear={Math.min(earliestYear, currentYear)} maxYear={currentYear} onChange={setYear} />
                 </div>
             </div>
 
@@ -338,7 +315,7 @@ export default function InsightsPage() {
                         <div className="grid grid-cols-4 md:grid-cols-6 gap-2.5">
                             {MONTH_NAMES.map((name, i) => {
                                 const count = (monthlyData[i] || []).length
-                                const daysInMonth = new Date(currentYear, i + 1, 0).getDate()
+                                const daysInMonth = new Date(year, i + 1, 0).getDate()
                                 const pct = (count / daysInMonth) * 100
                                 const isSelected = i === selectedMonth
 

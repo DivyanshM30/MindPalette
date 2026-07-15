@@ -1,23 +1,18 @@
 'use client'
-import { supabase } from '@/lib/supabase'
-import { useEffect, useState, useCallback, useMemo } from 'react'
+import { useMemo } from 'react'
 import Link from 'next/link'
 import { AlertTriangle, ArrowRight, Sparkles, Calendar, CalendarDays, Loader2, BarChart3, RotateCcw } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import StatisticsPanel from '@/components/StatisticsPanel'
 const Onboarding = dynamic(() => import('@/components/Onboarding'), { ssr: false })
-import { Mood, MoodGrade } from '@/lib/types'
 import { useUser } from '@/contexts/UserContext'
+import { useMoods } from '@/lib/hooks/useMoods'
 import { getDisplayName } from '@/lib/utils'
 
 export default function Home() {
-  const { user, loading: userLoading } = useUser()
-  const [moodData, setMoodData] = useState<Record<string, { mood: MoodGrade, note: string }>>({})
-  const [moodLoading, setMoodLoading] = useState(true)
-  const [fetchError, setFetchError] = useState(false)
-
-
+  const { user } = useUser()
   const currentYear = new Date().getFullYear()
+  const { moodMap: moodData, loading, error: fetchError, refetch } = useMoods(currentYear)
 
   // Stable random grid for landing page (fixes U5 flicker)
   const pixelGrid = useMemo(() =>
@@ -31,41 +26,6 @@ export default function Home() {
         color: colors[Math.floor(Math.random() * colors.length)]
       }
     }), [])
-
-  const fetchMoods = useCallback(async () => {
-    if (!user) {
-      setMoodLoading(false)
-      return
-    }
-    setFetchError(false)
-    try {
-      const { data, error } = await supabase
-        .from('moods')
-        .select('*')
-        .eq('user_id', user.id)
-        .gte('date', `${currentYear}-01-01`)
-        .lte('date', `${currentYear}-12-31`)
-
-      if (error) throw error
-
-      const dataMap: Record<string, { mood: MoodGrade, note: string }> = {}
-      data?.forEach((m: Mood) => {
-        dataMap[m.date] = { mood: m.mood, note: m.note || '' }
-      })
-      setMoodData(dataMap)
-    } catch (error) {
-      console.error('Error fetching moods:', error)
-      setFetchError(true)
-    } finally {
-      setMoodLoading(false)
-    }
-  }, [currentYear, user])
-
-  useEffect(() => {
-    if (!userLoading) fetchMoods()
-  }, [fetchMoods, userLoading])
-
-  const loading = userLoading || moodLoading
 
   if (loading) {
     return (
@@ -88,7 +48,7 @@ export default function Home() {
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Check your connection and try again.</p>
           </div>
           <button
-              onClick={() => { setMoodLoading(true); fetchMoods() }}
+              onClick={refetch}
               className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold shadow-lg hover:shadow-xl transition-all hover:scale-105 active:scale-95"
           >
               <RotateCcw size={16} /> Try again
