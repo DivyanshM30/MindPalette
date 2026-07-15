@@ -1,14 +1,19 @@
 'use client'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Calendar, ArrowLeft } from 'lucide-react'
 import MoodGrid from '@/components/MoodGrid'
+import YearSwitcher from '@/components/YearSwitcher'
+import { useEarliestYear } from '@/lib/hooks/useMoods'
 import { useUser } from '@/contexts/UserContext'
 
 export default function YearView() {
   const { user, loading } = useUser()
   const router = useRouter()
+  const currentYear = new Date().getFullYear()
+  const [year, setYear] = useState(currentYear)
+  const earliestYear = useEarliestYear()
 
   useEffect(() => {
     if (!loading && !user) router.push('/login')
@@ -34,20 +39,23 @@ export default function YearView() {
           <div>
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
               <Calendar size={32} className="text-purple-500" />
-              Year Overview {new Date().getFullYear()}
+              Year Overview {year}
             </h1>
             <p className="text-gray-600 dark:text-gray-400 mt-1">Your complete mood journey at a glance</p>
           </div>
         </div>
-        <Link
-          href="/"
-          className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold text-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95"
-        >
-          Day View
-        </Link>
+        <div className="flex items-center gap-3">
+          <YearSwitcher year={year} minYear={Math.min(earliestYear, currentYear)} maxYear={currentYear} onChange={setYear} />
+          <Link
+            href="/"
+            className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold text-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95"
+          >
+            Day View
+          </Link>
+        </div>
       </div>
 
-      <MoodGrid showStats={false} />
+      <MoodGrid showStats={false} year={year} />
     </div>
   )
 }

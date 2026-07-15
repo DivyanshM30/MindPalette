@@ -26,8 +26,10 @@ export const metadata: Metadata = {
     title: 'MindPalette',
   },
   icons: {
-    icon: '/icons/favicon.png',
-    apple: '/icons/favicon.png',
+    // app/favicon.ico is served at /favicon.ico by the App Router convention
+    icon: '/favicon.ico',
+    // apple-touch-icon must be a PNG; use the 512x512 logo
+    apple: '/icons/logo.png',
   },
 }
 

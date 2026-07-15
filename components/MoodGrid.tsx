@@ -1,75 +1,37 @@
 'use client'
 import { motion } from 'framer-motion'
-import { useEffect, useState, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
-import { Mood, MoodGrade } from '@/lib/types'
+import { MoodGrade } from '@/lib/types'
 import { getDaysInMonth, MONTH_NAMES } from '@/lib/utils'
 import { AlertTriangle, Loader2, RotateCcw } from 'lucide-react'
 import MoodCell from './MoodCell'
 import MoodDialog from './MoodDialog'
 import StatisticsPanel from './StatisticsPanel'
 import { useToast } from './Toast'
+import { useMoods } from '@/lib/hooks/useMoods'
 import { useUser } from '@/contexts/UserContext'
 
 interface MoodGridProps {
     showStats?: boolean
+    year?: number
 }
 
-export default function MoodGrid({ showStats = true }: MoodGridProps) {
-    const [year] = useState(new Date().getFullYear())
-    const { user, loading: userLoading } = useUser()
-    const [moodData, setMoodData] = useState<Record<string, { mood: MoodGrade, note: string }>>({})
-    const [moodLoading, setMoodLoading] = useState(true)
+export default function MoodGrid({ showStats = true, year = new Date().getFullYear() }: MoodGridProps) {
+    const { user } = useUser()
+    const { moodMap, loading, error, refetch, mutate } = useMoods(year)
     const [dialogOpen, setDialogOpen] = useState(false)
     const [selectedDate, setSelectedDate] = useState<Date | null>(null)
-    const [fetchError, setFetchError] = useState(false)
     const { showToast } = useToast()
-
-
 
     const months = MONTH_NAMES.map(m => m.slice(0, 3))
 
-    // Fetch Moods
-    const fetchMoods = useCallback(async () => {
-        if (!user) { setMoodLoading(false); return }
-        setFetchError(false)
-        try {
-            const { data, error } = await supabase
-                .from('moods')
-                .select('*')
-                .eq('user_id', user.id)
-                .gte('date', `${year}-01-01`)
-                .lte('date', `${year}-12-31`)
-
-            if (error) throw error
-
-            const dataMap: Record<string, { mood: MoodGrade, note: string }> = {}
-            data?.forEach((m: Mood) => {
-                dataMap[m.date] = { mood: m.mood, note: m.note || '' }
-            })
-            setMoodData(dataMap)
-        } catch (error) {
-            console.error('Error fetching moods:', error)
-            setFetchError(true)
-        } finally {
-            setMoodLoading(false)
-        }
-    }, [year, user])
-
-    useEffect(() => {
-        if (!userLoading) fetchMoods()
-    }, [fetchMoods, userLoading])
-
-    // Optimize date interactions
     const handleCellClick = useCallback((monthIndex: number, day: number) => {
         // Validation: Feb 30 shouldn't exist
         const daysInMonth = getDaysInMonth(year, monthIndex)
         if (day > daysInMonth) return
 
-        const date = new Date(year, monthIndex, day)
-        // Adjust for timezone offset to ensure "2026-01-01" isn't "2025-12-31" depending on where user is
-        // Best practice: work with "YYYY-MM-DD" strings for keys, but Date objects for UI labels
-        setSelectedDate(date)
+        setSelectedDate(new Date(year, monthIndex, day))
         setDialogOpen(true)
     }, [year])
 
@@ -78,13 +40,12 @@ export default function MoodGrid({ showStats = true }: MoodGridProps) {
 
         const dateStr = selectedDate.toLocaleDateString('en-CA')
 
-        // Optimistic Update
-        const previousData = { ...moodData }
-        setMoodData(prev => ({ ...prev, [dateStr]: { mood, note } }))
+        // Optimistic update
+        mutate(dateStr, { mood, note })
         setDialogOpen(false)
 
         try {
-            const { error } = await supabase
+            const { error: saveError } = await supabase
                 .from('moods')
                 .upsert({
                     user_id: user.id,
@@ -93,15 +54,15 @@ export default function MoodGrid({ showStats = true }: MoodGridProps) {
                     note
                 }, { onConflict: 'user_id,date' })
 
-            if (error) throw error
-        } catch (error) {
-            console.error('Error saving mood:', error)
-            setMoodData(previousData) // Rollback
+            if (saveError) throw saveError
+        } catch (err) {
+            console.error('Error saving mood:', err)
             showToast('Failed to save your mood. Please try again.', 'error')
+            refetch() // Roll back the optimistic update
         }
     }
 
-    if (userLoading || moodLoading) {
+    if (loading) {
         return (
             <div className="w-full aspect-[2/1] rounded-3xl border border-gray-200 dark:border-gray-800 flex items-center justify-center bg-gray-50/50 dark:bg-gray-900/50">
                 <div className="flex flex-col items-center gap-2 text-gray-400">
@@ -112,7 +73,7 @@ export default function MoodGrid({ showStats = true }: MoodGridProps) {
         )
     }
 
-    if (fetchError) {
+    if (error) {
         return (
             <div className="w-full rounded-3xl border border-red-200 dark:border-red-900/40 bg-red-50/50 dark:bg-red-900/10 p-10 flex flex-col items-center gap-4 text-center">
                 <AlertTriangle className="text-red-500 dark:text-red-400" size={32} />
@@ -121,7 +82,7 @@ export default function MoodGrid({ showStats = true }: MoodGridProps) {
                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Check your connection and try again.</p>
                 </div>
                 <button
-                    onClick={() => { setMoodLoading(true); fetchMoods() }}
+                    onClick={refetch}
                     className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold shadow-lg hover:shadow-xl transition-all hover:scale-105 active:scale-95"
                 >
                     <RotateCcw size={16} /> Try again
@@ -132,7 +93,7 @@ export default function MoodGrid({ showStats = true }: MoodGridProps) {
 
     return (
         <div className="w-full space-y-8">
-            {showStats && user && <StatisticsPanel moodData={moodData} user={user} />}
+            {showStats && user && <StatisticsPanel moodData={moodMap} user={user} />}
 
             <div className="w-full overflow-x-auto pb-6 -mx-2 px-2">
                 <div className="min-w-[800px] glass rounded-2xl p-6 md:p-8 border border-white/50 dark:border-white/10 shadow-xl">
@@ -182,7 +143,7 @@ export default function MoodGrid({ showStats = true }: MoodGridProps) {
                                             <MoodCell
                                                 key={`${monthIndex}-${day}`}
                                                 date={new Date(year, monthIndex, day)}
-                                                mood={moodData[dateKey]?.mood}
+                                                mood={moodMap[dateKey]?.mood}
                                                 onClick={() => handleCellClick(monthIndex, day)}
                                                 disabled={!isValid}
                                             />
@@ -200,8 +161,8 @@ export default function MoodGrid({ showStats = true }: MoodGridProps) {
                         onClose={() => setDialogOpen(false)}
                         onSelect={handleSaveMood}
                         date={selectedDate}
-                        currentMood={moodData[selectedDate.toLocaleDateString('en-CA')]?.mood}
-                        currentNote={moodData[selectedDate.toLocaleDateString('en-CA')]?.note}
+                        currentMood={moodMap[selectedDate.toLocaleDateString('en-CA')]?.mood}
+                        currentNote={moodMap[selectedDate.toLocaleDateString('en-CA')]?.note}
                     />
                 )}
             </div>
