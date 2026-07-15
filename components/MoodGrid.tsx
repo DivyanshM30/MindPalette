@@ -4,10 +4,11 @@ import { useEffect, useState, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
 import { Mood, MoodGrade } from '@/lib/types'
 import { getDaysInMonth, MONTH_NAMES } from '@/lib/utils'
-import { Loader2 } from 'lucide-react'
+import { AlertTriangle, Loader2, RotateCcw } from 'lucide-react'
 import MoodCell from './MoodCell'
 import MoodDialog from './MoodDialog'
 import StatisticsPanel from './StatisticsPanel'
+import { useToast } from './Toast'
 import { useUser } from '@/contexts/UserContext'
 
 interface MoodGridProps {
@@ -21,6 +22,8 @@ export default function MoodGrid({ showStats = true }: MoodGridProps) {
     const [moodLoading, setMoodLoading] = useState(true)
     const [dialogOpen, setDialogOpen] = useState(false)
     const [selectedDate, setSelectedDate] = useState<Date | null>(null)
+    const [fetchError, setFetchError] = useState(false)
+    const { showToast } = useToast()
 
 
 
@@ -29,6 +32,7 @@ export default function MoodGrid({ showStats = true }: MoodGridProps) {
     // Fetch Moods
     const fetchMoods = useCallback(async () => {
         if (!user) { setMoodLoading(false); return }
+        setFetchError(false)
         try {
             const { data, error } = await supabase
                 .from('moods')
@@ -46,6 +50,7 @@ export default function MoodGrid({ showStats = true }: MoodGridProps) {
             setMoodData(dataMap)
         } catch (error) {
             console.error('Error fetching moods:', error)
+            setFetchError(true)
         } finally {
             setMoodLoading(false)
         }
@@ -92,6 +97,7 @@ export default function MoodGrid({ showStats = true }: MoodGridProps) {
         } catch (error) {
             console.error('Error saving mood:', error)
             setMoodData(previousData) // Rollback
+            showToast('Failed to save your mood. Please try again.', 'error')
         }
     }
 
@@ -102,6 +108,24 @@ export default function MoodGrid({ showStats = true }: MoodGridProps) {
                     <Loader2 className="animate-spin" />
                     <span>Syncing your year...</span>
                 </div>
+            </div>
+        )
+    }
+
+    if (fetchError) {
+        return (
+            <div className="w-full rounded-3xl border border-red-200 dark:border-red-900/40 bg-red-50/50 dark:bg-red-900/10 p-10 flex flex-col items-center gap-4 text-center">
+                <AlertTriangle className="text-red-500 dark:text-red-400" size={32} />
+                <div>
+                    <p className="font-semibold text-gray-900 dark:text-white">Couldn&apos;t load your moods</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Check your connection and try again.</p>
+                </div>
+                <button
+                    onClick={() => { setMoodLoading(true); fetchMoods() }}
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold shadow-lg hover:shadow-xl transition-all hover:scale-105 active:scale-95"
+                >
+                    <RotateCcw size={16} /> Try again
+                </button>
             </div>
         )
     }
