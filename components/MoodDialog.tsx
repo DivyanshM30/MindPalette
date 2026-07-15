@@ -16,10 +16,12 @@ interface MoodDialogProps {
 export default function MoodDialog({ isOpen, onClose, onSelect, date, currentMood, currentNote }: MoodDialogProps) {
     const sortedMoods = Object.entries(MOODS) as [MoodGrade, typeof MOODS[MoodGrade]][]
     const [localNote, setLocalNote] = useState(currentNote || '')
+    const [showMoodHint, setShowMoodHint] = useState(false)
 
     // Sync local note when dialog opens or currentNote changes
     useEffect(() => {
         setLocalNote(currentNote || '')
+        setShowMoodHint(false)
     }, [currentNote, isOpen])
 
     // Prevent click propagation to overlay
@@ -42,8 +44,14 @@ export default function MoodDialog({ isOpen, onClose, onSelect, date, currentMoo
     const handleSaveAndClose = () => {
         if (currentMood) {
             onSelect(currentMood, localNote)
+            onClose()
+        } else if (localNote.trim()) {
+            // A note was typed but no mood is selected — saving would silently
+            // discard it, so ask for a mood instead of closing.
+            setShowMoodHint(true)
+        } else {
+            onClose()
         }
-        onClose()
     }
 
     return (
@@ -88,7 +96,7 @@ export default function MoodDialog({ isOpen, onClose, onSelect, date, currentMoo
                                     {sortedMoods.map(([key, data]) => (
                                         <button
                                             key={key}
-                                            onClick={() => onSelect(key, currentNote || '')}
+                                            onClick={() => onSelect(key, localNote)}
                                             className={cn(
                                                 "flex flex-col items-center gap-2 p-3 rounded-2xl transition-all hover:scale-110 active:scale-95",
                                                 currentMood === key ? "ring-2 ring-offset-2 ring-black dark:ring-white bg-gray-50 dark:bg-gray-800" : "hover:bg-gray-50 dark:hover:bg-gray-800"
@@ -118,7 +126,12 @@ export default function MoodDialog({ isOpen, onClose, onSelect, date, currentMoo
                                     />
                                 </div>
 
-                                <div className="flex justify-end">
+                                <div className="flex items-center justify-end gap-3">
+                                    {showMoodHint && (
+                                        <span role="alert" className="text-xs font-medium text-amber-600 dark:text-amber-400">
+                                            Pick a mood above to save your note
+                                        </span>
+                                    )}
                                     <button
                                         onClick={handleSaveAndClose}
                                         className="px-6 py-2 rounded-full bg-black text-white dark:bg-white dark:text-black font-medium text-sm hover:scale-105 active:scale-95 transition-all shadow-lg"

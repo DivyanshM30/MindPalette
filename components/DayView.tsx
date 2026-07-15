@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { supabase } from '@/lib/supabase'
 import { Mood, MoodGrade } from '@/lib/types'
@@ -19,6 +19,9 @@ export default function DayView() {
     const [showCalendar, setShowCalendar] = useState(false)
     const [showMoodSelector, setShowMoodSelector] = useState(false)
 
+    // In-session drafts keyed by date (YYYY-MM-DD): keeps typed notes that
+    // can't be persisted yet (no mood selected) from being lost on navigation.
+    const draftsRef = useRef<Record<string, { note: string, positive: string }>>({})
 
     const { showToast } = useToast()
 
@@ -42,7 +45,9 @@ export default function DayView() {
                     positive: data.positive_note || ''
                 })
             } else {
-                setMoodData({ mood: null, note: '', positive: '' })
+                // No saved entry — restore any in-session draft for this date
+                const draft = draftsRef.current[dateStr]
+                setMoodData({ mood: null, note: draft?.note || '', positive: draft?.positive || '' })
             }
 
             // Also fetch all moods for calendar display
@@ -93,6 +98,7 @@ export default function DayView() {
                     }, { onConflict: 'user_id,date' })
 
                 if (error) throw error
+                delete draftsRef.current[dateStr]
                 showToast('Mood saved successfully! ✨')
             }
         } catch (error) {
@@ -103,26 +109,37 @@ export default function DayView() {
         }
     }, [user, selectedDate, showToast])
 
+    // If the user typed text but hasn't picked a mood, it can't be saved yet —
+    // let them know it's kept as a draft when they navigate away.
+    const warnIfUnsavedDraft = useCallback(() => {
+        if (moodData && !moodData.mood && (moodData.note.trim() || moodData.positive.trim())) {
+            showToast('Note kept as a draft — pick a mood to save it', 'info')
+        }
+    }, [moodData, showToast])
+
     const handleDateChange = (newDate: Date) => {
+        warnIfUnsavedDraft()
         setSelectedDate(newDate)
         setShowCalendar(false)
     }
 
     const handlePrevDay = useCallback(() => {
+        warnIfUnsavedDraft()
         setSelectedDate(prev => {
             const d = new Date(prev)
             d.setDate(d.getDate() - 1)
             return d
         })
-    }, [])
+    }, [warnIfUnsavedDraft])
 
     const handleNextDay = useCallback(() => {
+        warnIfUnsavedDraft()
         setSelectedDate(prev => {
             const d = new Date(prev)
             d.setDate(d.getDate() + 1)
             return d
         })
-    }, [])
+    }, [warnIfUnsavedDraft])
 
     const handleMoodSelect = useCallback(async (mood: MoodGrade) => {
         setMoodData(prev => prev ? { ...prev, mood } : { mood, note: '', positive: '' })
@@ -131,7 +148,13 @@ export default function DayView() {
     }, [moodData, saveData])
 
     const handleNoteChange = (field: 'note' | 'positive', value: string) => {
-        setMoodData(prev => prev ? { ...prev, [field]: value } : { mood: null, note: '', positive: '', [field]: value })
+        const base = moodData ?? { mood: null, note: '', positive: '' }
+        const next = { ...base, [field]: value }
+        if (!next.mood) {
+            // Not persistable yet — keep as an in-session draft for this date
+            draftsRef.current[selectedDate.toLocaleDateString('en-CA')] = { note: next.note, positive: next.positive }
+        }
+        setMoodData(next)
     }
 
     // Keyboard shortcuts: ← → navigate days, 1-5 select moods, T = today
@@ -145,12 +168,12 @@ export default function DayView() {
 
             if (e.key === 'ArrowLeft') { e.preventDefault(); handlePrevDay() }
             else if (e.key === 'ArrowRight') { e.preventDefault(); handleNextDay() }
-            else if (e.key.toLowerCase() === 't') { setSelectedDate(new Date()) }
+            else if (e.key.toLowerCase() === 't') { warnIfUnsavedDraft(); setSelectedDate(new Date()) }
             else if (moodKeys[e.key]) { handleMoodSelect(moodKeys[e.key]) }
         }
         window.addEventListener('keydown', handleKeyboard)
         return () => window.removeEventListener('keydown', handleKeyboard)
-    }, [showCalendar, handlePrevDay, handleNextDay, handleMoodSelect])
+    }, [showCalendar, handlePrevDay, handleNextDay, handleMoodSelect, warnIfUnsavedDraft])
 
     const handleSave = async () => {
         if (!moodData?.mood) return
@@ -209,7 +232,7 @@ export default function DayView() {
                         animate={{ opacity: 1, scale: 1 }}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => setSelectedDate(new Date())}
+                        onClick={() => { warnIfUnsavedDraft(); setSelectedDate(new Date()) }}
                         className="ml-2 px-4 py-2 rounded-xl bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-sm font-bold shadow-sm hover:shadow-md transition-all border border-purple-200 dark:border-purple-800"
                     >
                         Today
@@ -365,4 +388,3 @@ export default function DayView() {
         </div>
     )
 }
-
