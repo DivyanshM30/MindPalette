@@ -2,7 +2,7 @@
 import { supabase } from '@/lib/supabase'
 import { useEffect, useState, useCallback, useMemo } from 'react'
 import Link from 'next/link'
-import { ArrowRight, Sparkles, Calendar, CalendarDays, Loader2, BarChart3 } from 'lucide-react'
+import { AlertTriangle, ArrowRight, Sparkles, Calendar, CalendarDays, Loader2, BarChart3, RotateCcw } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import StatisticsPanel from '@/components/StatisticsPanel'
 const Onboarding = dynamic(() => import('@/components/Onboarding'), { ssr: false })
@@ -14,6 +14,7 @@ export default function Home() {
   const { user, loading: userLoading } = useUser()
   const [moodData, setMoodData] = useState<Record<string, { mood: MoodGrade, note: string }>>({})
   const [moodLoading, setMoodLoading] = useState(true)
+  const [fetchError, setFetchError] = useState(false)
 
 
   const currentYear = new Date().getFullYear()
@@ -36,6 +37,7 @@ export default function Home() {
       setMoodLoading(false)
       return
     }
+    setFetchError(false)
     try {
       const { data, error } = await supabase
         .from('moods')
@@ -53,6 +55,7 @@ export default function Home() {
       setMoodData(dataMap)
     } catch (error) {
       console.error('Error fetching moods:', error)
+      setFetchError(true)
     } finally {
       setMoodLoading(false)
     }
@@ -70,6 +73,26 @@ export default function Home() {
         <div className="flex flex-col items-center gap-3 text-purple-400">
           <Loader2 className="animate-spin" size={32} />
           <span>Loading your space...</span>
+        </div>
+      </div>
+    )
+  }
+
+  if (user && fetchError) {
+    return (
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 w-full">
+        <div className="rounded-3xl border border-red-200 dark:border-red-900/40 bg-red-50/50 dark:bg-red-900/10 p-12 flex flex-col items-center gap-4 text-center">
+          <AlertTriangle className="text-red-500 dark:text-red-400" size={32} />
+          <div>
+              <p className="font-semibold text-gray-900 dark:text-white">Couldn&apos;t load your moods</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Check your connection and try again.</p>
+          </div>
+          <button
+              onClick={() => { setMoodLoading(true); fetchMoods() }}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold shadow-lg hover:shadow-xl transition-all hover:scale-105 active:scale-95"
+          >
+              <RotateCcw size={16} /> Try again
+          </button>
         </div>
       </div>
     )

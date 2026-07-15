@@ -67,10 +67,11 @@ export default function DayView() {
             }
         } catch (error) {
             console.error('Error fetching day data:', error)
+            showToast('Failed to load this day. Please try again.', 'error')
         } finally {
             setLoading(false)
         }
-    }, [selectedDate, user])
+    }, [selectedDate, user, showToast])
 
     useEffect(() => {
         if (!userLoading) {
