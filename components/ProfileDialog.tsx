@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, User, Loader2, CheckCircle2 } from 'lucide-react'
+import { X, User, Loader2, CheckCircle2, Lock } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 
 interface ProfileDialogProps {
@@ -17,6 +17,11 @@ export default function ProfileDialog({ isOpen, onClose, initialName }: ProfileD
     const [success, setSuccess] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [mounted, setMounted] = useState(false)
+    const [newPassword, setNewPassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState('')
+    const [pwLoading, setPwLoading] = useState(false)
+    const [pwError, setPwError] = useState<string | null>(null)
+    const [pwSuccess, setPwSuccess] = useState(false)
 
     useEffect(() => {
         setMounted(true)
@@ -41,6 +46,33 @@ export default function ProfileDialog({ isOpen, onClose, initialName }: ProfileD
             setError(err instanceof Error ? err.message : 'Failed to update profile')
         } finally {
             setLoading(false)
+        }
+    }
+
+    const handlePasswordChange = async (e: React.FormEvent) => {
+        e.preventDefault()
+        setPwError(null)
+        if (newPassword.length < 8) {
+            setPwError('Password must be at least 8 characters')
+            return
+        }
+        if (newPassword !== confirmPassword) {
+            setPwError('Passwords do not match')
+            return
+        }
+        setPwLoading(true)
+        try {
+            const { error: pwUpdateError } = await supabase.auth.updateUser({ password: newPassword })
+            if (pwUpdateError) throw pwUpdateError
+            setPwSuccess(true)
+            setNewPassword('')
+            setConfirmPassword('')
+            setTimeout(() => setPwSuccess(false), 2500)
+        } catch (err) {
+            console.error('Error updating password:', err)
+            setPwError(err instanceof Error ? err.message : 'Failed to update password')
+        } finally {
+            setPwLoading(false)
         }
     }
 
@@ -122,6 +154,49 @@ export default function ProfileDialog({ isOpen, onClose, initialName }: ProfileD
                                         'Save Changes'}
                             </button>
                         </form>
+
+                        {/* Change password */}
+                        <div className="mt-6 pt-6 border-t border-gray-100 dark:border-gray-800">
+                            <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1 mb-3">Change Password</p>
+                            <form onSubmit={handlePasswordChange} className="space-y-3">
+                                <div className="relative">
+                                    <Lock className="absolute left-4 top-3.5 text-gray-400" size={18} />
+                                    <input
+                                        type="password"
+                                        autoComplete="new-password"
+                                        className="w-full pl-11 pr-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-900 outline-none transition-all text-gray-900 dark:text-white"
+                                        value={newPassword}
+                                        onChange={(e) => setNewPassword(e.target.value)}
+                                        placeholder="New password (min. 8 characters)"
+                                    />
+                                </div>
+                                <div className="relative">
+                                    <Lock className="absolute left-4 top-3.5 text-gray-400" size={18} />
+                                    <input
+                                        type="password"
+                                        autoComplete="new-password"
+                                        className="w-full pl-11 pr-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-900 outline-none transition-all text-gray-900 dark:text-white"
+                                        value={confirmPassword}
+                                        onChange={(e) => setConfirmPassword(e.target.value)}
+                                        placeholder="Confirm new password"
+                                    />
+                                </div>
+                                {pwError && (
+                                    <div className="p-3 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm border border-red-100 dark:border-red-900/30">
+                                        {pwError}
+                                    </div>
+                                )}
+                                <button
+                                    type="submit"
+                                    disabled={pwLoading || !newPassword || !confirmPassword}
+                                    className="w-full py-3 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-semibold hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-40"
+                                >
+                                    {pwLoading ? <Loader2 className="animate-spin" size={18} /> :
+                                        pwSuccess ? <><CheckCircle2 size={18} className="text-green-400" /> Password updated!</> :
+                                            'Change Password'}
+                                </button>
+                            </form>
+                        </div>
                     </motion.div>
                 </div>
             )}
