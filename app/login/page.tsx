@@ -57,12 +57,37 @@ export default function LoginPage() {
     }
 
     const handleMagicLink = async () => {
+        if (!email) {
+            setMessage({ text: 'Enter your email above first.', type: 'error' })
+            return
+        }
         setLoading(true)
         setMessage(null)
         try {
             const { error } = await supabase.auth.signInWithOtp({ email })
             if (error) throw error
             setMessage({ text: 'Magic link sent to your email!', type: 'success' })
+        } catch (err) {
+            const errMsg = err instanceof Error ? err.message : 'An error occurred'
+            setMessage({ text: errMsg, type: 'error' })
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const handleForgotPassword = async () => {
+        if (!email) {
+            setMessage({ text: 'Enter your email above first, then click "Forgot password?"', type: 'error' })
+            return
+        }
+        setLoading(true)
+        setMessage(null)
+        try {
+            const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                redirectTo: `${location.origin}/auth/callback?next=/reset-password`,
+            })
+            if (error) throw error
+            setMessage({ text: 'Password reset link sent — check your email!', type: 'success' })
         } catch (err) {
             const errMsg = err instanceof Error ? err.message : 'An error occurred'
             setMessage({ text: errMsg, type: 'error' })
@@ -165,9 +190,13 @@ export default function LoginPage() {
                 </div>
 
                 {!isSignUp && (
-                    <div className="mt-4 text-center">
-                        <button onClick={handleMagicLink} className="text-xs text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 underline">
-                            Forgot password? Send Magic Link
+                    <div className="mt-4 flex items-center justify-center gap-3 text-xs">
+                        <button onClick={handleForgotPassword} className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 underline">
+                            Forgot password?
+                        </button>
+                        <span className="text-gray-300 dark:text-gray-600">|</span>
+                        <button onClick={handleMagicLink} className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 underline">
+                            Email me a sign-in link
                         </button>
                     </div>
                 )}
