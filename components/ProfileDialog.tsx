@@ -2,7 +2,8 @@
 import { useState, useEffect, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, User, Loader2, CheckCircle2, Lock, Download, Database, ChevronDown } from 'lucide-react'
+import { X, User, Loader2, CheckCircle2, Lock, Download, Database, ChevronDown, Trash2, AlertTriangle } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import { moodsToCsv, moodsToJson, downloadFile, MoodExportRow } from '@/lib/export'
 import { useUser } from '@/contexts/UserContext'
@@ -13,7 +14,7 @@ interface ProfileDialogProps {
     initialName: string
 }
 
-type Expandable = 'password' | 'data' | null
+type Expandable = 'password' | 'data' | 'delete' | null
 
 export default function ProfileDialog({ isOpen, onClose, initialName }: ProfileDialogProps) {
     const [name, setName] = useState(initialName)
@@ -29,7 +30,11 @@ export default function ProfileDialog({ isOpen, onClose, initialName }: ProfileD
     const [pwSuccess, setPwSuccess] = useState(false)
     const [exporting, setExporting] = useState<'csv' | 'json' | null>(null)
     const [exportError, setExportError] = useState<string | null>(null)
+    const [deleteConfirm, setDeleteConfirm] = useState('')
+    const [deleteLoading, setDeleteLoading] = useState(false)
+    const [deleteError, setDeleteError] = useState<string | null>(null)
     const { user } = useUser()
+    const router = useRouter()
 
     useEffect(() => {
         setMounted(true)
@@ -42,6 +47,8 @@ export default function ProfileDialog({ isOpen, onClose, initialName }: ProfileD
             setError(null)
             setPwError(null)
             setExportError(null)
+            setDeleteConfirm('')
+            setDeleteError(null)
         }
     }, [isOpen])
 
@@ -124,6 +131,23 @@ export default function ProfileDialog({ isOpen, onClose, initialName }: ProfileD
             setExportError(err instanceof Error ? err.message : 'Export failed. Please try again.')
         } finally {
             setExporting(null)
+        }
+    }
+
+    const handleDeleteAccount = async () => {
+        if (deleteConfirm !== 'DELETE') return
+        setDeleteError(null)
+        setDeleteLoading(true)
+        try {
+            const { error: deleteRpcError } = await supabase.rpc('delete_account')
+            if (deleteRpcError) throw deleteRpcError
+            // Account is gone server-side; clear the local session and leave.
+            await supabase.auth.signOut()
+            router.push('/login')
+        } catch (err) {
+            console.error('Error deleting account:', err)
+            setDeleteError(err instanceof Error ? err.message : 'Failed to delete account. Please try again.')
+            setDeleteLoading(false)
         }
     }
 
@@ -309,6 +333,57 @@ export default function ProfileDialog({ isOpen, onClose, initialName }: ProfileD
                                                 <p className="text-[11px] text-gray-400 dark:text-gray-500 ml-1">
                                                     Downloads every mood, note and reflection across all years.
                                                 </p>
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+
+                            {/* Delete Account (expandable) */}
+                            <div className="rounded-xl border border-red-100 dark:border-red-900/30 bg-red-50/50 dark:bg-red-900/10 overflow-hidden">
+                                <button
+                                    onClick={() => toggle('delete')}
+                                    aria-expanded={expanded === 'delete'}
+                                    className="w-full px-4 py-3.5 flex items-center justify-between text-sm font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                                >
+                                    <span className="flex items-center gap-2.5">
+                                        <Trash2 size={16} /> Delete Account
+                                    </span>
+                                    <ChevronDown size={16} className={`text-red-300 dark:text-red-500 transition-transform ${expanded === 'delete' ? 'rotate-180' : ''}`} />
+                                </button>
+                                <AnimatePresence>
+                                    {expanded === 'delete' && (
+                                        <motion.div
+                                            initial={{ opacity: 0, height: 0 }}
+                                            animate={{ opacity: 1, height: 'auto' }}
+                                            exit={{ opacity: 0, height: 0 }}
+                                            className="overflow-hidden"
+                                        >
+                                            <div className="p-4 pt-1 space-y-3">
+                                                <div className="flex items-start gap-2 text-xs text-red-600/90 dark:text-red-400/90">
+                                                    <AlertTriangle size={14} className="mt-0.5 shrink-0" />
+                                                    <p>
+                                                        This permanently deletes your account and every mood, note and reflection.
+                                                        There is no undo. Consider exporting your data first (see “Your Data” above).
+                                                    </p>
+                                                </div>
+                                                <input
+                                                    type="text"
+                                                    autoComplete="off"
+                                                    className="w-full px-4 py-3 rounded-xl bg-white dark:bg-gray-900 border border-red-200 dark:border-red-900/40 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-900 outline-none transition-all text-gray-900 dark:text-white text-sm"
+                                                    value={deleteConfirm}
+                                                    onChange={(e) => setDeleteConfirm(e.target.value)}
+                                                    placeholder='Type "DELETE" to confirm'
+                                                    aria-label='Type DELETE to confirm account deletion'
+                                                />
+                                                {deleteError && <div className={errorBoxClass}>{deleteError}</div>}
+                                                <button
+                                                    onClick={handleDeleteAccount}
+                                                    disabled={deleteConfirm !== 'DELETE' || deleteLoading}
+                                                    className="w-full py-3 rounded-xl bg-red-600 text-white font-semibold hover:bg-red-700 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:hover:bg-red-600"
+                                                >
+                                                    {deleteLoading ? <Loader2 className="animate-spin" size={18} /> : <><Trash2 size={16} /> Delete my account forever</>}
+                                                </button>
                                             </div>
                                         </motion.div>
                                     )}
