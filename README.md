@@ -6,12 +6,16 @@ A beautiful, personal mood tracking application built with Next.js 14, TypeScrip
 
 - 📅 **Day-by-Day View**: Focused daily mood tracking with reflection prompts
 - 📊 **Year Overview**: Complete calendar grid showing your entire year at a glance
+- 🗓️ **Multi-Year History**: Switch between years — your history stays reachable forever
+- 🌻 **Good Things Recap**: Your positive reflections come back to you — a monthly gratitude reel and a daily "remember this?" card on the dashboard
 - 🎨 **Beautiful UI**: Modern glassmorphism design with dark mode support
 - 📈 **Statistics Dashboard**: Track streaks, primary vibe, and total check-ins
 - 💾 **Cloud Sync**: All data synced to Supabase with Row Level Security
-- 🔐 **Secure Authentication**: Email/password and magic link authentication
+- 🔐 **Secure Authentication**: Email/password and magic sign-in links, plus full password reset and change-password flows
+- 📤 **Data Export**: One-click CSV/JSON export of every entry, across all years — free forever
+- 🗑️ **Account Deletion**: Self-serve delete-my-data (type-to-confirm), removes all entries and the account itself
 - 📝 **Journaling**: Add notes and positive reflections to each day
-- 🌓 **Dark Mode**: Toggle between light and dark themes
+- 🌓 **Dark Mode**: Animated sun/moon toggle between light and dark themes
 
 ## Tech Stack
 
@@ -60,6 +64,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```sql
 ALTER TABLE moods ADD COLUMN IF NOT EXISTS positive_note TEXT;
 ```
+- Run `supabase/migrations/20260719_delete_account.sql` in the SQL Editor. This creates the `delete_account()` RPC (SECURITY DEFINER, scoped to the calling user via `auth.uid()`) that powers self-serve account deletion — without it the delete button in the account dialog will fail.
 
 5. Run the development server:
 ```bash
@@ -77,27 +82,37 @@ pnpm dev
 ```
 mindpalette/
 ├── app/                 # Next.js app directory
-│   ├── page.tsx        # Day view (home page)
+│   ├── page.tsx        # Dashboard / landing page
+│   ├── day-view/       # Day-by-day tracking
 │   ├── year/           # Year overview page
-│   └── login/          # Authentication page
+│   ├── insights/       # Monthly trends & stats
+│   ├── login/          # Authentication page
+│   └── reset-password/ # Password recovery
 ├── components/         # React components
 │   ├── DayView.tsx     # Day-by-day tracking interface
 │   ├── MoodGrid.tsx    # Year calendar grid
+│   ├── GoodThings.tsx  # Gratitude recap cards
 │   ├── StatisticsPanel.tsx
 │   └── ...
 ├── lib/                # Utilities and types
+│   ├── hooks/useMoods.ts # Shared year-fetch hook
+│   ├── export.ts       # CSV/JSON export
 │   ├── supabase.ts     # Supabase client
 │   ├── types.ts        # TypeScript types
 │   └── utils.ts        # Utility functions
-└── supabase_schema.sql # Database schema
+├── supabase/migrations/ # SQL migrations (account deletion RPC)
+└── supabase_schema.sql  # Database schema
 ```
 
 ## Usage
 
 1. **Sign Up/Login**: Create an account or sign in
 2. **Day View**: Track your daily mood and add reflections
-3. **Year View**: Navigate to `/year` to see your complete mood journey
-4. **Statistics**: View your streaks, primary vibe, and check-in stats
+3. **Year View**: Navigate to `/year` to see your complete mood journey — switch years to browse history
+4. **Insights**: Monthly trends, mood distribution, and stats at `/insights`
+5. **Statistics**: View your streaks, primary vibe, and check-in stats
+6. **Good Things**: Positive reflections resurface on the dashboard as a monthly recap and daily memory
+7. **Your Data**: Export everything as CSV/JSON or delete your account from the profile dialog
 
 ## Deployment
 
@@ -185,7 +200,8 @@ Before deploying, add these environment variables in Vercel:
 - [ ] Environment variables are set correctly
 - [ ] Supabase redirect URLs are configured
 - [ ] Database schema is set up (run `supabase_schema.sql`)
-- [ ] Test authentication (sign up/login)
+- [ ] Account-deletion RPC is installed (run `supabase/migrations/20260719_delete_account.sql`)
+- [ ] Test authentication (sign up/login + password reset)
 - [ ] Test mood tracking functionality
 - [ ] Verify dark mode works
 - [ ] Check mobile responsiveness

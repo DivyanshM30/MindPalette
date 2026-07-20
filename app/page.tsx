@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { AlertTriangle, ArrowRight, Sparkles, Calendar, CalendarDays, Loader2, BarChart3, RotateCcw } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import StatisticsPanel from '@/components/StatisticsPanel'
+import GoodThings from '@/components/GoodThings'
 const Onboarding = dynamic(() => import('@/components/Onboarding'), { ssr: false })
 import { useUser } from '@/contexts/UserContext'
 import { useMoods } from '@/lib/hooks/useMoods'
@@ -12,7 +13,7 @@ import { getDisplayName } from '@/lib/utils'
 export default function Home() {
   const { user } = useUser()
   const currentYear = new Date().getFullYear()
-  const { moodMap: moodData, loading, error: fetchError, refetch } = useMoods(currentYear)
+  const { moods, moodMap: moodData, loading, error: fetchError, refetch } = useMoods(currentYear)
 
   // Stable random grid for landing page (fixes U5 flicker)
   const pixelGrid = useMemo(() =>
@@ -161,6 +162,30 @@ export default function Home() {
                     title: 'Streaks & Milestones',
                     desc: "Build the habit of reflection. Celebrate when you hit 7, 30, or 100 days — you'll be surprised how it feels.",
                     tag: 'Motivation'
+                  },
+                  {
+                    icon: '🌻',
+                    gradient: 'from-amber-400 to-orange-500',
+                    glow: 'shadow-amber-500/20',
+                    title: 'Good Things Recap',
+                    desc: 'Your positive reflections come back to you — a monthly gratitude reel and a daily "remember this?" moment.',
+                    tag: 'Gratitude'
+                  },
+                  {
+                    icon: '🗓️',
+                    gradient: 'from-indigo-500 to-purple-500',
+                    glow: 'shadow-indigo-500/20',
+                    title: 'Multi-Year Journey',
+                    desc: 'Flip between years and watch your story grow. Your history never disappears — every pixel stays reachable.',
+                    tag: 'History'
+                  },
+                  {
+                    icon: '🔐',
+                    gradient: 'from-emerald-500 to-teal-500',
+                    glow: 'shadow-emerald-500/20',
+                    title: 'Your Data, Yours',
+                    desc: 'One-click CSV and JSON export, free forever. Delete your account anytime and everything goes with it.',
+                    tag: 'Trust'
                   }
                 ].map((f) => (
                   <div key={f.title} className="glass rounded-2xl p-6 border border-white/30 dark:border-white/10 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-left group">
@@ -225,6 +250,7 @@ export default function Home() {
                 {[
                   { icon: '🔒', text: 'Private & secure' },
                   { icon: '✨', text: 'Free forever' },
+                  { icon: '📤', text: 'Export anytime' },
                   { icon: '📱', text: 'Install as an app' },
                   { icon: '🌙', text: 'Dark & light mode' },
                   { icon: '⌨️', text: 'Keyboard shortcuts' },
@@ -269,6 +295,9 @@ export default function Home() {
 
             {/* Statistics First */}
             <StatisticsPanel moodData={moodData} user={user} />
+
+            {/* Good Things recap (P1-1) — hidden when no positive notes */}
+            <GoodThings moods={moods} />
 
             {/* Navigation Buttons - Below Stats and Centered */}
             <div className="flex flex-wrap gap-4 justify-center pt-4">
