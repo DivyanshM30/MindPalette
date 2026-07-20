@@ -10,6 +10,7 @@ import { useUser } from '@/contexts/UserContext'
 import { useMoods, useEarliestYear } from '@/lib/hooks/useMoods'
 import YearSwitcher from '@/components/YearSwitcher'
 import MoodTrendChart from '@/components/MoodTrendChart'
+import PatternInsights from '@/components/PatternInsights'
 
 export default function InsightsPage() {
     const { user, loading: userLoading } = useUser()
@@ -174,6 +175,9 @@ export default function InsightsPage() {
                             ))}
                         </motion.div>
                     )}
+
+                    {/* ── PATTERN INSIGHTS (P1-3) ── */}
+                    <PatternInsights moods={moodData} year={year} />
 
                     {/* ── MONTHLY TREND CHART (Option 2: Straight segments + glowing dots) ── */}
                     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}
