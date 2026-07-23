@@ -1,5 +1,5 @@
 'use client'
-import { useEffect } from 'react'
+import { useEffect, Suspense } from 'react'
 import { useRouter } from 'next/navigation'
 import DayView from '@/components/DayView'
 import { useUser } from '@/contexts/UserContext'
@@ -32,7 +32,10 @@ export default function DayViewPage() {
                 </div>
             </div>
 
-            <DayView />
+            {/* Suspense required by useSearchParams (streak-repair deep link) */}
+            <Suspense fallback={<div className="flex h-[30vh] items-center justify-center"><div className="animate-pulse text-purple-400">Loading…</div></div>}>
+                <DayView />
+            </Suspense>
         </div>
     )
 }

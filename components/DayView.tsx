@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { supabase } from '@/lib/supabase'
 import { Mood, MoodGrade } from '@/lib/types'
@@ -11,7 +12,16 @@ import { useUser } from '@/contexts/UserContext'
 
 export default function DayView() {
     const { user, loading: userLoading } = useUser()
-    const [selectedDate, setSelectedDate] = useState(new Date())
+    const searchParams = useSearchParams()
+    // Deep-link support (?date=YYYY-MM-DD), used by streak repair. Past dates only.
+    const [selectedDate, setSelectedDate] = useState(() => {
+        const param = searchParams.get('date')
+        if (param && /^\d{4}-\d{2}-\d{2}$/.test(param)) {
+            const d = new Date(param + 'T00:00:00')
+            if (!isNaN(d.getTime()) && d <= new Date()) return d
+        }
+        return new Date()
+    })
     const [moodData, setMoodData] = useState<{ mood: MoodGrade | null, note: string, positive: string } | null>(null)
     const [allMoodData, setAllMoodData] = useState<Record<string, { mood: MoodGrade, note: string }>>({})
     const [loading, setLoading] = useState(true)
