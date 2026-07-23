@@ -19,7 +19,7 @@ interface MoodGridProps {
 
 export default function MoodGrid({ showStats = true, year = new Date().getFullYear() }: MoodGridProps) {
     const { user } = useUser()
-    const { moodMap, loading, error, refetch, mutate } = useMoods(year)
+    const { moods, moodMap, loading, error, refetch, mutate } = useMoods(year)
     const [dialogOpen, setDialogOpen] = useState(false)
     const [selectedDate, setSelectedDate] = useState<Date | null>(null)
     const { showToast } = useToast()
@@ -93,7 +93,7 @@ export default function MoodGrid({ showStats = true, year = new Date().getFullYe
 
     return (
         <div className="w-full space-y-8">
-            {showStats && user && <StatisticsPanel moodData={moodMap} user={user} />}
+            {showStats && user && <StatisticsPanel moodData={moodMap} moods={moods} user={user} />}
 
             <div className="w-full overflow-x-auto pb-6 -mx-2 px-2">
                 <div className="min-w-[800px] glass rounded-2xl p-6 md:p-8 border border-white/50 dark:border-white/10 shadow-xl">

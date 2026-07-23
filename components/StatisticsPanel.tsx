@@ -1,60 +1,36 @@
 'use client'
 import { useMemo, useEffect, useRef } from 'react'
+import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { MoodGrade, MOODS, getDisplayName, BAR_COLORS } from '@/lib/utils'
+import { Mood } from '@/lib/types'
+import { computeStreaks } from '@/lib/streaks'
 import { User } from '@supabase/supabase-js'
-import { Trophy, TrendingUp, Activity } from 'lucide-react'
+import { Trophy, TrendingUp, Activity, Sparkles } from 'lucide-react'
 
 interface StatisticsPanelProps {
     moodData: Record<string, { mood: MoodGrade, note: string }>
+    moods: Mood[]
     user: User | null
 }
 
-export default function StatisticsPanel({ moodData, user }: StatisticsPanelProps) {
+export default function StatisticsPanel({ moodData, moods, user }: StatisticsPanelProps) {
     const stats = useMemo(() => {
         const total = Object.keys(moodData).length
         if (total === 0) return null
 
         const counts: Record<MoodGrade, number> = { A: 0, B: 0, C: 0, D: 0, F: 0 }
-        let currentStreak = 0
-        let bestStreak = 0
-        let tempStreak = 0
-
-        // Sort dates to calculate streaks
-        const sortedDates = Object.keys(moodData).sort()
-
-        // Calculate counts
         Object.values(moodData).forEach(d => {
             if (counts[d.mood] !== undefined) counts[d.mood]++
         })
 
-        // Calculate streaks
-        sortedDates.forEach((dateStr, index) => {
-            if (index === 0) {
-                tempStreak = 1
-            } else {
-                const prev = new Date(sortedDates[index - 1])
-                const curr = new Date(dateStr)
-                const diffTime = Math.abs(curr.getTime() - prev.getTime())
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-
-                if (diffDays === 1) {
-                    tempStreak++
-                } else {
-                    tempStreak = 1
-                }
-            }
-            if (tempStreak > bestStreak) bestStreak = tempStreak
-        })
-        const lastEntry = new Date(sortedDates[sortedDates.length - 1])
-        const today = new Date()
-        const isRecent = (today.getTime() - lastEntry.getTime()) / (1000 * 3600 * 24) <= 2
-        currentStreak = isRecent ? tempStreak : 0
+        // Centralized, forgiving streak logic (P1-5)
+        const streaks = computeStreaks(moods)
 
         const primaryVibe = (Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0]) as MoodGrade
 
-        return { total, counts, currentStreak, bestStreak, primaryVibe }
-    }, [moodData])
+        return { total, counts, currentStreak: streaks.current, bestStreak: streaks.best, repairDate: streaks.repairDate, repairSpent: streaks.repairSpent, broken: streaks.broken, primaryVibe }
+    }, [moodData, moods])
 
     // Streak celebration milestones (hooks must be before any return)
     const celebratedRef = useRef<number>(0)
@@ -169,6 +145,25 @@ export default function StatisticsPanel({ moodData, user }: StatisticsPanelProps
                     <div className="mt-2 text-xs font-bold text-orange-600 dark:text-orange-400 px-4 py-1.5 rounded-full bg-orange-100/80 dark:bg-orange-900/30 relative z-10 border border-orange-200 dark:border-orange-800">
                         Best: {stats.bestStreak} days
                     </div>
+                    {/* Forgiving streaks (P1-5): one earned repair per week, no-guilt copy */}
+                    {stats.repairDate && (
+                        <Link
+                            href={`/day-view?date=${stats.repairDate}`}
+                            className="mt-3 flex items-center gap-1.5 text-xs font-semibold text-purple-600 dark:text-purple-300 px-4 py-2 rounded-full bg-purple-100/80 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-800 hover:bg-purple-200/80 dark:hover:bg-purple-900/50 transition-colors relative z-10"
+                        >
+                            <Sparkles size={13} /> A day slipped by — repair your streak
+                        </Link>
+                    )}
+                    {stats.repairSpent && !stats.repairDate && (
+                        <p className="mt-3 text-xs text-purple-600/90 dark:text-purple-300/90 max-w-[190px] relative z-10 leading-relaxed">
+                            You&apos;ve already mended a day this week — a fresh repair unlocks next week 💜
+                        </p>
+                    )}
+                    {stats.broken && !stats.repairDate && !stats.repairSpent && (
+                        <p className="mt-3 text-xs text-gray-500 dark:text-gray-400 max-w-[190px] relative z-10 leading-relaxed">
+                            Streaks rest, they don&apos;t die. Today is a fresh start. 🌱
+                        </p>
+                    )}
                     {milestone && (
                         <motion.div
                             initial={{ scale: 0, opacity: 0 }}

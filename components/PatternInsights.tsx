@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { Compass, TrendingUp, TrendingDown, Minus, Flame, Trophy, CloudRain, Lock } from 'lucide-react'
 import { Mood } from '@/lib/types'
 import { MOOD_SCORES, MONTH_NAMES } from '@/lib/utils'
+import { computeStreaks } from '@/lib/streaks'
 
 interface PatternInsightsProps {
     moods: Mood[]
@@ -87,15 +88,11 @@ export default function PatternInsights({ moods, year }: PatternInsightsProps) {
 
     const streak = useMemo(() => {
         if (!isCurrentYear) return null
-        const dates = new Set(moods.map(m => m.date))
-        // A streak survives until a full day is missed: start from today if
-        // logged, otherwise from yesterday.
-        let count = 0
-        let offset = dates.has(isoDaysAgo(0)) ? 0 : 1
-        while (dates.has(isoDaysAgo(offset + count))) count++
-        if (count === 0) return null
-        const next = STREAK_MILESTONES.find(ms => ms > count)
-        return { count, next, toGo: next ? next - count : null }
+        // Shared forgiving-streak logic (lib/streaks.ts)
+        const { current } = computeStreaks(moods)
+        if (current === 0) return null
+        const next = STREAK_MILESTONES.find(ms => ms > current)
+        return { count: current, next, toGo: next ? next - current : null }
     }, [moods, isCurrentYear])
 
     // ── Locked state: not enough data for anything trustworthy ──

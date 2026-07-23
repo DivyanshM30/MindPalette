@@ -294,7 +294,7 @@ export default function Home() {
             )}
 
             {/* Statistics First */}
-            <StatisticsPanel moodData={moodData} user={user} />
+            <StatisticsPanel moodData={moodData} moods={moods} user={user} />
 
             {/* Good Things recap (P1-1) — hidden when no positive notes */}
             <GoodThings moods={moods} />
