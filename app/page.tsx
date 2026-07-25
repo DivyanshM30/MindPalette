@@ -1,10 +1,11 @@
 'use client'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import Link from 'next/link'
-import { AlertTriangle, ArrowRight, Sparkles, Calendar, CalendarDays, Loader2, BarChart3, RotateCcw } from 'lucide-react'
+import { AlertTriangle, ArrowRight, Sparkles, Calendar, CalendarDays, Loader2, BarChart3, RotateCcw, Share2 } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import StatisticsPanel from '@/components/StatisticsPanel'
 import GoodThings from '@/components/GoodThings'
+import ShareCardDialog from '@/components/ShareCardDialog'
 const Onboarding = dynamic(() => import('@/components/Onboarding'), { ssr: false })
 import { useUser } from '@/contexts/UserContext'
 import { useMoods } from '@/lib/hooks/useMoods'
@@ -13,6 +14,7 @@ import { getDisplayName } from '@/lib/utils'
 export default function Home() {
   const { user } = useUser()
   const currentYear = new Date().getFullYear()
+  const [shareOpen, setShareOpen] = useState(false)
   const { moods, moodMap: moodData, loading, error: fetchError, refetch } = useMoods(currentYear)
 
   // Stable random grid for landing page (fixes U5 flicker)
@@ -180,6 +182,14 @@ export default function Home() {
                     tag: 'History'
                   },
                   {
+                    icon: '🖼️',
+                    gradient: 'from-fuchsia-500 to-pink-500',
+                    glow: 'shadow-fuchsia-500/20',
+                    title: 'Shareable Year Art',
+                    desc: 'Turn your year in pixels into a downloadable image with four palette themes — share the art, never the notes.',
+                    tag: 'Share'
+                  },
+                  {
                     icon: '🔐',
                     gradient: 'from-emerald-500 to-teal-500',
                     glow: 'shadow-emerald-500/20',
@@ -213,7 +223,7 @@ export default function Home() {
                       Your whole year,<br />painted in feeling
                     </h2>
                     <p className="text-gray-500 dark:text-gray-400 leading-relaxed">
-                      Every day becomes a colored square. Fill your year with greens, golds, and purples. Spot patterns you never noticed. Celebrate the good days. Learn from the hard ones.
+                      Every day becomes a colored square. Fill your year with greens, golds, and purples. Spot patterns you never noticed. Celebrate the good days. Learn from the hard ones — then <span className="font-semibold text-gray-700 dark:text-gray-200">download it as art</span> to share, with your notes always kept private.
                     </p>
                     <Link
                       href="/login"
@@ -251,6 +261,7 @@ export default function Home() {
                   { icon: '🔒', text: 'Private & secure' },
                   { icon: '✨', text: 'Free forever' },
                   { icon: '📤', text: 'Export anytime' },
+                  { icon: '🖼️', text: 'Shareable art' },
                   { icon: '📱', text: 'Install as an app' },
                   { icon: '🌙', text: 'Dark & light mode' },
                   { icon: '⌨️', text: 'Keyboard shortcuts' },
@@ -299,6 +310,30 @@ export default function Home() {
             {/* Good Things recap (P1-1) — hidden when no positive notes */}
             <GoodThings moods={moods} />
 
+            {/* Shareable art card highlight (P1-2) — only once there's a year worth sharing */}
+            {Object.keys(moodData).length > 0 && (
+              <div className="relative overflow-hidden rounded-3xl p-6 md:p-8 bg-gradient-to-br from-purple-600 via-fuchsia-600 to-pink-600 shadow-2xl shadow-purple-500/30">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="relative z-10 flex flex-col md:flex-row md:items-center gap-5 md:gap-8">
+                  <div className="flex-1 space-y-2.5 text-white">
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 text-white text-[11px] font-bold uppercase tracking-widest">
+                      <Sparkles size={12} /> New
+                    </div>
+                    <h3 className="text-2xl md:text-3xl font-bold leading-tight">Turn your year into art</h3>
+                    <p className="text-white/85 max-w-md leading-relaxed">
+                      Download your {currentYear} as a shareable pixel portrait — four palette themes, name optional. Your notes always stay private.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setShareOpen(true)}
+                    className="shrink-0 inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-white text-purple-700 font-bold shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all"
+                  >
+                    <Share2 size={18} /> Share your year
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Navigation Buttons - Below Stats and Centered */}
             <div className="flex flex-wrap gap-4 justify-center pt-4">
               <Link
@@ -346,6 +381,11 @@ export default function Home() {
                 <ArrowRight className="ml-auto text-emerald-400 group-hover:translate-x-1 transition-transform relative z-10" size={20} />
               </Link>
             </div>
+
+            {/* Mounted only when open so its useMoods() call doesn't double-fetch on load */}
+            {shareOpen && (
+              <ShareCardDialog isOpen={shareOpen} onClose={() => setShareOpen(false)} year={currentYear} />
+            )}
           </div>
         )}
       </div>

@@ -7,6 +7,7 @@ A beautiful, personal mood tracking application built with Next.js 14, TypeScrip
 - 📅 **Day-by-Day View**: Focused daily mood tracking with reflection prompts
 - 📊 **Year Overview**: Complete calendar grid showing your entire year at a glance
 - 🗓️ **Multi-Year History**: Switch between years — your history stays reachable forever
+- 🖼️ **Shareable Year Art**: Turn your year in pixels into a downloadable PNG with four palette themes (Classic, Midnight, Heatmap, Sunset) — share the art, never the notes
 - 🌻 **Good Things Recap**: Your positive reflections come back to you — a monthly gratitude reel and a daily "remember this?" card on the dashboard
 - 🎨 **Beautiful UI**: Modern glassmorphism design with dark mode support
 - 📈 **Statistics Dashboard**: Track streaks, primary vibe, and total check-ins
@@ -92,10 +93,12 @@ mindpalette/
 │   ├── DayView.tsx     # Day-by-day tracking interface
 │   ├── MoodGrid.tsx    # Year calendar grid
 │   ├── GoodThings.tsx  # Gratitude recap cards
+│   ├── ShareCardDialog.tsx # Shareable year-art dialog
 │   ├── StatisticsPanel.tsx
 │   └── ...
 ├── lib/                # Utilities and types
 │   ├── hooks/useMoods.ts # Shared year-fetch hook
+│   ├── shareCard.ts    # Canvas renderer for the share art card
 │   ├── export.ts       # CSV/JSON export
 │   ├── supabase.ts     # Supabase client
 │   ├── types.ts        # TypeScript types
@@ -112,7 +115,8 @@ mindpalette/
 4. **Insights**: Monthly trends, mood distribution, and stats at `/insights`
 5. **Statistics**: View your streaks, primary vibe, and check-in stats
 6. **Good Things**: Positive reflections resurface on the dashboard as a monthly recap and daily memory
-7. **Your Data**: Export everything as CSV/JSON or delete your account from the profile dialog
+7. **Share Your Year**: Hit "Share your year" on the dashboard (or the Share button on `/year`) to download your year in pixels as an image — notes stay private
+8. **Your Data**: Export everything as CSV/JSON or delete your account from the profile dialog
 
 ## Deployment
 

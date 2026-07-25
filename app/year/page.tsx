@@ -2,9 +2,10 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Calendar, ArrowLeft } from 'lucide-react'
+import { Calendar, ArrowLeft, Share2 } from 'lucide-react'
 import MoodGrid from '@/components/MoodGrid'
 import YearSwitcher from '@/components/YearSwitcher'
+import ShareCardDialog from '@/components/ShareCardDialog'
 import { useEarliestYear } from '@/lib/hooks/useMoods'
 import { useUser } from '@/contexts/UserContext'
 
@@ -13,6 +14,7 @@ export default function YearView() {
   const router = useRouter()
   const currentYear = new Date().getFullYear()
   const [year, setYear] = useState(currentYear)
+  const [shareOpen, setShareOpen] = useState(false)
   const earliestYear = useEarliestYear()
 
   useEffect(() => {
@@ -46,6 +48,13 @@ export default function YearView() {
         </div>
         <div className="flex items-center gap-3">
           <YearSwitcher year={year} minYear={Math.min(earliestYear, currentYear)} maxYear={currentYear} onChange={setYear} />
+          <button
+            onClick={() => setShareOpen(true)}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 font-semibold text-sm hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 hover:scale-105 active:scale-95"
+            title="Share your year as an image"
+          >
+            <Share2 size={16} /> Share
+          </button>
           <Link
             href="/"
             className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold text-sm shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95"
@@ -56,6 +65,12 @@ export default function YearView() {
       </div>
 
       <MoodGrid showStats={false} year={year} />
+
+      {/* Mounted only when open so its useMoods() call doesn't double-fetch
+          the year alongside MoodGrid on every page load. */}
+      {shareOpen && (
+        <ShareCardDialog isOpen={shareOpen} onClose={() => setShareOpen(false)} year={year} />
+      )}
     </div>
   )
 }
