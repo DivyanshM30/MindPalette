@@ -20,7 +20,7 @@ export default function Header() {
   if (isLogin) return null
 
   return (
-    <header className="sticky top-0 z-50 w-full glass border-b border-white/20 dark:border-white/5">
+    <header className="print-hide sticky top-0 z-50 w-full glass border-b border-white/20 dark:border-white/5">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
           <Image src="/icons/logo.png" alt="MindPalette" width={128} height={128} className="w-9 h-9 rounded-lg" />

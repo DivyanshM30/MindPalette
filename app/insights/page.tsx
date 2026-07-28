@@ -5,12 +5,13 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { AlertTriangle, ArrowLeft, BarChart3, TrendingUp, Calendar, Smile, Frown, Loader2, Flame, RotateCcw } from 'lucide-react'
 import { Mood, MoodGrade } from '@/lib/types'
-import { MOODS, MOOD_SCORES, MONTH_NAMES, BAR_COLORS } from '@/lib/utils'
+import { MOODS, MOOD_SCORES, MONTH_NAMES, BAR_COLORS, getDisplayName } from '@/lib/utils'
 import { useUser } from '@/contexts/UserContext'
 import { useMoods, useEarliestYear } from '@/lib/hooks/useMoods'
 import YearSwitcher from '@/components/YearSwitcher'
 import MoodTrendChart from '@/components/MoodTrendChart'
 import PatternInsights from '@/components/PatternInsights'
+import MonthlyReport from '@/components/MonthlyReport'
 
 export default function InsightsPage() {
     const { user, loading: userLoading } = useUser()
@@ -98,10 +99,10 @@ export default function InsightsPage() {
     }
 
     return (
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 w-full space-y-6">
+        <div className="print-reset max-w-6xl mx-auto px-4 sm:px-6 py-8 w-full space-y-6">
 
             {/* ── HEADER ── */}
-            <div className="flex items-center gap-4">
+            <div className="print-hide flex items-center gap-4">
                 <Link href="/" className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                     <ArrowLeft size={20} className="text-gray-600 dark:text-gray-300" />
                 </Link>
@@ -136,7 +137,7 @@ export default function InsightsPage() {
                     {/* ── YEAR HERO STATS ── */}
                     {yearStats && (
                         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-                            className="grid grid-cols-3 gap-4">
+                            className="print-hide grid grid-cols-3 gap-4">
                             {[
                                 {
                                     label: 'Days Tracked',
@@ -177,11 +178,13 @@ export default function InsightsPage() {
                     )}
 
                     {/* ── PATTERN INSIGHTS (P1-3) ── */}
-                    <PatternInsights moods={moodData} year={year} />
+                    <div className="print-hide">
+                        <PatternInsights moods={moodData} year={year} />
+                    </div>
 
                     {/* ── MONTHLY TREND CHART (Option 2: Straight segments + glowing dots) ── */}
                     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}
-                        className="rounded-2xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 p-6 shadow-sm">
+                        className="print-hide rounded-2xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 p-6 shadow-sm">
                         <div className="mb-5">
                             <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
                                 <TrendingUp size={18} className="text-purple-500" /> Monthly Mood Trend
@@ -197,7 +200,7 @@ export default function InsightsPage() {
                     </motion.div>
 
                     {/* ── MONTH BREAKDOWN ── */}
-                    <motion.div key={selectedMonth} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
+                    <motion.div key={selectedMonth} className="print-hide" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
                         <div className="flex items-center gap-3 mb-4">
                             <h2 className="text-2xl font-black text-gray-900 dark:text-white">{MONTH_NAMES[selectedMonth]}</h2>
                             {monthStats && (
@@ -310,7 +313,7 @@ export default function InsightsPage() {
 
                     {/* ── CHECK-IN ACTIVITY GRID ── */}
                     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-                        className="rounded-2xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 p-6 shadow-sm">
+                        className="print-hide rounded-2xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 p-6 shadow-sm">
                         <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-1">
                             <Calendar size={18} className="text-purple-500" /> Check-in Activity
                         </h2>
@@ -343,6 +346,14 @@ export default function InsightsPage() {
                             })}
                         </div>
                     </motion.div>
+
+                    {/* ── MONTHLY REPORT (P1-7) — printable takeaway for the selected month ── */}
+                    <MonthlyReport
+                        moods={moodData}
+                        year={year}
+                        month={selectedMonth}
+                        userName={getDisplayName(user, '')}
+                    />
                 </>
             )}
         </div>
