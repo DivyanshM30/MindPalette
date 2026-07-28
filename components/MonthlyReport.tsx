@@ -98,8 +98,10 @@ export default function MonthlyReport({ moods, year, month, userName }: MonthlyR
     const maxCount = Math.max(...GRADES.map(g => report.counts[g]), 1)
     const leadingBlanks = report.days[0].weekday
 
+    // `scroll-mt-24` on the section clears the sticky header when the insights
+    // banner scrolls here, or when the dashboard notice deep-links to #monthly-report.
     return (
-        <section id="monthly-report" className="space-y-4">
+        <section id="monthly-report" className="scroll-mt-24 space-y-4">
 
             {/* ── CONTROLS (never printed) ── */}
             <div className="print-hide rounded-2xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 p-6 shadow-sm">

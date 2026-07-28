@@ -1,9 +1,9 @@
 'use client'
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useMemo, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { AlertTriangle, ArrowLeft, BarChart3, TrendingUp, Calendar, Smile, Frown, Loader2, Flame, RotateCcw } from 'lucide-react'
+import { AlertTriangle, ArrowLeft, BarChart3, TrendingUp, Calendar, Smile, Frown, Loader2, Flame, RotateCcw, Printer, ArrowDown } from 'lucide-react'
 import { Mood, MoodGrade } from '@/lib/types'
 import { MOODS, MOOD_SCORES, MONTH_NAMES, BAR_COLORS, getDisplayName } from '@/lib/utils'
 import { useUser } from '@/contexts/UserContext'
@@ -26,6 +26,21 @@ export default function InsightsPage() {
     useEffect(() => {
         if (!userLoading && !user) router.push('/login')
     }, [userLoading, user, router])
+
+    /** The report lives at the foot of a long page, so bring it into view. */
+    const scrollToReport = useCallback(() => {
+        document.getElementById('monthly-report')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, [])
+
+    // Honour /insights#monthly-report (the dashboard notice links here). The
+    // section only exists once the fetch resolves, so this waits for the data
+    // rather than the route change.
+    useEffect(() => {
+        if (loading || typeof window === 'undefined') return
+        if (window.location.hash !== '#monthly-report') return
+        const frame = requestAnimationFrame(scrollToReport)
+        return () => cancelAnimationFrame(frame)
+    }, [loading, scrollToReport])
 
     const monthlyData = useMemo(() => {
         const months: Record<number, Mood[]> = {}
@@ -134,6 +149,30 @@ export default function InsightsPage() {
                 </motion.div>
             ) : (
                 <>
+                    {/* ── REPORT SHORTCUT (P1-7) — the report itself sits at the foot of the page ── */}
+                    {monthStats && (
+                        <button
+                            onClick={scrollToReport}
+                            className="print-hide group w-full flex items-center gap-3 rounded-2xl border border-purple-200/80 dark:border-purple-500/20 bg-purple-50/70 dark:bg-purple-950/20 px-4 py-3 text-left hover:border-purple-300 dark:hover:border-purple-500/40 transition-colors"
+                        >
+                            <span className="w-9 h-9 shrink-0 rounded-xl bg-white dark:bg-purple-500/10 border border-purple-200/80 dark:border-purple-500/20 flex items-center justify-center text-purple-600 dark:text-purple-300">
+                                <Printer size={17} />
+                            </span>
+                            <span className="min-w-0 flex-1">
+                                <span className="block text-sm font-semibold text-gray-900 dark:text-white truncate">
+                                    Printable {MONTH_NAMES[selectedMonth]} report
+                                </span>
+                                <span className="block text-xs text-gray-500 dark:text-gray-400 truncate">
+                                    {monthStats.total} {monthStats.total === 1 ? 'entry' : 'entries'} on one page — print it or save it as a PDF
+                                </span>
+                            </span>
+                            <span className="shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-purple-600 group-hover:bg-purple-700 text-white text-xs font-bold transition-colors">
+                                Jump to it
+                                <ArrowDown size={13} className="group-hover:translate-y-0.5 transition-transform" />
+                            </span>
+                        </button>
+                    )}
+
                     {/* ── YEAR HERO STATS ── */}
                     {yearStats && (
                         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}

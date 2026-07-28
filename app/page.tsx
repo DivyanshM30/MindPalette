@@ -5,6 +5,7 @@ import { AlertTriangle, ArrowRight, Sparkles, Calendar, CalendarDays, Loader2, B
 import dynamic from 'next/dynamic'
 import StatisticsPanel from '@/components/StatisticsPanel'
 import GoodThings from '@/components/GoodThings'
+import ReportNudge from '@/components/ReportNudge'
 import ShareCardDialog from '@/components/ShareCardDialog'
 const Onboarding = dynamic(() => import('@/components/Onboarding'), { ssr: false })
 import { useUser } from '@/contexts/UserContext'
@@ -306,6 +307,9 @@ export default function Home() {
 
             {/* Statistics First */}
             <StatisticsPanel moodData={moodData} moods={moods} user={user} />
+
+            {/* Printable report notice (P1-7) — self-hides when sparse or dismissed */}
+            <ReportNudge moods={moods} />
 
             {/* Good Things recap (P1-1) — hidden when no positive notes */}
             <GoodThings moods={moods} />
