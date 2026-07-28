@@ -8,7 +8,7 @@ export default function Footer() {
     // Hide footer on login page
     if (pathname === '/login') return null
     return (
-        <footer className="w-full border-t border-gray-200 dark:border-gray-800 mt-auto">
+        <footer className="print-hide w-full border-t border-gray-200 dark:border-gray-800 mt-auto">
             <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                     <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">

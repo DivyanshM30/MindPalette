@@ -9,6 +9,7 @@ A beautiful, personal mood tracking application built with Next.js 14, TypeScrip
 - 🗓️ **Multi-Year History**: Switch between years — your history stays reachable forever
 - 🖼️ **Shareable Year Art**: Turn your year in pixels into a downloadable PNG with four palette themes (Classic, Midnight, Heatmap, Sunset) — share the art, never the notes
 - 🌻 **Good Things Recap**: Your positive reflections come back to you — a monthly gratitude reel and a daily "remember this?" card on the dashboard
+- 🖨️ **Monthly Report**: A one-page printable summary of any month (distribution, day-by-day grid, weekday pattern) — save as PDF for a therapist; your written notes are opt-in and off by default
 - 🎨 **Beautiful UI**: Modern glassmorphism design with dark mode support
 - 📈 **Statistics Dashboard**: Track streaks, primary vibe, and total check-ins
 - 💾 **Cloud Sync**: All data synced to Supabase with Row Level Security
@@ -93,12 +94,14 @@ mindpalette/
 │   ├── DayView.tsx     # Day-by-day tracking interface
 │   ├── MoodGrid.tsx    # Year calendar grid
 │   ├── GoodThings.tsx  # Gratitude recap cards
+│   ├── MonthlyReport.tsx # Printable one-page month report
 │   ├── ShareCardDialog.tsx # Shareable year-art dialog
 │   ├── StatisticsPanel.tsx
 │   └── ...
 ├── lib/                # Utilities and types
 │   ├── hooks/useMoods.ts # Shared year-fetch hook
 │   ├── shareCard.ts    # Canvas renderer for the share art card
+│   ├── report.ts       # Monthly report calculations
 │   ├── export.ts       # CSV/JSON export
 │   ├── supabase.ts     # Supabase client
 │   ├── types.ts        # TypeScript types
@@ -116,7 +119,8 @@ mindpalette/
 5. **Statistics**: View your streaks, primary vibe, and check-in stats
 6. **Good Things**: Positive reflections resurface on the dashboard as a monthly recap and daily memory
 7. **Share Your Year**: Hit "Share your year" on the dashboard (or the Share button on `/year`) to download your year in pixels as an image — notes stay private
-8. **Your Data**: Export everything as CSV/JSON or delete your account from the profile dialog
+8. **Monthly Report**: At the bottom of `/insights`, pick a month and hit "Print / Save as PDF" — choose whether to include your written notes first
+9. **Your Data**: Export everything as CSV/JSON or delete your account from the profile dialog
 
 ## Deployment
 

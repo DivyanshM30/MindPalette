@@ -30,3 +30,50 @@ body {
   @apply bg-[#12121a]/80 border-purple-500/5;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
+
+/* ── Print (P1-7 monthly report) ──────────────────────────────────────────
+   Printing is scoped, not global: anything marked .print-hide leaves the
+   page (app chrome, interactive controls, the other insights sections) and
+   #report-sheet expands to become the document itself. The sheet keeps its
+   own inline light colours, so a dark-mode user still prints black on white.
+   Kept here rather than in the component so the rules apply to whatever
+   route renders a sheet next (e.g. a future year-in-review). */
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+  }
+
+  .print-hide {
+    display: none !important;
+  }
+
+  /* Wrappers between <body> and the sheet must not spend paper on layout. */
+  .print-reset {
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* On screen the sheet is a centred A4-ish card; on paper it *is* the page. */
+  #report-sheet {
+    width: 100% !important;
+    max-width: none !important;
+    padding: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  /* Colour is meaning here (mood swatches), so opt out of ink-saving. */
+  #report-sheet,
+  #report-sheet * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

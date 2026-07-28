@@ -1,16 +1,17 @@
 'use client'
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useMemo, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { AlertTriangle, ArrowLeft, BarChart3, TrendingUp, Calendar, Smile, Frown, Loader2, Flame, RotateCcw } from 'lucide-react'
+import { AlertTriangle, ArrowLeft, BarChart3, TrendingUp, Calendar, Smile, Frown, Loader2, Flame, RotateCcw, Printer, ArrowDown } from 'lucide-react'
 import { Mood, MoodGrade } from '@/lib/types'
-import { MOODS, MOOD_SCORES, MONTH_NAMES, BAR_COLORS } from '@/lib/utils'
+import { MOODS, MOOD_SCORES, MONTH_NAMES, BAR_COLORS, getDisplayName } from '@/lib/utils'
 import { useUser } from '@/contexts/UserContext'
 import { useMoods, useEarliestYear } from '@/lib/hooks/useMoods'
 import YearSwitcher from '@/components/YearSwitcher'
 import MoodTrendChart from '@/components/MoodTrendChart'
 import PatternInsights from '@/components/PatternInsights'
+import MonthlyReport from '@/components/MonthlyReport'
 
 export default function InsightsPage() {
     const { user, loading: userLoading } = useUser()
@@ -25,6 +26,21 @@ export default function InsightsPage() {
     useEffect(() => {
         if (!userLoading && !user) router.push('/login')
     }, [userLoading, user, router])
+
+    /** The report lives at the foot of a long page, so bring it into view. */
+    const scrollToReport = useCallback(() => {
+        document.getElementById('monthly-report')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, [])
+
+    // Honour /insights#monthly-report (the dashboard notice links here). The
+    // section only exists once the fetch resolves, so this waits for the data
+    // rather than the route change.
+    useEffect(() => {
+        if (loading || typeof window === 'undefined') return
+        if (window.location.hash !== '#monthly-report') return
+        const frame = requestAnimationFrame(scrollToReport)
+        return () => cancelAnimationFrame(frame)
+    }, [loading, scrollToReport])
 
     const monthlyData = useMemo(() => {
         const months: Record<number, Mood[]> = {}
@@ -98,10 +114,10 @@ export default function InsightsPage() {
     }
 
     return (
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 w-full space-y-6">
+        <div className="print-reset max-w-6xl mx-auto px-4 sm:px-6 py-8 w-full space-y-6">
 
             {/* ── HEADER ── */}
-            <div className="flex items-center gap-4">
+            <div className="print-hide flex items-center gap-4">
                 <Link href="/" className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                     <ArrowLeft size={20} className="text-gray-600 dark:text-gray-300" />
                 </Link>
@@ -133,10 +149,34 @@ export default function InsightsPage() {
                 </motion.div>
             ) : (
                 <>
+                    {/* ── REPORT SHORTCUT (P1-7) — the report itself sits at the foot of the page ── */}
+                    {monthStats && (
+                        <button
+                            onClick={scrollToReport}
+                            className="print-hide group w-full flex items-center gap-3 rounded-2xl border border-purple-200/80 dark:border-purple-500/20 bg-purple-50/70 dark:bg-purple-950/20 px-4 py-3 text-left hover:border-purple-300 dark:hover:border-purple-500/40 transition-colors"
+                        >
+                            <span className="w-9 h-9 shrink-0 rounded-xl bg-white dark:bg-purple-500/10 border border-purple-200/80 dark:border-purple-500/20 flex items-center justify-center text-purple-600 dark:text-purple-300">
+                                <Printer size={17} />
+                            </span>
+                            <span className="min-w-0 flex-1">
+                                <span className="block text-sm font-semibold text-gray-900 dark:text-white truncate">
+                                    Printable {MONTH_NAMES[selectedMonth]} report
+                                </span>
+                                <span className="block text-xs text-gray-500 dark:text-gray-400 truncate">
+                                    {monthStats.total} {monthStats.total === 1 ? 'entry' : 'entries'} on one page — print it or save it as a PDF
+                                </span>
+                            </span>
+                            <span className="shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-purple-600 group-hover:bg-purple-700 text-white text-xs font-bold transition-colors">
+                                Jump to it
+                                <ArrowDown size={13} className="group-hover:translate-y-0.5 transition-transform" />
+                            </span>
+                        </button>
+                    )}
+
                     {/* ── YEAR HERO STATS ── */}
                     {yearStats && (
                         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-                            className="grid grid-cols-3 gap-4">
+                            className="print-hide grid grid-cols-3 gap-4">
                             {[
                                 {
                                     label: 'Days Tracked',
@@ -177,11 +217,13 @@ export default function InsightsPage() {
                     )}
 
                     {/* ── PATTERN INSIGHTS (P1-3) ── */}
-                    <PatternInsights moods={moodData} year={year} />
+                    <div className="print-hide">
+                        <PatternInsights moods={moodData} year={year} />
+                    </div>
 
                     {/* ── MONTHLY TREND CHART (Option 2: Straight segments + glowing dots) ── */}
                     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}
-                        className="rounded-2xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 p-6 shadow-sm">
+                        className="print-hide rounded-2xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 p-6 shadow-sm">
                         <div className="mb-5">
                             <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
                                 <TrendingUp size={18} className="text-purple-500" /> Monthly Mood Trend
@@ -197,7 +239,7 @@ export default function InsightsPage() {
                     </motion.div>
 
                     {/* ── MONTH BREAKDOWN ── */}
-                    <motion.div key={selectedMonth} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
+                    <motion.div key={selectedMonth} className="print-hide" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
                         <div className="flex items-center gap-3 mb-4">
                             <h2 className="text-2xl font-black text-gray-900 dark:text-white">{MONTH_NAMES[selectedMonth]}</h2>
                             {monthStats && (
@@ -310,7 +352,7 @@ export default function InsightsPage() {
 
                     {/* ── CHECK-IN ACTIVITY GRID ── */}
                     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-                        className="rounded-2xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 p-6 shadow-sm">
+                        className="print-hide rounded-2xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 p-6 shadow-sm">
                         <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-1">
                             <Calendar size={18} className="text-purple-500" /> Check-in Activity
                         </h2>
@@ -343,6 +385,14 @@ export default function InsightsPage() {
                             })}
                         </div>
                     </motion.div>
+
+                    {/* ── MONTHLY REPORT (P1-7) — printable takeaway for the selected month ── */}
+                    <MonthlyReport
+                        moods={moodData}
+                        year={year}
+                        month={selectedMonth}
+                        userName={getDisplayName(user, '')}
+                    />
                 </>
             )}
         </div>
