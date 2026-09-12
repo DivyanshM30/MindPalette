@@ -1,6 +1,6 @@
 # MindPalette
 
-A beautiful, personal mood tracking application built with Next.js 14, TypeScript, and Supabase. Track your daily moods, reflect on your day, visualize your emotional journey throughout the year, download it as shareable art, and turn any month into a printable report.
+A beautiful, personal mood tracking application built with Next.js 15, TypeScript, and Supabase. Track your daily moods, reflect on your day, visualize your emotional journey throughout the year, download it as shareable art, and turn any month into a printable report.
 
 ## Features
 
@@ -21,18 +21,22 @@ A beautiful, personal mood tracking application built with Next.js 14, TypeScrip
 
 ## Tech Stack
 
-- **Framework**: Next.js 14 (App Router)
+- **Framework**: Next.js 15 (App Router), React 19
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
 - **Backend**: Supabase (PostgreSQL + Auth)
 - **Animations**: Framer Motion
 - **Icons**: Lucide React
 
+PostCSS is pinned and overridden in `package.json` because Next.js 15 still
+requests an older vulnerable version. Keep the override until Next.js itself
+ships a patched PostCSS dependency; verify changes with `npm audit` and `npm run build`.
+
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 22+ (verified with Node.js 24)
 - npm, yarn, pnpm, or bun
 - Supabase account and project
 
