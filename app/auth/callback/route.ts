@@ -5,10 +5,17 @@ export async function GET(request: Request) {
   const requestUrl = new URL(request.url)
   const code = requestUrl.searchParams.get('code')
   const rawNext = requestUrl.searchParams.get('next') || '/'
-  // Only honor same-origin, path-relative redirects. Reject absolute URLs
-  // (e.g. https://evil.com) and protocol-relative ones (//evil.com) to
-  // prevent open redirects (CWE-601).
-  const next = rawNext.startsWith('/') && !rawNext.startsWith('//') ? rawNext : '/'
+  let redirectUrl = new URL('/', requestUrl.origin)
+  if (rawNext.startsWith('/') && !rawNext.startsWith('//')) {
+    try {
+      // URL parsing normalizes backslashes and control characters, so a
+      // leading slash alone does not guarantee a same-origin destination.
+      const candidate = new URL(rawNext, requestUrl.origin)
+      if (candidate.origin === requestUrl.origin) redirectUrl = candidate
+    } catch {
+      // Malformed destinations fall back to the dashboard.
+    }
+  }
 
   if (code) {
     const supabase = await createServerSupabaseClient()
@@ -16,7 +23,7 @@ export async function GET(request: Request) {
     const { error } = await supabase.auth.exchangeCodeForSession(code)
     
     if (!error) {
-      return NextResponse.redirect(new URL(next, requestUrl.origin))
+      return NextResponse.redirect(redirectUrl)
     }
   }
 
