@@ -1,6 +1,6 @@
 # MindPalette
 
-A beautiful, personal mood tracking application built with Next.js 14, TypeScript, and Supabase. Track your daily moods, reflect on your day, and visualize your emotional journey throughout the year.
+A beautiful, personal mood tracking application built with Next.js 14, TypeScript, and Supabase. Track your daily moods, reflect on your day, visualize your emotional journey throughout the year, download it as shareable art, and turn any month into a printable report.
 
 ## Features
 
@@ -211,6 +211,8 @@ Before deploying, add these environment variables in Vercel:
 - [ ] Account-deletion RPC is installed (run `supabase/migrations/20260719_delete_account.sql`)
 - [ ] Test authentication (sign up/login + password reset)
 - [ ] Test mood tracking functionality
+- [ ] Test year-art PNG download and image copy fallback
+- [ ] Test monthly-report printing and Save as PDF
 - [ ] Verify dark mode works
 - [ ] Check mobile responsiveness
 

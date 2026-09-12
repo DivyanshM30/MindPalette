@@ -159,6 +159,14 @@ export default function Home() {
                     tag: 'Smart analytics'
                   },
                   {
+                    icon: '🖨️',
+                    gradient: 'from-violet-500 to-fuchsia-500',
+                    glow: 'shadow-violet-500/20',
+                    title: 'Printable Monthly Reports',
+                    desc: 'Turn any month into a clear one-page summary to print or save as a PDF, with written entries included only when you choose.',
+                    tag: 'Reflect & share'
+                  },
+                  {
                     icon: '🔥',
                     gradient: 'from-orange-500 to-amber-500',
                     glow: 'shadow-orange-500/20',
@@ -263,6 +271,7 @@ export default function Home() {
                   { icon: '✨', text: 'Free forever' },
                   { icon: '📤', text: 'Export anytime' },
                   { icon: '🖼️', text: 'Shareable art' },
+                  { icon: '🖨️', text: 'Printable reports' },
                   { icon: '📱', text: 'Install as an app' },
                   { icon: '🌙', text: 'Dark & light mode' },
                   { icon: '⌨️', text: 'Keyboard shortcuts' },

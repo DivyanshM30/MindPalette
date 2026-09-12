@@ -23,13 +23,17 @@ export default function ReportNudge({ moods }: { moods: Mood[] }) {
     const [mounted, setMounted] = useState(false)
     const [dismissed, setDismissed] = useState(false)
 
+    // Primitive dependencies stay stable during mood-context re-renders while
+    // still picking up a new calendar month on the next render.
     const now = new Date()
-    const monthKey = `${now.getFullYear()}-${now.getMonth() + 1}`
+    const year = now.getFullYear()
+    const month = now.getMonth()
+    const monthKey = `${year}-${month + 1}`
 
     const count = useMemo(() => {
-        const prefix = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
+        const prefix = `${year}-${String(month + 1).padStart(2, '0')}-`
         return moods.filter(m => m.date.startsWith(prefix)).length
-    }, [moods, now])
+    }, [moods, year, month])
 
     // localStorage is read after mount so server and client markup agree.
     useEffect(() => {
@@ -60,7 +64,7 @@ export default function ReportNudge({ moods }: { moods: Mood[] }) {
 
             <div className="min-w-0 flex-1">
                 <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
-                    Your {MONTH_NAMES[now.getMonth()]} report is ready
+                    Your {MONTH_NAMES[month]} report is ready
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
                     {count} {count === 1 ? 'day' : 'days'} logged — print a one-page summary or save it as a PDF
