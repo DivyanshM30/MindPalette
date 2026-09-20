@@ -1,5 +1,6 @@
 'use client'
 import { createContext, useContext, useEffect, useState } from 'react'
+import { MotionConfig } from 'framer-motion'
 
 type Theme = 'dark' | 'light'
 
@@ -46,7 +47,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   // This prevents the "useTheme must be used within ThemeProvider" error
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      {children}
+      <MotionConfig reducedMotion="user">{children}</MotionConfig>
     </ThemeContext.Provider>
   )
 }

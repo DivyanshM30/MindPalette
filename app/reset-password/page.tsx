@@ -45,7 +45,7 @@ export default function ResetPasswordPage() {
     if (userLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
-                <Loader2 className="animate-spin text-purple-400" size={32} />
+                <Loader2 className="animate-spin text-brand-400" size={32} />
             </div>
         )
     }
@@ -54,13 +54,13 @@ export default function ResetPasswordPage() {
     // No session means the link was invalid or expired.
     if (!user) {
         return (
-            <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 dark:from-slate-900 dark:via-purple-950 dark:to-slate-900">
-                <div className="glass w-full max-w-md p-8 rounded-3xl shadow-2xl text-center border border-white/50 dark:border-white/10">
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Link expired</h1>
-                    <p className="text-gray-500 dark:text-gray-400 text-sm mb-6">
+            <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-brand-50 via-brand-50 to-brand-50 dark:from-ink-950 dark:via-brand-950 dark:to-ink-950">
+                <div className="glass w-full max-w-md p-8 rounded-3xl shadow-md text-center border border-white/50 dark:border-white/10">
+                    <h1 className="text-2xl font-bold text-ink-900 dark:text-white mb-2">Link expired</h1>
+                    <p className="text-ink-500 dark:text-ink-400 text-sm mb-6">
                         This password reset link is invalid or has expired. Request a new one from the login page.
                     </p>
-                    <Link href="/login" className="inline-block px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-pink-500 text-white font-semibold hover:opacity-90 transition-all">
+                    <Link href="/login" className="inline-block px-6 py-3 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 text-white font-semibold hover:opacity-90 transition-all">
                         Back to Login
                     </Link>
                 </div>
@@ -69,13 +69,13 @@ export default function ResetPasswordPage() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 dark:from-slate-900 dark:via-purple-950 dark:to-slate-900">
-            <div className="glass w-full max-w-md p-8 rounded-3xl shadow-2xl relative z-10 border border-white/50 dark:border-white/10">
+        <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-brand-50 via-brand-50 to-brand-50 dark:from-ink-950 dark:via-brand-950 dark:to-ink-950">
+            <div className="glass w-full max-w-md p-8 rounded-3xl shadow-md relative z-10 border border-white/50 dark:border-white/10">
                 <div className="text-center mb-8">
-                    <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-500 mb-2">
+                    <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-brand-600 to-brand-500 dark:from-brand-200 dark:to-brand-300 mb-2">
                         Reset Password
                     </h1>
-                    <p className="text-gray-500 dark:text-gray-400 text-sm">Choose a new password for your account</p>
+                    <p className="text-ink-500 dark:text-ink-400 text-sm">Choose a new password for your account</p>
                 </div>
 
                 {message && (
@@ -86,14 +86,14 @@ export default function ResetPasswordPage() {
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="space-y-2">
-                        <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider ml-1">New Password</label>
+                        <label className="text-xs font-semibold text-ink-500 uppercase tracking-wider ml-1">New Password</label>
                         <div className="relative">
-                            <Lock className="absolute left-4 top-3.5 text-gray-400" size={18} />
+                            <Lock className="absolute left-4 top-3.5 text-ink-500 dark:text-ink-400" size={18} />
                             <input
                                 type="password"
                                 required
                                 autoComplete="new-password"
-                                className="w-full pl-11 pr-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all dark:bg-gray-800 dark:border-gray-700"
+                                className="w-full pl-11 pr-4 py-3 rounded-xl bg-ink-50 border border-ink-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 outline-none transition-all dark:bg-ink-800 dark:border-ink-700"
                                 placeholder="Min. 8 characters"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
@@ -102,14 +102,14 @@ export default function ResetPasswordPage() {
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider ml-1">Confirm Password</label>
+                        <label className="text-xs font-semibold text-ink-500 uppercase tracking-wider ml-1">Confirm Password</label>
                         <div className="relative">
-                            <Lock className="absolute left-4 top-3.5 text-gray-400" size={18} />
+                            <Lock className="absolute left-4 top-3.5 text-ink-500 dark:text-ink-400" size={18} />
                             <input
                                 type="password"
                                 required
                                 autoComplete="new-password"
-                                className="w-full pl-11 pr-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all dark:bg-gray-800 dark:border-gray-700"
+                                className="w-full pl-11 pr-4 py-3 rounded-xl bg-ink-50 border border-ink-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 outline-none transition-all dark:bg-ink-800 dark:border-ink-700"
                                 placeholder="Repeat your new password"
                                 value={confirm}
                                 onChange={(e) => setConfirm(e.target.value)}
@@ -120,7 +120,7 @@ export default function ResetPasswordPage() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full py-3.5 rounded-xl bg-black text-white font-medium hover:bg-gray-800 active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-purple-500/20 dark:bg-white dark:text-black"
+                        className="w-full py-3.5 rounded-xl bg-brand-500 text-white font-medium hover:bg-ink-800 active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-brand-500/20 dark:bg-brand-300 dark:text-brand-950"
                     >
                         {loading ? <Loader2 className="animate-spin" size={20} /> : (
                             <>

@@ -99,14 +99,14 @@ export default function PatternInsights({ moods, year }: PatternInsightsProps) {
     if (moods.length < MIN_TOTAL) {
         return (
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}
-                className="rounded-2xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 p-6 shadow-sm">
-                <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-1">
-                    <Compass size={18} className="text-purple-500" /> Your Patterns
+                className="rounded-2xl bg-paper dark:bg-ink-900 border border-ink-100 dark:border-ink-800 p-6 shadow-sm">
+                <h2 className="text-lg font-bold text-ink-900 dark:text-white flex items-center gap-2 mb-1">
+                    <Compass size={18} className="text-brand-500" /> Your Patterns
                 </h2>
-                <div className="flex items-center gap-3 mt-4 p-4 rounded-xl bg-gray-50 dark:bg-gray-800/60">
-                    <Lock size={18} className="text-gray-400 shrink-0" />
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                        Log <span className="font-bold text-purple-500">{MIN_TOTAL - moods.length} more {MIN_TOTAL - moods.length === 1 ? 'day' : 'days'}</span> to
+                <div className="flex items-center gap-3 mt-4 p-4 rounded-xl bg-ink-50 dark:bg-ink-800/60">
+                    <Lock size={18} className="text-ink-500 dark:text-ink-400 shrink-0" />
+                    <p className="text-sm text-ink-500 dark:text-ink-400">
+                        Log <span className="font-bold text-brand-500">{MIN_TOTAL - moods.length} more {MIN_TOTAL - moods.length === 1 ? 'day' : 'days'}</span> to
                         unlock pattern insights — weekday rhythms, trends, and your best stretches.
                     </p>
                 </div>
@@ -118,36 +118,36 @@ export default function PatternInsights({ moods, year }: PatternInsightsProps) {
 
     return (
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}
-            className="rounded-2xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 p-6 shadow-sm">
+            className="rounded-2xl bg-paper dark:bg-ink-900 border border-ink-100 dark:border-ink-800 p-6 shadow-sm">
             <div className="mb-5">
-                <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                    <Compass size={18} className="text-purple-500" /> Your Patterns
+                <h2 className="text-lg font-bold text-ink-900 dark:text-white flex items-center gap-2">
+                    <Compass size={18} className="text-brand-500" /> Your Patterns
                 </h2>
-                <p className="text-xs text-gray-400 mt-0.5">What moves your mood in {year}</p>
+                <p className="text-xs text-ink-500 dark:text-ink-400 mt-0.5">What moves your mood in {year}</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Weekday averages */}
                 <div>
-                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Average by weekday</h3>
+                    <h3 className="text-xs font-bold text-ink-500 dark:text-ink-400 uppercase tracking-widest mb-4">Average by weekday</h3>
                     <div className="space-y-2.5">
                         {weekdayStats.map(d => {
                             const isBest = bestDay?.label === d.label
                             const isWorst = worstDay?.label === d.label
                             return (
                                 <div key={d.label} className="flex items-center gap-3">
-                                    <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 w-9 shrink-0">{d.label.slice(0, 3)}</span>
-                                    <div className="flex-1 h-5 bg-gray-100 dark:bg-gray-800/60 rounded-md overflow-hidden">
+                                    <span className="text-xs font-semibold text-ink-500 dark:text-ink-400 w-9 shrink-0">{d.label.slice(0, 3)}</span>
+                                    <div className="flex-1 h-5 bg-ink-100 dark:bg-ink-800/60 rounded-md overflow-hidden">
                                         {d.avg !== null && (
                                             <motion.div
                                                 initial={{ width: 0 }}
                                                 animate={{ width: `${(d.avg / 5) * 100}%` }}
                                                 transition={{ duration: 0.8, ease: 'easeOut' }}
-                                                className={`h-full rounded-md ${isBest ? 'bg-emerald-500' : isWorst ? 'bg-orange-400' : 'bg-purple-400'} ${d.avg === maxAvg ? '' : 'opacity-90'}`}
+                                                className={`h-full rounded-md ${isBest ? 'bg-emerald-500' : isWorst ? 'bg-orange-400' : 'bg-brand-400'} ${d.avg === maxAvg ? '' : 'opacity-90'}`}
                                             />
                                         )}
                                     </div>
-                                    <span className="text-xs font-bold text-gray-600 dark:text-gray-300 w-8 text-right shrink-0 tabular-nums">
+                                    <span className="text-xs font-bold text-ink-600 dark:text-ink-300 w-8 text-right shrink-0 tabular-nums">
                                         {d.avg !== null ? d.avg.toFixed(1) : '—'}
                                     </span>
                                 </div>
@@ -158,12 +158,12 @@ export default function PatternInsights({ moods, year }: PatternInsightsProps) {
 
                 {/* Findings */}
                 <div className="space-y-3">
-                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">What stands out</h3>
+                    <h3 className="text-xs font-bold text-ink-500 dark:text-ink-400 uppercase tracking-widest mb-4">What stands out</h3>
 
                     {bestDay && worstDay && (
-                        <div className="flex items-start gap-3 p-3 rounded-xl bg-gray-50 dark:bg-gray-800/60">
+                        <div className="flex items-start gap-3 p-3 rounded-xl bg-ink-50 dark:bg-ink-800/60">
                             <span className="text-lg leading-none mt-0.5">📅</span>
-                            <p className="text-sm text-gray-600 dark:text-gray-300">
+                            <p className="text-sm text-ink-600 dark:text-ink-300">
                                 <span className="font-bold text-emerald-600 dark:text-emerald-400">{bestDay.label}s</span> are your best days ({bestDay.avg!.toFixed(1)}),
                                 while <span className="font-bold text-orange-500 dark:text-orange-400">{worstDay.label}s</span> run toughest ({worstDay.avg!.toFixed(1)}).
                             </p>
@@ -171,9 +171,9 @@ export default function PatternInsights({ moods, year }: PatternInsightsProps) {
                     )}
 
                     {bestMonth && worstMonth && (
-                        <div className="flex items-start gap-3 p-3 rounded-xl bg-gray-50 dark:bg-gray-800/60">
+                        <div className="flex items-start gap-3 p-3 rounded-xl bg-ink-50 dark:bg-ink-800/60">
                             <span className="text-lg leading-none mt-0.5"><Trophy size={16} className="text-amber-500 inline" /></span>
-                            <p className="text-sm text-gray-600 dark:text-gray-300">
+                            <p className="text-sm text-ink-600 dark:text-ink-300">
                                 <span className="font-bold">{bestMonth.label}</span> was your best month ({bestMonth.avg!.toFixed(1)});
                                 <span className="font-bold"> {worstMonth.label}</span> was the hardest ({worstMonth.avg!.toFixed(1)}).
                             </p>
@@ -181,13 +181,13 @@ export default function PatternInsights({ moods, year }: PatternInsightsProps) {
                     )}
 
                     {trend && (
-                        <div className="flex items-start gap-3 p-3 rounded-xl bg-gray-50 dark:bg-gray-800/60">
+                        <div className="flex items-start gap-3 p-3 rounded-xl bg-ink-50 dark:bg-ink-800/60">
                             <span className="mt-0.5">
                                 {trend.delta > 0.05 ? <TrendingUp size={16} className="text-emerald-500" /> :
                                     trend.delta < -0.05 ? <TrendingDown size={16} className="text-orange-500" /> :
-                                        <Minus size={16} className="text-gray-400" />}
+                                        <Minus size={16} className="text-ink-500 dark:text-ink-400" />}
                             </span>
-                            <p className="text-sm text-gray-600 dark:text-gray-300">
+                            <p className="text-sm text-ink-600 dark:text-ink-300">
                                 Your last 7 days average <span className="font-bold">{trend.current.toFixed(1)}</span>
                                 {trend.delta > 0.05 ? <> — up <span className="font-bold text-emerald-600 dark:text-emerald-400">{trend.delta.toFixed(1)}</span> from the week before.</> :
                                     trend.delta < -0.05 ? <> — down <span className="font-bold text-orange-500 dark:text-orange-400">{Math.abs(trend.delta).toFixed(1)}</span> from the week before. Be kind to yourself.</> :
@@ -197,18 +197,18 @@ export default function PatternInsights({ moods, year }: PatternInsightsProps) {
                     )}
 
                     {streak && streak.next && (
-                        <div className="flex items-start gap-3 p-3 rounded-xl bg-gray-50 dark:bg-gray-800/60">
+                        <div className="flex items-start gap-3 p-3 rounded-xl bg-ink-50 dark:bg-ink-800/60">
                             <Flame size={16} className="text-orange-500 mt-0.5" />
-                            <p className="text-sm text-gray-600 dark:text-gray-300">
-                                <span className="font-bold">{streak.count}-day</span> streak — {streak.toGo} more {streak.toGo === 1 ? 'day' : 'days'} to hit <span className="font-bold text-purple-500">{streak.next}</span>.
+                            <p className="text-sm text-ink-600 dark:text-ink-300">
+                                <span className="font-bold">{streak.count}-day</span> streak — {streak.toGo} more {streak.toGo === 1 ? 'day' : 'days'} to hit <span className="font-bold text-brand-500">{streak.next}</span>.
                             </p>
                         </div>
                     )}
 
                     {!bestDay && !bestMonth && !trend && !streak && (
-                        <div className="flex items-start gap-3 p-3 rounded-xl bg-gray-50 dark:bg-gray-800/60">
-                            <CloudRain size={16} className="text-gray-400 mt-0.5" />
-                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                        <div className="flex items-start gap-3 p-3 rounded-xl bg-ink-50 dark:bg-ink-800/60">
+                            <CloudRain size={16} className="text-ink-500 dark:text-ink-400 mt-0.5" />
+                            <p className="text-sm text-ink-500 dark:text-ink-400">
                                 No clear patterns yet — keep logging and they&apos;ll emerge.
                             </p>
                         </div>

@@ -84,11 +84,11 @@ export default function MonthlyReport({ moods, year, month, userName }: MonthlyR
 
     if (report.logged === 0) {
         return (
-            <section className="print-hide rounded-2xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 p-6 shadow-sm">
-                <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                    <FileText size={18} className="text-purple-500" /> Monthly Report
+            <section className="print-hide rounded-2xl bg-paper dark:bg-ink-900 border border-ink-100 dark:border-ink-800 p-6 shadow-sm">
+                <h2 className="text-lg font-bold text-ink-900 dark:text-white flex items-center gap-2">
+                    <FileText size={18} className="text-brand-500" /> Monthly Report
                 </h2>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                <p className="text-sm text-ink-500 dark:text-ink-400 mt-1">
                     Log a few days in {report.monthLabel} and a printable report will appear here.
                 </p>
             </section>
@@ -104,28 +104,28 @@ export default function MonthlyReport({ moods, year, month, userName }: MonthlyR
         <section id="monthly-report" className="scroll-mt-24 space-y-4">
 
             {/* ── CONTROLS (never printed) ── */}
-            <div className="print-hide rounded-2xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 p-6 shadow-sm">
+            <div className="print-hide rounded-2xl bg-paper dark:bg-ink-900 border border-ink-100 dark:border-ink-800 p-6 shadow-sm">
                 <div className="flex flex-wrap items-start justify-between gap-4">
                     <div>
-                        <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                            <FileText size={18} className="text-purple-500" /> Monthly Report
+                        <h2 className="text-lg font-bold text-ink-900 dark:text-white flex items-center gap-2">
+                            <FileText size={18} className="text-brand-500" /> Monthly Report
                         </h2>
-                        <p className="text-xs text-gray-400 mt-0.5">
+                        <p className="text-xs text-ink-400 mt-0.5">
                             A one-page summary of {report.monthLabel} — print it or save it as a PDF to share with a therapist.
                         </p>
                     </div>
                     <button
                         onClick={() => window.print()}
-                        className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold shadow-lg hover:shadow-xl transition-all hover:scale-105 active:scale-95"
+                        className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-500 text-white text-sm font-semibold shadow-lg hover:shadow-xl transition-all hover:translate-y-[-1px] active:scale-95"
                     >
                         <Printer size={16} /> Print / Save as PDF
                     </button>
                 </div>
 
-                <div className="mt-5 pt-5 border-t border-gray-100 dark:border-gray-800">
+                <div className="mt-5 pt-5 border-t border-ink-100 dark:border-ink-800">
                     <div className="flex items-center gap-1.5 mb-3">
-                        <Lock size={12} className="text-gray-400" />
-                        <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">
+                        <Lock size={12} className="text-ink-400" />
+                        <span className="text-[11px] font-bold text-ink-400 uppercase tracking-widest">
                             What&apos;s included
                         </span>
                     </div>
@@ -149,7 +149,7 @@ export default function MonthlyReport({ moods, year, month, userName }: MonthlyR
                                 : 'none written this month'}
                         />
                     </div>
-                    <p className="text-[11px] text-gray-400 mt-3">
+                    <p className="text-[11px] text-ink-400 mt-3">
                         {includesText
                             ? 'Your written entries will appear on the report. Everything stays on your device until you print it.'
                             : 'Charts and numbers only — no written entries leave this page.'}
@@ -207,7 +207,7 @@ export default function MonthlyReport({ moods, year, month, userName }: MonthlyR
                     </p>
 
                     {/* Stat strip */}
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10, marginTop: 16 }}>
+                    <div className="report-stat-strip" style={{ display: 'grid', gap: 10, marginTop: 16 }}>
                         <Stat label="Days logged" value={`${report.logged}`} sub={`of ${report.daysInMonth}`} />
                         <Stat label="Average" value={report.avgScore.toFixed(1)} sub="out of 5.0" />
                         <Stat
@@ -431,8 +431,8 @@ function Toggle({
     return (
         <label
             className={`flex items-start gap-2.5 flex-1 rounded-xl border p-3 transition-colors ${disabled
-                ? 'border-gray-100 dark:border-gray-800 opacity-60 cursor-not-allowed'
-                : 'border-gray-200 dark:border-gray-700 hover:border-purple-300 dark:hover:border-purple-500/50 cursor-pointer'
+                ? 'border-ink-100 dark:border-ink-800 opacity-60 cursor-not-allowed'
+                : 'border-ink-200 dark:border-ink-700 hover:border-brand-300 dark:hover:border-brand-500/50 cursor-pointer'
                 }`}
         >
             <input
@@ -440,11 +440,11 @@ function Toggle({
                 checked={checked && !disabled}
                 disabled={disabled}
                 onChange={e => onChange(e.target.checked)}
-                className="mt-0.5 h-4 w-4 rounded accent-purple-500 disabled:cursor-not-allowed"
+                className="mt-0.5 h-4 w-4 rounded accent-brand-500 disabled:cursor-not-allowed"
             />
             <span className="leading-tight">
-                <span className="block text-sm font-semibold text-gray-800 dark:text-gray-100">{label}</span>
-                <span className="block text-[11px] text-gray-400 mt-0.5">{hint}</span>
+                <span className="block text-sm font-semibold text-ink-800 dark:text-ink-100">{label}</span>
+                <span className="block text-[11px] text-ink-400 mt-0.5">{hint}</span>
             </span>
         </label>
     )

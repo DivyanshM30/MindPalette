@@ -14,8 +14,8 @@ const steps = [
         emoji: '🎨',
         title: 'Welcome to MindPalette!',
         description: 'Your personal space to understand your emotions and see patterns in how you feel.',
-        gradient: 'from-purple-500 to-pink-500',
-        bg: 'from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30',
+        gradient: 'from-brand-500 to-brand-500',
+        bg: 'from-brand-50 to-brand-50 dark:from-brand-950/30 dark:to-brand-950/30',
     },
     {
         icon: CalendarDays,
@@ -77,16 +77,16 @@ export default function Onboarding({ userName }: OnboardingProps) {
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.9, y: 20 }}
                     transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-                    className="relative w-full max-w-md bg-white dark:bg-gray-900 rounded-3xl shadow-2xl overflow-hidden"
+                    className="relative w-full max-w-md bg-paper dark:bg-ink-900 rounded-3xl shadow-md overflow-hidden"
                     onClick={(e) => e.stopPropagation()}
                 >
                     {/* Close button */}
                     <button
                         onClick={handleDismiss}
-                        className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/80 dark:bg-gray-800/80 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                        className="absolute top-4 right-4 z-10 p-2 rounded-full bg-paper/80 dark:bg-ink-800/80 hover:bg-ink-100 dark:hover:bg-ink-700 transition-colors"
                         aria-label="Close onboarding"
                     >
-                        <X size={16} className="text-gray-500" />
+                        <X size={16} className="text-ink-500" />
                     </button>
 
                     {/* Step content */}
@@ -109,7 +109,7 @@ export default function Onboarding({ userName }: OnboardingProps) {
                                     <Icon size={36} className="text-white" />
                                 </motion.div>
                                 <div className="text-4xl mb-3">{step.emoji}</div>
-                                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                                <h2 className="text-2xl font-bold text-ink-900 dark:text-white">
                                     {currentStep === 0 ? `Hey, ${userName}!` : step.title}
                                 </h2>
                             </div>
@@ -117,11 +117,11 @@ export default function Onboarding({ userName }: OnboardingProps) {
                             {/* Description */}
                             <div className="px-8 pt-6 pb-4">
                                 {currentStep === 0 && (
-                                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 text-center">
+                                    <h3 className="text-lg font-semibold text-ink-900 dark:text-white mb-2 text-center">
                                         {step.title}
                                     </h3>
                                 )}
-                                <p className="text-gray-600 dark:text-gray-400 text-center leading-relaxed">
+                                <p className="text-ink-600 dark:text-ink-400 text-center leading-relaxed">
                                     {step.description}
                                 </p>
                             </div>
@@ -137,10 +137,10 @@ export default function Onboarding({ userName }: OnboardingProps) {
                                     key={i}
                                     className={`h-1.5 rounded-full transition-all duration-300 ${
                                         i === currentStep
-                                            ? 'w-8 bg-purple-500'
+                                            ? 'w-8 bg-brand-500'
                                             : i < currentStep
-                                                ? 'w-1.5 bg-purple-300 dark:bg-purple-700'
-                                                : 'w-1.5 bg-gray-200 dark:bg-gray-700'
+                                                ? 'w-1.5 bg-brand-300 dark:bg-brand-700'
+                                                : 'w-1.5 bg-ink-200 dark:bg-ink-700'
                                     }`}
                                 />
                             ))}
@@ -152,13 +152,13 @@ export default function Onboarding({ userName }: OnboardingProps) {
                                 <Link
                                     href="/day-view"
                                     onClick={handleDismiss}
-                                    className="w-full py-3.5 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold text-center hover:shadow-lg hover:shadow-purple-500/25 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
+                                    className="w-full py-3.5 rounded-xl bg-brand-500 text-white font-semibold text-center hover:shadow-lg hover:shadow-brand-500/25 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
                                 >
                                     Log Your First Mood <ArrowRight size={18} />
                                 </Link>
                                 <button
                                     onClick={handleDismiss}
-                                    className="text-sm text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                                    className="text-sm text-ink-500 dark:text-ink-400 hover:text-ink-600 dark:hover:text-ink-300 transition-colors"
                                 >
                                     I&apos;ll explore on my own
                                 </button>
@@ -167,13 +167,13 @@ export default function Onboarding({ userName }: OnboardingProps) {
                             <div className="flex gap-3">
                                 <button
                                     onClick={handleDismiss}
-                                    className="flex-1 py-3 rounded-xl text-gray-500 dark:text-gray-400 font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                                    className="flex-1 py-3 rounded-xl text-ink-500 dark:text-ink-400 font-medium hover:bg-ink-100 dark:hover:bg-ink-800 transition-colors"
                                 >
                                     Skip
                                 </button>
                                 <button
                                     onClick={handleNext}
-                                    className="flex-1 py-3 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-semibold hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                                    className="flex-1 py-3 rounded-xl bg-brand-500 text-white dark:bg-brand-300 dark:text-brand-950 font-semibold hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
                                 >
                                     Next <ArrowRight size={16} />
                                 </button>

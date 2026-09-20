@@ -86,35 +86,35 @@ export default function CalendarPopup({ isOpen, onClose, selectedDate, onDateSel
                             role="dialog"
                             aria-modal="true"
                             aria-label="Calendar date picker"
-                            className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-white/20"
+                            className="bg-paper dark:bg-ink-900 rounded-2xl shadow-md w-full max-w-md overflow-hidden border border-white/20"
                         >
                             {/* Header */}
-                            <div className="p-6 pb-4 flex items-center justify-between border-b border-gray-200 dark:border-gray-800">
+                            <div className="p-6 pb-4 flex items-center justify-between border-b border-ink-200 dark:border-ink-800">
                                 <div className="flex items-center gap-4">
                                     <button
                                         onClick={handlePrevMonth}
                                         aria-label="Previous month"
-                                        className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                                        className="p-1.5 rounded-lg hover:bg-ink-100 dark:hover:bg-ink-800 transition-colors"
                                     >
-                                        <ChevronLeft size={20} className="text-gray-600 dark:text-gray-300" />
+                                        <ChevronLeft size={20} className="text-ink-600 dark:text-ink-300" />
                                     </button>
-                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                                    <h3 className="text-lg font-bold text-ink-900 dark:text-white">
                                         {MONTH_NAMES[currentMonth.getMonth()]} {currentMonth.getFullYear()}
                                     </h3>
                                     <button
                                         onClick={handleNextMonth}
                                         aria-label="Next month"
-                                        className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                                        className="p-1.5 rounded-lg hover:bg-ink-100 dark:hover:bg-ink-800 transition-colors"
                                     >
-                                        <ChevronRight size={20} className="text-gray-600 dark:text-gray-300" />
+                                        <ChevronRight size={20} className="text-ink-600 dark:text-ink-300" />
                                     </button>
                                 </div>
                                 <button
                                     onClick={onClose}
                                     aria-label="Close calendar"
-                                    className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                                    className="p-2 hover:bg-ink-100 dark:hover:bg-ink-800 rounded-lg transition-colors"
                                 >
-                                    <X size={20} className="text-gray-600 dark:text-gray-300" />
+                                    <X size={20} className="text-ink-600 dark:text-ink-300" />
                                 </button>
                             </div>
 
@@ -123,7 +123,7 @@ export default function CalendarPopup({ isOpen, onClose, selectedDate, onDateSel
                                 {/* Week Days */}
                                 <div className="grid grid-cols-7 gap-1 mb-2">
                                     {weekDays.map(day => (
-                                        <div key={day} className="text-xs font-semibold text-gray-500 dark:text-gray-400 text-center py-2">
+                                        <div key={day} className="text-xs font-semibold text-ink-500 dark:text-ink-400 text-center py-2">
                                             {day}
                                         </div>
                                     ))}
@@ -148,10 +148,10 @@ export default function CalendarPopup({ isOpen, onClose, selectedDate, onDateSel
                                                 onClick={() => handleDateClick(day)}
                                                 className={`aspect-square rounded-lg flex items-center justify-center text-sm font-semibold transition-all relative ${
                                                     selected
-                                                        ? 'bg-purple-500 text-white ring-2 ring-purple-300 dark:ring-purple-700'
+                                                        ? 'bg-brand-500 text-white ring-2 ring-brand-300 dark:ring-brand-700'
                                                         : today
-                                                        ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 ring-2 ring-purple-300 dark:ring-purple-700'
-                                                        : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300'
+                                                        ? 'bg-brand-100 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 ring-2 ring-brand-300 dark:ring-brand-700'
+                                                        : 'hover:bg-ink-100 dark:hover:bg-ink-800 text-ink-700 dark:text-ink-300'
                                                 }`}
                                             >
                                                 {mood ? (

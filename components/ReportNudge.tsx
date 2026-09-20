@@ -57,23 +57,23 @@ export default function ReportNudge({ moods }: { moods: Mood[] }) {
     if (!mounted || dismissed || count < MIN_ENTRIES) return null
 
     return (
-        <div className="flex items-center gap-3 rounded-2xl border border-purple-200/80 dark:border-purple-500/20 bg-purple-50/70 dark:bg-purple-950/20 px-4 py-3">
-            <span className="w-9 h-9 shrink-0 rounded-xl bg-white dark:bg-purple-500/10 border border-purple-200/80 dark:border-purple-500/20 flex items-center justify-center text-purple-600 dark:text-purple-300">
+        <div className="flex items-center gap-3 rounded-2xl border border-brand-200/80 dark:border-brand-500/20 bg-brand-50/70 dark:bg-brand-950/20 px-4 py-3">
+            <span className="w-9 h-9 shrink-0 rounded-xl bg-paper dark:bg-brand-500/10 border border-brand-200/80 dark:border-brand-500/20 flex items-center justify-center text-brand-600 dark:text-brand-300">
                 <Printer size={17} />
             </span>
 
             <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                <p className="text-sm font-semibold text-ink-900 dark:text-white truncate">
                     Your {MONTH_NAMES[month]} report is ready
                 </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                <p className="text-xs text-ink-500 dark:text-ink-400 truncate">
                     {count} {count === 1 ? 'day' : 'days'} logged — print a one-page summary or save it as a PDF
                 </p>
             </div>
 
             <Link
                 href="/insights#monthly-report"
-                className="shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold transition-colors"
+                className="shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold transition-colors"
             >
                 View <ArrowRight size={13} />
             </Link>
@@ -82,7 +82,7 @@ export default function ReportNudge({ moods }: { moods: Mood[] }) {
                 onClick={dismiss}
                 aria-label="Dismiss report reminder"
                 title="Dismiss until next month"
-                className="shrink-0 p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-white dark:hover:bg-white/5 transition-colors"
+                className="shrink-0 p-1.5 rounded-lg text-ink-500 dark:text-ink-400 hover:text-ink-600 dark:hover:text-ink-200 hover:bg-paper dark:hover:bg-paper/5 transition-colors"
             >
                 <X size={15} />
             </button>

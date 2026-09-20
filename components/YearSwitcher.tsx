@@ -13,23 +13,23 @@ export default function YearSwitcher({ year, minYear, maxYear, onChange }: YearS
     const canNext = year < maxYear
 
     return (
-        <div className="flex items-center gap-1 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm px-1 py-1">
+        <div className="flex items-center gap-1 rounded-xl bg-paper dark:bg-ink-800 border border-ink-200 dark:border-ink-700 shadow-sm px-1 py-1">
             <button
                 onClick={() => canPrev && onChange(year - 1)}
                 disabled={!canPrev}
                 aria-label="Previous year"
-                className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                className="p-1.5 rounded-lg hover:bg-ink-100 dark:hover:bg-ink-700 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             >
-                <ChevronLeft size={18} className="text-gray-600 dark:text-gray-300" />
+                <ChevronLeft size={18} className="text-ink-600 dark:text-ink-300" />
             </button>
-            <span className="px-2 text-sm font-bold text-gray-900 dark:text-white tabular-nums">{year}</span>
+            <span className="px-2 text-sm font-bold text-ink-900 dark:text-white tabular-nums">{year}</span>
             <button
                 onClick={() => canNext && onChange(year + 1)}
                 disabled={!canNext}
                 aria-label="Next year"
-                className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                className="p-1.5 rounded-lg hover:bg-ink-100 dark:hover:bg-ink-700 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             >
-                <ChevronRight size={18} className="text-gray-600 dark:text-gray-300" />
+                <ChevronRight size={18} className="text-ink-600 dark:text-ink-300" />
             </button>
         </div>
     )

@@ -23,7 +23,7 @@ export default function Home() {
     Array.from({ length: 182 }, () => {
       const colors = [
         'bg-emerald-400', 'bg-amber-400', 'bg-violet-400',
-        'bg-orange-400', 'bg-slate-400', 'bg-teal-400', 'bg-pink-400'
+        'bg-orange-400', 'bg-slate-400', 'bg-teal-400', 'bg-brand-400'
       ]
       return {
         hasEntry: Math.random() > 0.15,
@@ -34,7 +34,7 @@ export default function Home() {
   if (loading) {
     return (
       <div className="flex h-[50vh] items-center justify-center">
-        <div className="flex flex-col items-center gap-3 text-purple-400">
+        <div className="flex flex-col items-center gap-3 text-brand-400">
           <Loader2 className="animate-spin" size={32} />
           <span>Loading your space...</span>
         </div>
@@ -48,12 +48,12 @@ export default function Home() {
         <div className="rounded-3xl border border-red-200 dark:border-red-900/40 bg-red-50/50 dark:bg-red-900/10 p-12 flex flex-col items-center gap-4 text-center">
           <AlertTriangle className="text-red-500 dark:text-red-400" size={32} />
           <div>
-              <p className="font-semibold text-gray-900 dark:text-white">Couldn&apos;t load your moods</p>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Check your connection and try again.</p>
+              <p className="font-semibold text-ink-900 dark:text-white">Couldn&apos;t load your moods</p>
+              <p className="text-sm text-ink-500 dark:text-ink-400 mt-1">Check your connection and try again.</p>
           </div>
           <button
               onClick={refetch}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold shadow-lg hover:shadow-xl transition-all hover:scale-105 active:scale-95"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-500 text-white text-sm font-semibold shadow-lg hover:shadow-sm transition-all hover:translate-y-[-1px] active:scale-95"
           >
               <RotateCcw size={16} /> Try again
           </button>
@@ -63,29 +63,29 @@ export default function Home() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 w-full">
+    <div className="relative isolate max-w-6xl mx-auto px-4 sm:px-6 py-8 w-full overflow-x-clip">
       <div className="flex flex-col items-center animate-in fade-in slide-in-from-bottom-4 duration-700">
 
         {!user ? (<>
             {/* ── HERO ── */}
             <div className="relative w-full flex flex-col items-center text-center pt-8 pb-4 space-y-6">
               {/* Background aura */}
-              <div className="absolute -z-10 top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-gradient-to-br from-purple-500/20 via-pink-500/10 to-teal-500/10 rounded-full blur-[100px]" />
+              <div aria-hidden="true" className="absolute -z-10 top-0 left-1/2 -translate-x-1/2 w-full max-w-2xl h-96 bg-brand-200/20 dark:bg-brand-800/10 rounded-full blur-3xl" />
 
               {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-purple-300/50 dark:border-purple-700/50 bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-300 text-xs font-semibold tracking-wide uppercase">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-brand-300/50 dark:border-brand-700/50 bg-brand-50 dark:bg-brand-950/40 text-brand-600 dark:text-brand-300 text-xs font-semibold tracking-wide uppercase">
                 <Sparkles size={12} className="animate-pulse" /> Your {new Date().getFullYear()} Emotional Journey
               </div>
 
               {/* Headline */}
               <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[1.05]">
-                <span className="text-gray-900 dark:text-white">Understand your</span>
+                <span className="text-ink-900 dark:text-white">Understand your</span>
                 <br />
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400">inner world</span>
+                <span className="text-brand-500 dark:text-brand-300 italic">inner world</span>
               </h1>
 
               {/* Subheadline */}
-              <p className="text-lg md:text-xl text-gray-500 dark:text-gray-400 max-w-xl leading-relaxed">
+              <p className="text-lg md:text-xl text-ink-500 dark:text-ink-400 max-w-xl leading-relaxed">
                 MindPalette turns your daily feelings into a living, breathing canvas of color — one pixel per day, one year at a time.
               </p>
 
@@ -93,13 +93,13 @@ export default function Home() {
               <div className="flex flex-wrap gap-4 justify-center pt-2">
                 <Link
                   href="/login"
-                  className="group px-8 py-4 rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold text-base shadow-2xl shadow-purple-500/30 hover:shadow-purple-500/50 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2"
+                  className="group px-8 py-4 rounded-2xl bg-brand-600 text-white font-bold text-base shadow-md shadow-brand-500/30 hover:shadow-brand-500/50 hover:translate-y-[-1px] active:scale-95 transition-all duration-300 flex items-center gap-2"
                 >
                   Start Tracking Free <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <a
                   href="#features"
-                  className="px-8 py-4 rounded-2xl border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-semibold text-base hover:border-purple-400 dark:hover:border-purple-600 hover:scale-105 active:scale-95 transition-all duration-300"
+                  className="px-8 py-4 rounded-2xl border-2 border-ink-200 dark:border-ink-700 text-ink-700 dark:text-ink-300 font-semibold text-base hover:border-brand-400 dark:hover:border-brand-600 hover:translate-y-[-1px] active:scale-95 transition-all duration-300"
                 >
                   See how it works ↓
                 </a>
@@ -107,27 +107,27 @@ export default function Home() {
 
               {/* Animated pixel grid preview */}
               <div className="mt-8 w-full max-w-2xl">
-                <div className="glass rounded-3xl border border-white/20 dark:border-white/10 p-6 shadow-2xl">
+                <div className="glass rounded-3xl border border-white/20 dark:border-white/10 p-6 shadow-md">
                   <div className="flex items-center gap-2 mb-4 text-left">
                     <div className="w-3 h-3 rounded-full bg-red-400" />
                     <div className="w-3 h-3 rounded-full bg-yellow-400" />
                     <div className="w-3 h-3 rounded-full bg-green-400" />
-                    <span className="ml-2 text-xs text-gray-400 font-mono">mindpalette.app — Your {currentYear}</span>
+                    <span className="ml-2 text-xs text-ink-500 dark:text-ink-400 font-mono">mindpalette.app — Your {currentYear}</span>
                   </div>
                   {/* Pixel grid demo */}
                   <div className="grid gap-1" style={{ gridTemplateColumns: 'repeat(26, 1fr)' }}>
                     {pixelGrid.map((cell, i) => (
                       <div
                         key={i}
-                        className={`aspect-square rounded-sm ${cell.hasEntry ? cell.color + ' opacity-80' : 'bg-gray-200 dark:bg-gray-800 opacity-30'}`}
+                        className={`aspect-square rounded-sm ${cell.hasEntry ? cell.color + ' opacity-80' : 'bg-ink-200 dark:bg-ink-800 opacity-30'}`}
                         style={{ animationDelay: `${i * 8}ms` }}
                       />
                     ))}
                   </div>
                   <div className="flex items-center justify-between mt-4">
-                    <span className="text-xs text-gray-400">Jan {currentYear}</span>
-                    <span className="text-xs text-gray-400 font-medium">182 days tracked ✨</span>
-                    <span className="text-xs text-gray-400">Jun {currentYear}</span>
+                    <span className="text-xs text-ink-500 dark:text-ink-400">Jan {currentYear}</span>
+                    <span className="text-xs text-ink-500 dark:text-ink-400 font-medium">182 days tracked ✨</span>
+                    <span className="text-xs text-ink-500 dark:text-ink-400">Jun {currentYear}</span>
                   </div>
                 </div>
               </div>
@@ -136,16 +136,16 @@ export default function Home() {
             {/* ── FEATURES ── */}
             <div id="features" className="w-full pt-16 pb-8 space-y-8">
               <div className="text-center space-y-2">
-                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">Everything you need to know yourself</h2>
-                <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto">Built for reflection, not obsession. Simple daily check-ins, beautiful long-term patterns.</p>
+                <h2 className="text-3xl md:text-4xl font-bold text-ink-900 dark:text-white">Everything you need to know yourself</h2>
+                <p className="text-ink-500 dark:text-ink-400 max-w-md mx-auto">Built for reflection, not obsession. Simple daily check-ins, beautiful long-term patterns.</p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5 w-full">
                 {[
                   {
                     icon: '✍️',
-                    gradient: 'from-purple-500 to-pink-500',
-                    glow: 'shadow-purple-500/20',
+                    gradient: 'from-brand-500 to-brand-500',
+                    glow: 'shadow-brand-500/20',
                     title: '30-Second Check-ins',
                     desc: 'Pick your mood, add an optional note. No journaling pressure — just a quick pulse check every day.',
                     tag: 'Daily habit'
@@ -160,7 +160,7 @@ export default function Home() {
                   },
                   {
                     icon: '🖨️',
-                    gradient: 'from-violet-500 to-fuchsia-500',
+                    gradient: 'from-violet-500 to-brand-500',
                     glow: 'shadow-violet-500/20',
                     title: 'Printable Monthly Reports',
                     desc: 'Turn any month into a clear one-page summary to print or save as a PDF, with written entries included only when you choose.',
@@ -184,16 +184,16 @@ export default function Home() {
                   },
                   {
                     icon: '🗓️',
-                    gradient: 'from-indigo-500 to-purple-500',
-                    glow: 'shadow-indigo-500/20',
+                    gradient: 'from-brand-500 to-brand-500',
+                    glow: 'shadow-brand-500/20',
                     title: 'Multi-Year Journey',
                     desc: 'Flip between years and watch your story grow. Your history never disappears — every pixel stays reachable.',
                     tag: 'History'
                   },
                   {
                     icon: '🖼️',
-                    gradient: 'from-fuchsia-500 to-pink-500',
-                    glow: 'shadow-fuchsia-500/20',
+                    gradient: 'from-brand-500 to-brand-500',
+                    glow: 'shadow-brand-500/20',
                     title: 'Shareable Year Art',
                     desc: 'Turn your year in pixels into a downloadable image with four palette themes — share the art, never the notes.',
                     tag: 'Share'
@@ -207,13 +207,13 @@ export default function Home() {
                     tag: 'Trust'
                   }
                 ].map((f) => (
-                  <div key={f.title} className="glass rounded-2xl p-6 border border-white/30 dark:border-white/10 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-left group">
+                  <div key={f.title} className="glass rounded-2xl p-6 border border-white/30 dark:border-white/10 shadow-lg hover:shadow-sm hover:-translate-y-1 transition-all duration-300 text-left group">
                     <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${f.gradient} flex items-center justify-center text-2xl mb-4 shadow-lg ${f.glow}`}>
                       {f.icon}
                     </div>
-                    <div className="text-xs font-semibold uppercase tracking-widest text-purple-500 dark:text-purple-400 mb-1">{f.tag}</div>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{f.title}</h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{f.desc}</p>
+                    <div className="text-xs font-semibold uppercase tracking-widest text-brand-500 dark:text-brand-400 mb-1">{f.tag}</div>
+                    <h3 className="text-lg font-bold text-ink-900 dark:text-white mb-2">{f.title}</h3>
+                    <p className="text-sm text-ink-500 dark:text-ink-400 leading-relaxed">{f.desc}</p>
                   </div>
                 ))}
               </div>
@@ -221,22 +221,22 @@ export default function Home() {
 
             {/* ── YEAR IN PIXELS SHOWCASE ── */}
             <div className="w-full py-12">
-              <div className="glass rounded-3xl border border-white/20 dark:border-white/10 p-8 md:p-12 shadow-2xl relative overflow-hidden">
-                <div className="absolute -z-10 top-0 right-0 w-64 h-64 bg-gradient-to-bl from-purple-500/20 to-transparent rounded-full blur-[60px]" />
+              <div className="glass rounded-3xl border border-white/20 dark:border-white/10 p-8 md:p-12 shadow-md relative overflow-hidden">
+                <div className="absolute -z-10 top-0 right-0 w-64 h-64 bg-gradient-to-bl from-brand-500/20 to-transparent rounded-full blur-[60px]" />
                 <div className="absolute -z-10 bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-teal-500/10 to-transparent rounded-full blur-[60px]" />
 
                 <div className="flex flex-col md:flex-row items-center gap-10">
                   <div className="flex-1 space-y-4 text-left">
                     <div className="text-xs font-semibold uppercase tracking-widest text-emerald-500">Year in Pixels</div>
-                    <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white leading-tight">
+                    <h2 className="text-3xl md:text-4xl font-bold text-ink-900 dark:text-white leading-tight">
                       Your whole year,<br />painted in feeling
                     </h2>
-                    <p className="text-gray-500 dark:text-gray-400 leading-relaxed">
-                      Every day becomes a colored square. Fill your year with greens, golds, and purples. Spot patterns you never noticed. Celebrate the good days. Learn from the hard ones — then <span className="font-semibold text-gray-700 dark:text-gray-200">download it as art</span> to share, with your notes always kept private.
+                    <p className="text-ink-500 dark:text-ink-400 leading-relaxed">
+                      Every day becomes a colored square. Fill your year with greens, golds, and purples. Spot patterns you never noticed. Celebrate the good days. Learn from the hard ones — then <span className="font-semibold text-ink-700 dark:text-ink-200">download it as art</span> to share, with your notes always kept private.
                     </p>
                     <Link
                       href="/login"
-                      className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold hover:shadow-lg hover:shadow-purple-500/25 hover:scale-105 transition-all"
+                      className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-brand-600 text-white font-semibold hover:shadow-lg hover:shadow-brand-500/25 hover:translate-y-[-1px] transition-all"
                     >
                       Start your canvas <ArrowRight size={16} />
                     </Link>
@@ -264,7 +264,7 @@ export default function Home() {
 
             {/* ── TRUST BADGES ── */}
             <div className="w-full py-6 flex flex-col items-center gap-4">
-              <p className="text-sm text-gray-400 font-medium uppercase tracking-widest">Why people love it</p>
+              <p className="text-sm text-ink-500 dark:text-ink-400 font-medium uppercase tracking-widest">Why people love it</p>
               <div className="flex flex-wrap justify-center gap-4">
                 {[
                   { icon: '🔒', text: 'Private & secure' },
@@ -276,7 +276,7 @@ export default function Home() {
                   { icon: '🌙', text: 'Dark & light mode' },
                   { icon: '⌨️', text: 'Keyboard shortcuts' },
                 ].map((b) => (
-                  <div key={b.text} className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 dark:bg-gray-800/60 text-gray-600 dark:text-gray-300 text-sm font-medium">
+                  <div key={b.text} className="flex items-center gap-2 px-4 py-2 rounded-full bg-ink-100 dark:bg-ink-800/60 text-ink-600 dark:text-ink-300 text-sm font-medium">
                     <span>{b.icon}</span> {b.text}
                   </div>
                 ))}
@@ -286,27 +286,27 @@ export default function Home() {
             {/* ── FINAL CTA ── */}
             <div className="w-full py-12 flex flex-col items-center text-center space-y-5">
               <div className="relative">
-                <div className="absolute -z-10 inset-0 w-[400px] h-[200px] left-1/2 -translate-x-1/2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 blur-[60px] rounded-full" />
-                <h2 className="text-3xl md:text-5xl font-black text-gray-900 dark:text-white">
+                <div className="absolute -z-10 inset-0 w-[400px] h-[200px] left-1/2 -translate-x-1/2 bg-gradient-to-r from-brand-500/20 to-brand-500/20 blur-[60px] rounded-full" />
+                <h2 className="text-3xl md:text-5xl font-black text-ink-900 dark:text-white">
                   Ready to understand<br />
-                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500">yourself better?</span>
+                  <span className="text-brand-500 dark:text-brand-300 italic">yourself better?</span>
                 </h2>
               </div>
-              <p className="text-gray-500 dark:text-gray-400 max-w-sm">
+              <p className="text-ink-500 dark:text-ink-400 max-w-sm">
                 Takes 30 seconds a day. Gives you a lifetime of self-awareness.
               </p>
               <Link
                 href="/login"
-                className="group px-10 py-4 rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold text-lg shadow-2xl shadow-purple-500/30 hover:shadow-purple-500/50 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-3"
+                className="group px-10 py-4 rounded-2xl bg-brand-600 text-white font-bold text-lg shadow-md shadow-brand-500/30 hover:shadow-brand-500/50 hover:translate-y-[-1px] active:scale-95 transition-all duration-300 flex items-center gap-3"
               >
                 Start Tracking Today
                 <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
               </Link>
-              <p className="text-xs text-gray-400">No credit card. No nonsense. Just you and your moods.</p>
+              <p className="text-xs text-ink-500 dark:text-ink-400">No credit card. No nonsense. Just you and your moods.</p>
             </div>
 
             {/* Background aura */}
-            <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-tr from-purple-300/10 to-pink-300/10 rounded-full blur-[120px]" />
+            <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-tr from-brand-300/10 to-brand-300/10 rounded-full blur-[120px]" />
           </>) : (
           <div className="w-full text-left space-y-8">
             {/* Onboarding for new users */}
@@ -325,11 +325,11 @@ export default function Home() {
 
             {/* Shareable art card highlight (P1-2) — only once there's a year worth sharing */}
             {Object.keys(moodData).length > 0 && (
-              <div className="relative overflow-hidden rounded-3xl p-6 md:p-8 bg-gradient-to-br from-purple-600 via-fuchsia-600 to-pink-600 shadow-2xl shadow-purple-500/30">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+              <div className="relative overflow-hidden rounded-3xl p-6 md:p-8 bg-gradient-to-br from-brand-600 via-brand-600 to-brand-600 shadow-md shadow-brand-500/30">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-paper/10 rounded-full blur-3xl pointer-events-none" />
                 <div className="relative z-10 flex flex-col md:flex-row md:items-center gap-5 md:gap-8">
                   <div className="flex-1 space-y-2.5 text-white">
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 text-white text-[11px] font-bold uppercase tracking-widest">
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-paper/20 text-white text-[11px] font-bold uppercase tracking-widest">
                       <Sparkles size={12} /> New
                     </div>
                     <h3 className="text-2xl md:text-3xl font-bold leading-tight">Turn your year into art</h3>
@@ -339,7 +339,7 @@ export default function Home() {
                   </div>
                   <button
                     onClick={() => setShareOpen(true)}
-                    className="shrink-0 inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-white text-purple-700 font-bold shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all"
+                    className="shrink-0 inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-ink-50 text-brand-700 font-bold shadow-sm hover:translate-y-[-1px] active:scale-95 transition-all"
                   >
                     <Share2 size={18} /> Share your year
                   </button>
@@ -351,45 +351,45 @@ export default function Home() {
             <div className="flex flex-wrap gap-4 justify-center pt-4">
               <Link
                 href="/day-view"
-                className="group relative overflow-hidden px-6 py-5 rounded-2xl bg-white dark:bg-gray-900 border-2 border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] flex items-center gap-4"
+                className="group relative overflow-hidden px-6 py-5 rounded-2xl bg-paper dark:bg-ink-900 border-2 border-brand-200 dark:border-brand-800 hover:border-brand-400 dark:hover:border-brand-600 shadow-lg hover:shadow-sm transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] flex items-center gap-4"
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5 group-hover:from-purple-500/10 group-hover:to-pink-500/10 transition-all" />
-                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white shadow-lg shadow-purple-500/30 relative z-10">
+                <div className="absolute inset-0 bg-gradient-to-br from-brand-500/5 to-brand-500/5 group-hover:from-brand-500/10 group-hover:to-brand-500/10 transition-all" />
+                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-brand-500 to-brand-500 flex items-center justify-center text-white shadow-lg shadow-brand-500/30 relative z-10">
                   <CalendarDays size={28} />
                 </div>
                 <div className="text-left relative z-10">
-                  <div className="text-lg font-bold text-gray-900 dark:text-white">Check In Today</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Log your daily mood</div>
+                  <div className="text-lg font-bold text-ink-900 dark:text-white">Check In Today</div>
+                  <div className="text-sm text-ink-500 dark:text-ink-400">Log your daily mood</div>
                 </div>
-                <ArrowRight className="ml-auto text-purple-400 group-hover:translate-x-1 transition-transform relative z-10" size={20} />
+                <ArrowRight className="ml-auto text-brand-400 group-hover:translate-x-1 transition-transform relative z-10" size={20} />
               </Link>
 
               <Link
                 href="/year"
-                className="group relative overflow-hidden px-6 py-5 rounded-2xl bg-white dark:bg-gray-900 border-2 border-indigo-200 dark:border-indigo-800 hover:border-indigo-400 dark:hover:border-indigo-600 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] flex items-center gap-4"
+                className="group relative overflow-hidden px-6 py-5 rounded-2xl bg-paper dark:bg-ink-900 border-2 border-brand-200 dark:border-brand-800 hover:border-brand-400 dark:hover:border-brand-600 shadow-lg hover:shadow-sm transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] flex items-center gap-4"
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-purple-500/5 group-hover:from-indigo-500/10 group-hover:to-purple-500/10 transition-all" />
-                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/30 relative z-10">
+                <div className="absolute inset-0 bg-gradient-to-br from-brand-500/5 to-brand-500/5 group-hover:from-brand-500/10 group-hover:to-brand-500/10 transition-all" />
+                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-brand-500 to-brand-500 flex items-center justify-center text-white shadow-lg shadow-brand-500/30 relative z-10">
                   <Calendar size={28} />
                 </div>
                 <div className="text-left relative z-10">
-                  <div className="text-lg font-bold text-gray-900 dark:text-white">Year View</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">See your year in pixels</div>
+                  <div className="text-lg font-bold text-ink-900 dark:text-white">Year View</div>
+                  <div className="text-sm text-ink-500 dark:text-ink-400">See your year in pixels</div>
                 </div>
-                <ArrowRight className="ml-auto text-indigo-400 group-hover:translate-x-1 transition-transform relative z-10" size={20} />
+                <ArrowRight className="ml-auto text-brand-400 group-hover:translate-x-1 transition-transform relative z-10" size={20} />
               </Link>
 
               <Link
                 href="/insights"
-                className="group relative overflow-hidden px-6 py-5 rounded-2xl bg-white dark:bg-gray-900 border-2 border-emerald-200 dark:border-emerald-800 hover:border-emerald-400 dark:hover:border-emerald-600 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] flex items-center gap-4"
+                className="group relative overflow-hidden px-6 py-5 rounded-2xl bg-paper dark:bg-ink-900 border-2 border-emerald-200 dark:border-emerald-800 hover:border-emerald-400 dark:hover:border-emerald-600 shadow-lg hover:shadow-sm transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] flex items-center gap-4"
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-teal-500/5 group-hover:from-emerald-500/10 group-hover:to-teal-500/10 transition-all" />
                 <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-white shadow-lg shadow-emerald-500/30 relative z-10">
                   <BarChart3 size={28} />
                 </div>
                 <div className="text-left relative z-10">
-                  <div className="text-lg font-bold text-gray-900 dark:text-white">Insights</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">Monthly trends & stats</div>
+                  <div className="text-lg font-bold text-ink-900 dark:text-white">Insights</div>
+                  <div className="text-sm text-ink-500 dark:text-ink-400">Monthly trends & stats</div>
                 </div>
                 <ArrowRight className="ml-auto text-emerald-400 group-hover:translate-x-1 transition-transform relative z-10" size={20} />
               </Link>

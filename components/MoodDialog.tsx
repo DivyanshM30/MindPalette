@@ -75,15 +75,15 @@ export default function MoodDialog({ isOpen, onClose, onSelect, date, currentMoo
                             role="dialog"
                             aria-modal="true"
                             aria-label="Select mood"
-                            className="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl w-full max-w-md overflow-hidden border border-white/20"
+                            className="bg-paper dark:bg-ink-900 rounded-3xl shadow-md w-full max-w-md overflow-hidden border border-white/20"
                         >
                             {/* Header */}
                             <div className="p-6 pb-2 flex items-center justify-between">
-                                <div className="flex items-center gap-2 text-gray-500 font-medium">
+                                <div className="flex items-center gap-2 text-ink-500 font-medium">
                                     <Calendar size={18} />
                                     <span>{date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</span>
                                 </div>
-                                <button onClick={onClose} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors">
+                                <button onClick={onClose} className="p-2 hover:bg-ink-100 dark:hover:bg-ink-800 rounded-full transition-colors">
                                     <X size={20} />
                                 </button>
                             </div>
@@ -99,13 +99,13 @@ export default function MoodDialog({ isOpen, onClose, onSelect, date, currentMoo
                                             onClick={() => onSelect(key, localNote)}
                                             className={cn(
                                                 "flex flex-col items-center gap-2 p-3 rounded-2xl transition-all hover:scale-110 active:scale-95",
-                                                currentMood === key ? "ring-2 ring-offset-2 ring-black dark:ring-white bg-gray-50 dark:bg-gray-800" : "hover:bg-gray-50 dark:hover:bg-gray-800"
+                                                currentMood === key ? "ring-2 ring-offset-2 ring-black dark:ring-white bg-ink-50 dark:bg-ink-800" : "hover:bg-ink-50 dark:hover:bg-ink-800"
                                             )}
                                         >
                                             <div className={cn("w-12 h-12 rounded-full shadow-md flex items-center justify-center text-lg font-bold text-white transition-transform", data.color)}>
                                                 {key}
                                             </div>
-                                            <span className="text-xs font-medium text-gray-600 dark:text-gray-300">
+                                            <span className="text-xs font-medium text-ink-600 dark:text-ink-300">
                                                 {data.emoji} {data.label}
                                             </span>
                                         </button>
@@ -114,14 +114,14 @@ export default function MoodDialog({ isOpen, onClose, onSelect, date, currentMoo
 
                                 {/* Note Input */}
                                 <div className="mb-6">
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 ml-1">
+                                    <label className="block text-sm font-medium text-ink-700 dark:text-ink-300 mb-2 ml-1">
                                         Add a note
                                     </label>
                                     <textarea
                                         value={localNote}
                                         onChange={(e) => setLocalNote(e.target.value)}
                                         placeholder="What made today memorable?"
-                                        className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-800 border-none focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-900 resize-none h-24 text-sm transition-all"
+                                        className="w-full px-4 py-3 rounded-xl bg-ink-50 dark:bg-ink-800 border-none focus:ring-2 focus:ring-brand-200 dark:focus:ring-brand-900 resize-none h-24 text-sm transition-all"
                                         onClick={(e) => e.stopPropagation()}
                                     />
                                 </div>
@@ -134,7 +134,7 @@ export default function MoodDialog({ isOpen, onClose, onSelect, date, currentMoo
                                     )}
                                     <button
                                         onClick={handleSaveAndClose}
-                                        className="px-6 py-2 rounded-full bg-black text-white dark:bg-white dark:text-black font-medium text-sm hover:scale-105 active:scale-95 transition-all shadow-lg"
+                                        className="px-6 py-2 rounded-full bg-brand-500 text-white dark:bg-brand-300 dark:text-brand-950 font-medium text-sm hover:translate-y-[-1px] active:scale-95 transition-all shadow-lg"
                                     >
                                         Save & Close
                                     </button>
