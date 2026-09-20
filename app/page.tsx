@@ -1,7 +1,7 @@
 'use client'
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
-import { AlertTriangle, ArrowRight, Sparkles, Calendar, CalendarDays, Loader2, BarChart3, RotateCcw, Share2 } from 'lucide-react'
+import { PenLine, Printer, Flame, Flower2, Image as ImageIcon, ShieldCheck, Download, Smartphone, Moon, Keyboard, AlertTriangle, ArrowRight, Sparkles, Calendar, CalendarDays, Loader2, BarChart3, RotateCcw, Share2 } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import StatisticsPanel from '@/components/StatisticsPanel'
 import GoodThings from '@/components/GoodThings'
@@ -126,7 +126,7 @@ export default function Home() {
                   </div>
                   <div className="flex items-center justify-between mt-4">
                     <span className="text-xs text-ink-500 dark:text-ink-400">Jan {currentYear}</span>
-                    <span className="text-xs text-ink-500 dark:text-ink-400 font-medium">182 days tracked ✨</span>
+                    <span className="text-xs text-ink-500 dark:text-ink-400 font-medium">182 days tracked</span>
                     <span className="text-xs text-ink-500 dark:text-ink-400">Jun {currentYear}</span>
                   </div>
                 </div>
@@ -143,7 +143,7 @@ export default function Home() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5 w-full">
                 {[
                   {
-                    icon: '✍️',
+                    icon: PenLine,
                     gradient: 'from-brand-500 to-brand-500',
                     glow: 'shadow-brand-500/20',
                     title: '30-Second Check-ins',
@@ -151,7 +151,7 @@ export default function Home() {
                     tag: 'Daily habit'
                   },
                   {
-                    icon: '📊',
+                    icon: BarChart3,
                     gradient: 'from-blue-500 to-teal-500',
                     glow: 'shadow-blue-500/20',
                     title: 'Monthly Insights',
@@ -159,7 +159,7 @@ export default function Home() {
                     tag: 'Smart analytics'
                   },
                   {
-                    icon: '🖨️',
+                    icon: Printer,
                     gradient: 'from-violet-500 to-brand-500',
                     glow: 'shadow-violet-500/20',
                     title: 'Printable Monthly Reports',
@@ -167,7 +167,7 @@ export default function Home() {
                     tag: 'Reflect & share'
                   },
                   {
-                    icon: '🔥',
+                    icon: Flame,
                     gradient: 'from-orange-500 to-amber-500',
                     glow: 'shadow-orange-500/20',
                     title: 'Streaks & Milestones',
@@ -175,7 +175,7 @@ export default function Home() {
                     tag: 'Motivation'
                   },
                   {
-                    icon: '🌻',
+                    icon: Flower2,
                     gradient: 'from-amber-400 to-orange-500',
                     glow: 'shadow-amber-500/20',
                     title: 'Good Things Recap',
@@ -183,7 +183,7 @@ export default function Home() {
                     tag: 'Gratitude'
                   },
                   {
-                    icon: '🗓️',
+                    icon: CalendarDays,
                     gradient: 'from-brand-500 to-brand-500',
                     glow: 'shadow-brand-500/20',
                     title: 'Multi-Year Journey',
@@ -191,7 +191,7 @@ export default function Home() {
                     tag: 'History'
                   },
                   {
-                    icon: '🖼️',
+                    icon: ImageIcon,
                     gradient: 'from-brand-500 to-brand-500',
                     glow: 'shadow-brand-500/20',
                     title: 'Shareable Year Art',
@@ -199,7 +199,7 @@ export default function Home() {
                     tag: 'Share'
                   },
                   {
-                    icon: '🔐',
+                    icon: ShieldCheck,
                     gradient: 'from-emerald-500 to-teal-500',
                     glow: 'shadow-emerald-500/20',
                     title: 'Your Data, Yours',
@@ -208,8 +208,8 @@ export default function Home() {
                   }
                 ].map((f) => (
                   <div key={f.title} className="glass rounded-2xl p-6 border border-white/30 dark:border-white/10 shadow-lg hover:shadow-sm hover:-translate-y-1 transition-all duration-300 text-left group">
-                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${f.gradient} flex items-center justify-center text-2xl mb-4 shadow-lg ${f.glow}`}>
-                      {f.icon}
+                    <div className="w-12 h-12 rounded-xl bg-brand-100 dark:bg-brand-900/40 text-brand-600 dark:text-brand-300 flex items-center justify-center mb-4">
+                      <f.icon size={23} strokeWidth={1.5} aria-hidden="true" />
                     </div>
                     <div className="text-xs font-semibold uppercase tracking-widest text-brand-500 dark:text-brand-400 mb-1">{f.tag}</div>
                     <h3 className="text-lg font-bold text-ink-900 dark:text-white mb-2">{f.title}</h3>
@@ -267,17 +267,17 @@ export default function Home() {
               <p className="text-sm text-ink-500 dark:text-ink-400 font-medium uppercase tracking-widest">Why people love it</p>
               <div className="flex flex-wrap justify-center gap-4">
                 {[
-                  { icon: '🔒', text: 'Private & secure' },
-                  { icon: '✨', text: 'Free forever' },
-                  { icon: '📤', text: 'Export anytime' },
-                  { icon: '🖼️', text: 'Shareable art' },
-                  { icon: '🖨️', text: 'Printable reports' },
-                  { icon: '📱', text: 'Install as an app' },
-                  { icon: '🌙', text: 'Dark & light mode' },
-                  { icon: '⌨️', text: 'Keyboard shortcuts' },
+                  { icon: ShieldCheck, text: 'Private & secure' },
+                  { icon: Sparkles, text: 'Free forever' },
+                  { icon: Download, text: 'Export anytime' },
+                  { icon: ImageIcon, text: 'Shareable art' },
+                  { icon: Printer, text: 'Printable reports' },
+                  { icon: Smartphone, text: 'Install as an app' },
+                  { icon: Moon, text: 'Dark & light mode' },
+                  { icon: Keyboard, text: 'Keyboard shortcuts' },
                 ].map((b) => (
                   <div key={b.text} className="flex items-center gap-2 px-4 py-2 rounded-full bg-ink-100 dark:bg-ink-800/60 text-ink-600 dark:text-ink-300 text-sm font-medium">
-                    <span>{b.icon}</span> {b.text}
+                    <b.icon size={16} strokeWidth={1.5} aria-hidden="true" /> {b.text}
                   </div>
                 ))}
               </div>

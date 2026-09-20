@@ -1,4 +1,5 @@
 'use client'
+import MoodIcon from '@/components/MoodIcon'
 import { useEffect, useState, useMemo, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -140,7 +141,7 @@ export default function InsightsPage() {
             {moodData.length === 0 ? (
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
                     className="rounded-2xl bg-paper dark:bg-ink-900 border border-ink-200 dark:border-ink-800 p-12 text-center shadow-sm">
-                    <div className="text-6xl mb-4">📊</div>
+                    <BarChart3 size={40} strokeWidth={1.5} className="mx-auto mb-4 text-brand-500" aria-hidden="true" />
                     <h2 className="text-2xl font-bold text-ink-900 dark:text-white mb-2">No data yet</h2>
                     <p className="text-ink-500 dark:text-ink-400 mb-6">Start logging moods to unlock insights!</p>
                     <Link href="/day-view" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-brand-500 text-white font-semibold hover:shadow-lg hover:shadow-brand-500/25 transition-all hover:translate-y-[-1px]">
@@ -196,7 +197,7 @@ export default function InsightsPage() {
                                 },
                                 {
                                     label: 'Most Frequent',
-                                    value: MOODS[yearStats.topMood].emoji,
+                                    value: <MoodIcon mood={yearStats.topMood} size={30} />,
                                     sub: MOODS[yearStats.topMood].label,
                                     icon: <Smile size={18} />,
                                     gradient: 'from-amber-500 to-orange-500',
@@ -261,7 +262,7 @@ export default function InsightsPage() {
                                             const pct = monthStats.total > 0 ? (count / monthStats.total) * 100 : 0
                                             return (
                                                 <div key={grade} className="flex items-center gap-3">
-                                                    <span className="text-xl w-7 text-center flex-shrink-0">{data.emoji}</span>
+                                                    <span className="text-xl w-7 text-center flex-shrink-0"><MoodIcon mood={grade} /></span>
                                                     <span className="text-sm font-semibold text-ink-600 dark:text-ink-300 w-14 flex-shrink-0">{data.label}</span>
                                                     <div className="flex-1 h-8 bg-ink-100 dark:bg-ink-800/60 rounded-lg overflow-hidden relative">
                                                         <motion.div
@@ -300,7 +301,7 @@ export default function InsightsPage() {
                                             <div className="text-6xl font-black text-ink-900 dark:text-white leading-none">{monthStats.avgScore.toFixed(1)}</div>
                                             <div className="text-xs text-ink-500 dark:text-ink-400 dark:text-ink-500 mt-1.5">out of 5.0</div>
                                             <div className="text-4xl mt-4">
-                                                {monthStats.avgScore >= 4.5 ? '🤩' : monthStats.avgScore >= 3.5 ? '😊' : monthStats.avgScore >= 2.5 ? '🙂' : monthStats.avgScore >= 1.5 ? '😔' : '😢'}
+                                                <MoodIcon mood={monthStats.avgScore >= 4.5 ? "A" : monthStats.avgScore >= 3.5 ? "B" : monthStats.avgScore >= 2.5 ? "C" : monthStats.avgScore >= 1.5 ? "D" : "F"} size={30} />
                                             </div>
                                             <div className="mt-3 h-1.5 rounded-full bg-ink-100 dark:bg-ink-800 overflow-hidden">
                                                 <motion.div initial={{ width: 0 }} animate={{ width: `${((monthStats.avgScore - 1) / 4) * 100}%` }}
@@ -321,7 +322,7 @@ export default function InsightsPage() {
                                         <div className="text-xl font-black text-ink-900 dark:text-white">
                                             {new Date(monthStats.bestDay.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                                         </div>
-                                        <div className="text-sm text-ink-500 mt-0.5">{MOODS[monthStats.bestDay.mood].emoji} {MOODS[monthStats.bestDay.mood].label}</div>
+                                        <div className="text-sm text-ink-500 mt-0.5"><MoodIcon mood={monthStats.bestDay.mood} size={16} /> {MOODS[monthStats.bestDay.mood].label}</div>
                                     </div>
 
                                     {/* Toughest day */}
@@ -335,13 +336,13 @@ export default function InsightsPage() {
                                         <div className="text-xl font-black text-ink-900 dark:text-white">
                                             {new Date(monthStats.worstDay.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                                         </div>
-                                        <div className="text-sm text-ink-500 mt-0.5">{MOODS[monthStats.worstDay.mood].emoji} {MOODS[monthStats.worstDay.mood].label}</div>
+                                        <div className="text-sm text-ink-500 mt-0.5"><MoodIcon mood={monthStats.worstDay.mood} size={16} /> {MOODS[monthStats.worstDay.mood].label}</div>
                                     </div>
                                 </div>
                             </div>
                         ) : (
                             <div className="rounded-2xl bg-paper dark:bg-ink-900 border border-ink-100 dark:border-ink-800 p-10 text-center shadow-sm">
-                                <div className="text-4xl mb-3">📅</div>
+                                <Calendar size={32} strokeWidth={1.5} className="mx-auto mb-3 text-brand-500" aria-hidden="true" />
                                 <p className="text-ink-500 dark:text-ink-400 font-medium">No entries for {MONTH_NAMES[selectedMonth]}</p>
                                 <Link href="/day-view" className="inline-flex items-center gap-1.5 mt-4 text-sm text-brand-500 hover:text-brand-700 font-semibold transition-colors">
                                     Log a mood →

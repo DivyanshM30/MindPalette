@@ -1,4 +1,5 @@
 'use client'
+import MoodIcon from '@/components/MoodIcon'
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -110,7 +111,7 @@ export default function DayView() {
 
                 if (error) throw error
                 delete draftsRef.current[dateStr]
-                showToast('Mood saved successfully! ✨')
+                showToast('Mood saved successfully.')
             }
         } catch (error) {
             console.error('Error saving data:', error)
@@ -289,7 +290,7 @@ export default function DayView() {
                             {moodData?.mood ? (
                                 <>
                                     <div className={`w-12 h-12 rounded-xl ${MOODS[moodData.mood].color} flex items-center justify-center font-bold text-lg shadow-md`}>
-                                        <span className="text-2xl">{MOODS[moodData.mood].emoji}</span>
+                                        <span className="text-2xl"><MoodIcon mood={moodData.mood} size={26} className="text-ink-900" /></span>
                                     </div>
                                     <span className="text-lg font-semibold text-ink-900 dark:text-white">
                                         {MOODS[moodData.mood].label}
@@ -326,7 +327,7 @@ export default function DayView() {
                                             }`}
                                     >
                                         <div className={`w-12 h-12 rounded-xl ${data.color} flex items-center justify-center font-bold text-lg shadow-md`}>
-                                            <span className="text-2xl">{data.emoji}</span>
+                                            <span className="text-2xl"><MoodIcon mood={grade} size={26} className="text-ink-900" /></span>
                                         </div>
                                         <span className="text-xs font-medium text-ink-700 dark:text-ink-300">
                                             {data.label}

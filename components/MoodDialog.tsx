@@ -1,4 +1,5 @@
 'use client'
+import MoodIcon from '@/components/MoodIcon'
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Calendar } from 'lucide-react'
@@ -92,7 +93,7 @@ export default function MoodDialog({ isOpen, onClose, onSelect, date, currentMoo
                                 <h2 className="text-2xl font-bold mb-6 text-center">How was today?</h2>
 
                                 {/* Mood Grid */}
-                                <div className="grid grid-cols-5 gap-3 mb-8">
+                                <div className="grid grid-cols-3 sm:grid-cols-5 gap-3 mb-8">
                                     {sortedMoods.map(([key, data]) => (
                                         <button
                                             key={key}
@@ -103,10 +104,10 @@ export default function MoodDialog({ isOpen, onClose, onSelect, date, currentMoo
                                             )}
                                         >
                                             <div className={cn("w-12 h-12 rounded-full shadow-md flex items-center justify-center text-lg font-bold text-white transition-transform", data.color)}>
-                                                {key}
+                                                <MoodIcon mood={key} size={26} className="text-ink-900" />
                                             </div>
                                             <span className="text-xs font-medium text-ink-600 dark:text-ink-300">
-                                                {data.emoji} {data.label}
+                                                {data.label}
                                             </span>
                                         </button>
                                     ))}

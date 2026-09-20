@@ -1,4 +1,5 @@
 'use client'
+import MoodIcon from '@/components/MoodIcon'
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, ChevronLeft, ChevronRight } from 'lucide-react'
@@ -143,6 +144,7 @@ export default function CalendarPopup({ isOpen, onClose, selectedDate, onDateSel
                                         return (
                                             <motion.button
                                                 key={day}
+                                                aria-label={`${dateKey}: ${mood ? MOODS[mood].label : 'Not logged'}`}
                                                 whileHover={{ scale: 1.1 }}
                                                 whileTap={{ scale: 0.95 }}
                                                 onClick={() => handleDateClick(day)}
@@ -156,7 +158,7 @@ export default function CalendarPopup({ isOpen, onClose, selectedDate, onDateSel
                                             >
                                                 {mood ? (
                                                     <div className={`w-8 h-8 rounded-lg ${MOODS[mood].color} flex items-center justify-center text-white text-xs font-bold shadow-md`}>
-                                                        {MOODS[mood].emoji}
+                                                        <MoodIcon mood={mood} size={18} className="text-ink-900" />
                                                     </div>
                                                 ) : (
                                                     <span>{day}</span>

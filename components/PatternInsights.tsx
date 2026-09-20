@@ -1,7 +1,7 @@
 'use client'
 import { useMemo } from 'react'
 import { motion } from 'framer-motion'
-import { Compass, TrendingUp, TrendingDown, Minus, Flame, Trophy, CloudRain, Lock } from 'lucide-react'
+import { Calendar, Compass, TrendingUp, TrendingDown, Minus, Flame, Trophy, CloudRain, Lock } from 'lucide-react'
 import { Mood } from '@/lib/types'
 import { MOOD_SCORES, MONTH_NAMES } from '@/lib/utils'
 import { computeStreaks } from '@/lib/streaks'
@@ -162,7 +162,7 @@ export default function PatternInsights({ moods, year }: PatternInsightsProps) {
 
                     {bestDay && worstDay && (
                         <div className="flex items-start gap-3 p-3 rounded-xl bg-ink-50 dark:bg-ink-800/60">
-                            <span className="text-lg leading-none mt-0.5">📅</span>
+                            <Calendar size={18} className="shrink-0 mt-0.5" aria-hidden="true" />
                             <p className="text-sm text-ink-600 dark:text-ink-300">
                                 <span className="font-bold text-emerald-600 dark:text-emerald-400">{bestDay.label}s</span> are your best days ({bestDay.avg!.toFixed(1)}),
                                 while <span className="font-bold text-orange-500 dark:text-orange-400">{worstDay.label}s</span> run toughest ({worstDay.avg!.toFixed(1)}).

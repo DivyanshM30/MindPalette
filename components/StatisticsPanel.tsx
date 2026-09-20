@@ -1,4 +1,5 @@
 'use client'
+import MoodIcon from '@/components/MoodIcon'
 import { useMemo, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
@@ -57,12 +58,12 @@ export default function StatisticsPanel({ moodData, moods, user }: StatisticsPan
     const displayName = getDisplayName(user)
 
     const getStreakMilestone = (streak: number) => {
-        if (streak >= 100) return { emoji: '💎', label: 'Diamond!' }
-        if (streak >= 50) return { emoji: '👑', label: 'Royal!' }
-        if (streak >= 30) return { emoji: '🔥', label: 'On fire!' }
-        if (streak >= 14) return { emoji: '⭐', label: 'Amazing!' }
-        if (streak >= 7) return { emoji: '🌟', label: 'One week!' }
-        if (streak >= 3) return { emoji: '✨', label: 'Nice start!' }
+        if (streak >= 100) return { label: 'Diamond!' }
+        if (streak >= 50) return { label: 'Royal!' }
+        if (streak >= 30) return { label: 'On fire!' }
+        if (streak >= 14) return { label: 'Amazing!' }
+        if (streak >= 7) return { label: 'One week!' }
+        if (streak >= 3) return { label: 'Nice start!' }
         return null
     }
 
@@ -76,7 +77,7 @@ export default function StatisticsPanel({ moodData, moods, user }: StatisticsPan
                 className="mb-4"
             >
                 <h2 className="text-3xl md:text-4xl font-bold text-ink-900 dark:text-white mb-2">
-                    Hey, {displayName}! 👋
+                    Hey, {displayName}.
                 </h2>
                 <p className="text-ink-600 dark:text-ink-400 text-base">Here&apos;s how your {new Date().getFullYear()} is looking so far.</p>
             </motion.div>
@@ -101,7 +102,7 @@ export default function StatisticsPanel({ moodData, moods, user }: StatisticsPan
                             <span className="text-xs font-semibold uppercase tracking-wider">Primary Vibe</span>
                         </div>
                         <h3 className="text-4xl md:text-5xl font-extrabold mb-2 flex items-center gap-3">
-                            <span className="text-5xl md:text-6xl">{MOODS[stats.primaryVibe].emoji}</span>
+                            <span className="text-5xl md:text-6xl"><MoodIcon mood={stats.primaryVibe} size={42} className="text-brand-500 dark:text-brand-300" /></span>
                             <span className="bg-clip-text text-transparent bg-gradient-to-r from-ink-900 via-ink-700 to-ink-900 dark:from-white dark:via-ink-200 dark:to-white">
                                 {MOODS[stats.primaryVibe].label}
                             </span>
@@ -122,7 +123,7 @@ export default function StatisticsPanel({ moodData, moods, user }: StatisticsPan
                                         className={`w-full max-w-[40px] rounded-lg transition-all duration-700 ${BAR_COLORS[grade]} shadow-md hover:shadow-lg`}
                                         style={{ height: `${barHeight}px` }}
                                     />
-                                    <div className="text-lg mt-2">{MOODS[grade].emoji}</div>
+                                    <div className="text-lg mt-2" aria-label={MOODS[grade].label}><MoodIcon mood={grade} size={18} /></div>
                                 </div>
                             );
                         })}
@@ -157,12 +158,12 @@ export default function StatisticsPanel({ moodData, moods, user }: StatisticsPan
                     )}
                     {stats.repairSpent && !stats.repairDate && (
                         <p className="mt-3 text-xs text-brand-600/90 dark:text-brand-300/90 max-w-[190px] relative z-10 leading-relaxed">
-                            You&apos;ve already mended a day this week — a fresh repair unlocks next week 💜
+                            You&apos;ve already mended a day this week — a fresh repair unlocks next week.
                         </p>
                     )}
                     {stats.broken && !stats.repairDate && !stats.repairSpent && (
                         <p className="mt-3 text-xs text-ink-500 dark:text-ink-400 max-w-[190px] relative z-10 leading-relaxed">
-                            Streaks rest, they don&apos;t die. Today is a fresh start. 🌱
+                            Streaks rest, they don&apos;t die. Today is a fresh start.
                         </p>
                     )}
                     {milestone && (
@@ -172,7 +173,7 @@ export default function StatisticsPanel({ moodData, moods, user }: StatisticsPan
                             transition={{ type: 'spring', stiffness: 300, delay: 0.5 }}
                             className="mt-3 text-sm font-bold text-orange-500 dark:text-orange-300 relative z-10"
                         >
-                            {milestone.emoji} {milestone.label}
+                            <Sparkles size={14} className="inline-block mr-1" aria-hidden="true" /> {milestone.label}
                         </motion.div>
                     )}
                 </motion.div>

@@ -11,7 +11,6 @@ interface OnboardingProps {
 const steps = [
     {
         icon: Sparkles,
-        emoji: '🎨',
         title: 'Welcome to MindPalette!',
         description: 'Your personal space to understand your emotions and see patterns in how you feel.',
         gradient: 'from-brand-500 to-brand-500',
@@ -19,7 +18,6 @@ const steps = [
     },
     {
         icon: CalendarDays,
-        emoji: '✍️',
         title: 'Log Your First Mood',
         description: 'Each day, pick how you\'re feeling and add an optional note. It only takes a few seconds!',
         gradient: 'from-amber-500 to-orange-500',
@@ -27,7 +25,6 @@ const steps = [
     },
     {
         icon: BarChart3,
-        emoji: '📊',
         title: 'See Your Year Unfold',
         description: 'Watch your mood grid fill up with beautiful colors. Spot trends, celebrate streaks, and grow.',
         gradient: 'from-emerald-500 to-teal-500',
@@ -104,11 +101,10 @@ export default function Onboarding({ userName }: OnboardingProps) {
                                     initial={{ scale: 0 }}
                                     animate={{ scale: 1 }}
                                     transition={{ type: 'spring', stiffness: 400, delay: 0.1 }}
-                                    className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${step.gradient} flex items-center justify-center mx-auto mb-5 shadow-lg`}
+                                    className="w-16 h-16 rounded-2xl bg-brand-100 dark:bg-brand-900/40 flex items-center justify-center mx-auto mb-5"
                                 >
-                                    <Icon size={36} className="text-white" />
+                                    <Icon size={30} strokeWidth={1.5} className="text-brand-600 dark:text-brand-300" aria-hidden="true" />
                                 </motion.div>
-                                <div className="text-4xl mb-3">{step.emoji}</div>
                                 <h2 className="text-2xl font-bold text-ink-900 dark:text-white">
                                     {currentStep === 0 ? `Hey, ${userName}!` : step.title}
                                 </h2>
