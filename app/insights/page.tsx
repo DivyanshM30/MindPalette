@@ -85,7 +85,7 @@ export default function InsightsPage() {
     if (loading) {
         return (
             <div className="flex h-[50vh] items-center justify-center">
-                <div className="flex flex-col items-center gap-3 text-purple-400">
+                <div className="flex flex-col items-center gap-3 text-brand-400">
                     <Loader2 className="animate-spin" size={32} />
                     <span>Analyzing your moods...</span>
                 </div>

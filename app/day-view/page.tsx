@@ -16,24 +16,24 @@ export default function DayViewPage() {
     }, [loading, user, router])
 
     if (loading) {
-        return <div className="flex h-[50vh] items-center justify-center"><div className="animate-pulse text-purple-400">Loading your space...</div></div>
+        return <div className="flex h-[50vh] items-center justify-center"><div className="animate-pulse text-brand-400">Loading your space...</div></div>
     }
 
     if (!user) return null
 
     return (
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 w-full space-y-8">
-            <div className="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-800">
+            <div className="flex items-center justify-between pb-4 border-b border-ink-200 dark:border-ink-800">
                 <div>
-                    <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">
-                        Welcome back, {getDisplayName(user)}
+                    <h1 className="text-3xl md:text-4xl font-bold text-ink-900 dark:text-white mb-2">
+                        A moment for you, {getDisplayName(user)}
                     </h1>
-                    <p className="text-gray-600 dark:text-gray-400">Track your daily mood and reflections.</p>
+                    <p className="text-ink-600 dark:text-ink-400">Make a little room for how you feel.</p>
                 </div>
             </div>
 
             {/* Suspense required by useSearchParams (streak-repair deep link) */}
-            <Suspense fallback={<div className="flex h-[30vh] items-center justify-center"><div className="animate-pulse text-purple-400">Loading…</div></div>}>
+            <Suspense fallback={<div className="flex h-[30vh] items-center justify-center"><div className="animate-pulse text-brand-400">Loading…</div></div>}>
                 <DayView />
             </Suspense>
         </div>
