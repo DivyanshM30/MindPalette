@@ -4,13 +4,21 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 349 58% 96%;
+    --foreground: 335 26% 23%;
+    --paper: 255 250 251;
+    --atelier-border: #e3cbd3;
+    --atelier-accent: #93465f;
+    color-scheme: light;
   }
 
   .dark {
-    --background: 230 20% 4%;
-    --foreground: 210 40% 98%;
+    --background: 317 15% 9%;
+    --foreground: 340 35% 93%;
+    --paper: 40 29 36;
+    --atelier-border: #523743;
+    --atelier-accent: #dbadb8;
+    color-scheme: dark;
   }
 }
 
@@ -19,16 +27,43 @@ body {
   font-feature-settings: "rlig" 1, "calt" 1;
 }
 
-/* Glassmorphism Utility */
+/* Shared Rose Atelier surface; kept under the existing utility name. */
 .glass {
-  @apply bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl border border-white/40 dark:border-white/10 shadow-xl;
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  background: rgb(var(--paper));
+  border-color: var(--atelier-border);
+  box-shadow: 0 8px 30px rgb(75 44 57 / 5%);
 }
 
-.dark .glass {
-  @apply bg-[#12121a]/80 border-purple-500/5;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+@layer base {
+  h1, h2, h3 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-weight: 400 !important;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+  button, a, input, textarea, select { -webkit-tap-highlight-color: transparent; }
+  :focus-visible { outline: 2px solid var(--atelier-accent); outline-offset: 4px; }
+  ::selection { background: #e8c5d1; color: #4b2c39; }
+}
+
+.atelier-journal { border-top: 3px solid var(--atelier-accent); }
+.atelier-brand { font-family: Georgia, 'Times New Roman', serif; letter-spacing: -0.04em; }
+.atelier-nav { display: flex; gap: .25rem; overflow-x: auto; }
+.atelier-nav a { white-space: nowrap; min-height: 44px; }
+.atelier-nav a[aria-current='page'] { background: rgb(var(--paper)); color: var(--atelier-accent); box-shadow: 0 1px 5px rgb(75 44 57 / 8%); }
+
+.report-stat-strip { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media screen and (max-width: 640px) {
+  .report-stat-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* ── Print (P1-7 monthly report) ──────────────────────────────────────────

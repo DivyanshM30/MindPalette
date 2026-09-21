@@ -13,7 +13,7 @@ const inter = Inter({ subsets: ['latin'] })
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#a855f7',
+  themeColor: '#93465f',
 }
 
 export const metadata: Metadata = {
@@ -58,7 +58,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${inter.className} min-h-screen bg-neutral-50 dark:bg-[#0a0a0f] text-neutral-900 dark:text-neutral-100 transition-colors duration-300`}>
+      <body className={`${inter.className} min-h-screen bg-background text-foreground transition-colors duration-300`}>
         <ThemeProvider>
           <UserProvider>
             <ToastProvider>

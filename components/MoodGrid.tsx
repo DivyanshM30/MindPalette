@@ -64,8 +64,8 @@ export default function MoodGrid({ showStats = true, year = new Date().getFullYe
 
     if (loading) {
         return (
-            <div className="w-full aspect-[2/1] rounded-3xl border border-gray-200 dark:border-gray-800 flex items-center justify-center bg-gray-50/50 dark:bg-gray-900/50">
-                <div className="flex flex-col items-center gap-2 text-gray-400">
+            <div className="w-full aspect-[2/1] rounded-3xl border border-ink-200 dark:border-ink-800 flex items-center justify-center bg-ink-50/50 dark:bg-ink-900/50">
+                <div className="flex flex-col items-center gap-2 text-ink-500 dark:text-ink-400">
                     <Loader2 className="animate-spin" />
                     <span>Syncing your year...</span>
                 </div>
@@ -78,12 +78,12 @@ export default function MoodGrid({ showStats = true, year = new Date().getFullYe
             <div className="w-full rounded-3xl border border-red-200 dark:border-red-900/40 bg-red-50/50 dark:bg-red-900/10 p-10 flex flex-col items-center gap-4 text-center">
                 <AlertTriangle className="text-red-500 dark:text-red-400" size={32} />
                 <div>
-                    <p className="font-semibold text-gray-900 dark:text-white">Couldn&apos;t load your moods</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Check your connection and try again.</p>
+                    <p className="font-semibold text-ink-900 dark:text-white">Couldn&apos;t load your moods</p>
+                    <p className="text-sm text-ink-500 dark:text-ink-400 mt-1">Check your connection and try again.</p>
                 </div>
                 <button
                     onClick={refetch}
-                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold shadow-lg hover:shadow-xl transition-all hover:scale-105 active:scale-95"
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-500 text-white text-sm font-semibold shadow-lg hover:shadow-sm transition-all hover:translate-y-[-1px] active:scale-95"
                 >
                     <RotateCcw size={16} /> Try again
                 </button>
@@ -96,13 +96,13 @@ export default function MoodGrid({ showStats = true, year = new Date().getFullYe
             {showStats && user && <StatisticsPanel moodData={moodMap} moods={moods} user={user} />}
 
             <div className="w-full overflow-x-auto pb-6 -mx-2 px-2">
-                <div className="min-w-[800px] glass rounded-2xl p-6 md:p-8 border border-white/50 dark:border-white/10 shadow-xl">
+                <div className="min-w-[800px] glass rounded-2xl p-6 md:p-8 border border-white/50 dark:border-white/10 shadow-sm">
                     {/* Header Row */}
-                    <div className="flex mb-6 pb-4 border-b border-gray-200/50 dark:border-gray-800/50">
+                    <div className="flex mb-6 pb-4 border-b border-ink-200/50 dark:border-ink-800/50">
                         <div className="w-10 sticky left-0 z-10 bg-transparent" /> {/* Corner Spacer */}
                         <div className="flex-1 grid grid-cols-12 gap-2 text-center">
                             {months.map(m => (
-                                <div key={m} className="text-xs font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wider">{m}</div>
+                                <div key={m} className="text-xs font-bold text-ink-600 dark:text-ink-300 uppercase tracking-wider">{m}</div>
                             ))}
                         </div>
                     </div>
@@ -127,7 +127,7 @@ export default function MoodGrid({ showStats = true, year = new Date().getFullYe
                                 className="flex items-center group/row"
                             >
                                 {/* Day Label */}
-                                <div className="w-10 text-sm font-semibold text-gray-600 dark:text-gray-300 text-center sticky left-0 z-10 bg-transparent pr-2">
+                                <div className="w-10 text-sm font-semibold text-ink-600 dark:text-ink-300 text-center sticky left-0 z-10 bg-transparent pr-2">
                                     {day}
                                 </div>
                                 {/* Columns */}

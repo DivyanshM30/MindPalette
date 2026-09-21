@@ -53,7 +53,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
                             initial={{ opacity: 0, y: 20, scale: 0.95 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, x: 100, scale: 0.95 }}
-                            className="flex items-center gap-3 px-5 py-3 rounded-xl bg-white dark:bg-gray-800 shadow-2xl border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-900 dark:text-white min-w-[250px]"
+                            className="flex items-center gap-3 px-5 py-3 rounded-xl bg-paper dark:bg-ink-800 shadow-md border border-ink-200 dark:border-ink-700 text-sm font-medium text-ink-900 dark:text-white min-w-[250px]"
                         >
                             {icons[toast.type]}
                             {toast.message}

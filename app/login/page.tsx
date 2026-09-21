@@ -64,7 +64,12 @@ export default function LoginPage() {
         setLoading(true)
         setMessage(null)
         try {
-            const { error } = await supabase.auth.signInWithOtp({ email })
+            const { error } = await supabase.auth.signInWithOtp({
+                email,
+                options: {
+                    emailRedirectTo: `${location.origin}/auth/callback`,
+                },
+            })
             if (error) throw error
             setMessage({ text: 'Magic link sent to your email!', type: 'success' })
         } catch (err) {
@@ -97,18 +102,18 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 dark:from-slate-900 dark:via-purple-950 dark:to-slate-900 overflow-hidden relative">
+        <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-brand-50 via-brand-50 to-brand-50 dark:from-ink-950 dark:via-brand-950 dark:to-ink-950 overflow-hidden relative">
 
             {/* Background Decor */}
-            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-300/30 rounded-full blur-[100px] animate-pulse" />
-            <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-pink-300/30 rounded-full blur-[100px] animate-pulse delay-1000" />
+            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-brand-300/30 rounded-full blur-[100px] animate-pulse" />
+            <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-brand-300/30 rounded-full blur-[100px] animate-pulse delay-1000" />
 
-            <div className="glass w-full max-w-md p-8 rounded-3xl shadow-2xl relative z-10 border border-white/50 dark:border-white/10">
+            <div className="glass w-full max-w-md p-8 rounded-3xl shadow-md relative z-10 border border-white/50 dark:border-white/10">
                 <div className="text-center mb-8">
-                    <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-500 mb-2">
+                    <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-brand-600 to-brand-500 dark:from-brand-200 dark:to-brand-300 mb-2">
                         MindPalette
                     </h1>
-                    <p className="text-gray-500 dark:text-gray-400 text-sm">
+                    <p className="text-ink-500 dark:text-ink-400 text-sm">
                         {isSignUp ? 'Begin your journey' : 'Welcome back'}
                     </p>
                 </div>
@@ -122,13 +127,13 @@ export default function LoginPage() {
                 <form onSubmit={handleAuth} className="space-y-4">
                     {isSignUp && (
                         <div className="space-y-2">
-                            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider ml-1">Full Name</label>
+                            <label className="text-xs font-semibold text-ink-500 uppercase tracking-wider ml-1">Full Name</label>
                             <div className="relative">
-                                <User className="absolute left-4 top-3.5 text-gray-400" size={18} />
+                                <User className="absolute left-4 top-3.5 text-ink-500 dark:text-ink-400" size={18} />
                                 <input
                                     type="text"
                                     required={isSignUp}
-                                    className="w-full pl-11 pr-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all dark:bg-gray-800 dark:border-gray-700"
+                                    className="w-full pl-11 pr-4 py-3 rounded-xl bg-ink-50 border border-ink-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 outline-none transition-all dark:bg-ink-800 dark:border-ink-700"
                                     placeholder="Jane Doe"
                                     value={fullName}
                                     onChange={(e) => setFullName(e.target.value)}
@@ -137,13 +142,13 @@ export default function LoginPage() {
                         </div>
                     )}
                     <div className="space-y-2">
-                        <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider ml-1">Email</label>
+                        <label className="text-xs font-semibold text-ink-500 uppercase tracking-wider ml-1">Email</label>
                         <div className="relative">
-                            <Mail className="absolute left-4 top-3.5 text-gray-400" size={18} />
+                            <Mail className="absolute left-4 top-3.5 text-ink-500 dark:text-ink-400" size={18} />
                             <input
                                 type="email"
                                 required
-                                className="w-full pl-11 pr-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all dark:bg-gray-800 dark:border-gray-700"
+                                className="w-full pl-11 pr-4 py-3 rounded-xl bg-ink-50 border border-ink-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 outline-none transition-all dark:bg-ink-800 dark:border-ink-700"
                                 placeholder="you@example.com"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
@@ -152,13 +157,14 @@ export default function LoginPage() {
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider ml-1">Password</label>
+                        <label className="text-xs font-semibold text-ink-500 uppercase tracking-wider ml-1">Password</label>
                         <div className="relative">
-                            <Lock className="absolute left-4 top-3.5 text-gray-400" size={18} />
+                            <Lock className="absolute left-4 top-3.5 text-ink-500 dark:text-ink-400" size={18} />
                             <input
                                 type="password"
                                 required
-                                className="w-full pl-11 pr-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all dark:bg-gray-800 dark:border-gray-700"
+                                minLength={isSignUp ? 8 : undefined}
+                                className="w-full pl-11 pr-4 py-3 rounded-xl bg-ink-50 border border-ink-200 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 outline-none transition-all dark:bg-ink-800 dark:border-ink-700"
                                 placeholder="••••••••"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
@@ -169,7 +175,7 @@ export default function LoginPage() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full py-3.5 rounded-xl bg-black text-white font-medium hover:bg-gray-800 active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-purple-500/20 dark:bg-white dark:text-black"
+                        className="w-full py-3.5 rounded-xl bg-brand-500 text-white font-medium hover:bg-ink-800 active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-brand-500/20 dark:bg-brand-300 dark:text-brand-950"
                     >
                         {loading ? <Loader2 className="animate-spin" size={20} /> : (
                             <>
@@ -179,11 +185,11 @@ export default function LoginPage() {
                     </button>
                 </form>
 
-                <div className="mt-6 text-center text-sm text-gray-500">
+                <div className="mt-6 text-center text-sm text-ink-500">
                     {isSignUp ? 'Already have an account?' : "Don't have an account?"} {' '}
                     <button
                         onClick={() => setIsSignUp(!isSignUp)}
-                        className="text-purple-600 dark:text-purple-400 font-semibold hover:underline"
+                        className="text-brand-600 dark:text-brand-400 font-semibold hover:underline"
                     >
                         {isSignUp ? 'Sign In' : 'Sign Up'}
                     </button>
@@ -191,11 +197,11 @@ export default function LoginPage() {
 
                 {!isSignUp && (
                     <div className="mt-4 flex items-center justify-center gap-3 text-xs">
-                        <button onClick={handleForgotPassword} className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 underline">
+                        <button onClick={handleForgotPassword} className="text-ink-500 dark:text-ink-400 dark:text-ink-500 hover:text-ink-600 dark:hover:text-ink-300 underline">
                             Forgot password?
                         </button>
-                        <span className="text-gray-300 dark:text-gray-600">|</span>
-                        <button onClick={handleMagicLink} className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 underline">
+                        <span className="text-ink-300 dark:text-ink-400">|</span>
+                        <button onClick={handleMagicLink} className="text-ink-500 dark:text-ink-400 dark:text-ink-500 hover:text-ink-600 dark:hover:text-ink-300 underline">
                             Email me a sign-in link
                         </button>
                     </div>

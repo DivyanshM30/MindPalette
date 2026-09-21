@@ -165,10 +165,10 @@ export default function ProfileDialog({ isOpen, onClose, initialName }: ProfileD
 
     if (!mounted) return null
 
-    const inputClass = "w-full pl-11 pr-4 py-3 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-900 outline-none transition-all text-gray-900 dark:text-white"
+    const inputClass = "w-full pl-11 pr-4 py-3 rounded-xl bg-paper dark:bg-ink-900 border border-ink-200 dark:border-ink-700 focus:ring-2 focus:ring-brand-200 dark:focus:ring-brand-900 outline-none transition-all text-ink-900 dark:text-white"
     const errorBoxClass = "p-3 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm border border-red-100 dark:border-red-900/30"
-    const rowClass = "rounded-xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/60 overflow-hidden"
-    const rowHeaderClass = "w-full px-4 py-3.5 flex items-center justify-between text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-100/70 dark:hover:bg-gray-800 transition-colors"
+    const rowClass = "rounded-xl border border-ink-100 dark:border-ink-800 bg-ink-50 dark:bg-ink-800/60 overflow-hidden"
+    const rowHeaderClass = "w-full px-4 py-3.5 flex items-center justify-between text-sm font-semibold text-ink-700 dark:text-ink-200 hover:bg-ink-100/70 dark:hover:bg-ink-800 transition-colors"
 
     return createPortal(
         <AnimatePresence>
@@ -188,26 +188,26 @@ export default function ProfileDialog({ isOpen, onClose, initialName }: ProfileD
                         role="dialog"
                         aria-modal="true"
                         aria-label="Account settings"
-                        className="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl w-full max-w-sm max-h-[85vh] overflow-y-auto relative border border-white/20 p-8 z-10"
+                        className="bg-paper dark:bg-ink-900 rounded-3xl shadow-md w-full max-w-sm max-h-[85vh] overflow-y-auto relative border border-white/20 p-8 z-10"
                     >
-                        <button onClick={onClose} aria-label="Close dialog" className="absolute top-4 right-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full text-gray-500 transition-colors">
+                        <button onClick={onClose} aria-label="Close dialog" className="absolute top-4 right-4 p-2 hover:bg-ink-100 dark:hover:bg-ink-800 rounded-full text-ink-500 transition-colors">
                             <X size={20} />
                         </button>
 
                         <div className="text-center mb-6">
-                            <div className="w-16 h-16 bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/40 dark:to-pink-900/40 rounded-full flex items-center justify-center mx-auto mb-4 text-purple-600 dark:text-purple-400 shadow-inner">
+                            <div className="w-16 h-16 bg-gradient-to-br from-brand-100 to-brand-100 dark:from-brand-900/40 dark:to-brand-900/40 rounded-full flex items-center justify-center mx-auto mb-4 text-brand-600 dark:text-brand-400 shadow-inner">
                                 <User size={32} />
                             </div>
-                            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Account</h2>
-                            <p className="text-gray-500 dark:text-gray-400 text-sm truncate">{user?.email}</p>
+                            <h2 className="text-xl font-bold text-ink-900 dark:text-white">Account</h2>
+                            <p className="text-ink-500 dark:text-ink-400 text-sm truncate">{user?.email}</p>
                         </div>
 
                         {/* Profile name */}
                         <form onSubmit={handleUpdate} className="space-y-4 mb-6">
                             <div className="space-y-2">
-                                <label className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Full Name</label>
+                                <label className="text-xs font-semibold text-ink-500 dark:text-ink-400 dark:text-ink-500 uppercase tracking-widest ml-1">Full Name</label>
                                 <div className="relative">
-                                    <User className="absolute left-4 top-3.5 text-gray-400" size={18} />
+                                    <User className="absolute left-4 top-3.5 text-ink-500 dark:text-ink-400" size={18} />
                                     <input
                                         type="text"
                                         required
@@ -224,7 +224,7 @@ export default function ProfileDialog({ isOpen, onClose, initialName }: ProfileD
                             <button
                                 type="submit"
                                 disabled={loading || success}
-                                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 text-white font-bold hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20 disabled:opacity-50 disabled:hover:scale-100"
+                                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-brand-500 to-violet-500 text-white font-bold hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-brand-500/20 disabled:opacity-50 disabled:hover:scale-100"
                             >
                                 {loading ? <Loader2 className="animate-spin" size={20} /> :
                                     success ? <><CheckCircle2 size={20} className="text-green-300" /> Updated!</> :
@@ -241,9 +241,9 @@ export default function ProfileDialog({ isOpen, onClose, initialName }: ProfileD
                                     className={rowHeaderClass}
                                 >
                                     <span className="flex items-center gap-2.5">
-                                        <Lock size={16} className="text-purple-500" /> Change Password
+                                        <Lock size={16} className="text-brand-500" /> Change Password
                                     </span>
-                                    <ChevronDown size={16} className={`text-gray-400 transition-transform ${expanded === 'password' ? 'rotate-180' : ''}`} />
+                                    <ChevronDown size={16} className={`text-ink-500 dark:text-ink-400 transition-transform ${expanded === 'password' ? 'rotate-180' : ''}`} />
                                 </button>
                                 <AnimatePresence>
                                     {expanded === 'password' && (
@@ -255,7 +255,7 @@ export default function ProfileDialog({ isOpen, onClose, initialName }: ProfileD
                                         >
                                             <form onSubmit={handlePasswordChange} className="p-4 pt-1 space-y-3">
                                                 <div className="relative">
-                                                    <Lock className="absolute left-4 top-3.5 text-gray-400" size={18} />
+                                                    <Lock className="absolute left-4 top-3.5 text-ink-500 dark:text-ink-400" size={18} />
                                                     <input
                                                         type="password"
                                                         autoComplete="new-password"
@@ -266,7 +266,7 @@ export default function ProfileDialog({ isOpen, onClose, initialName }: ProfileD
                                                     />
                                                 </div>
                                                 <div className="relative">
-                                                    <Lock className="absolute left-4 top-3.5 text-gray-400" size={18} />
+                                                    <Lock className="absolute left-4 top-3.5 text-ink-500 dark:text-ink-400" size={18} />
                                                     <input
                                                         type="password"
                                                         autoComplete="new-password"
@@ -280,7 +280,7 @@ export default function ProfileDialog({ isOpen, onClose, initialName }: ProfileD
                                                 <button
                                                     type="submit"
                                                     disabled={pwLoading || !newPassword || !confirmPassword}
-                                                    className="w-full py-3 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-semibold hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-40"
+                                                    className="w-full py-3 rounded-xl bg-brand-500 text-white dark:bg-brand-300 dark:text-brand-950 font-semibold hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-40"
                                                 >
                                                     {pwLoading ? <Loader2 className="animate-spin" size={18} /> :
                                                         pwSuccess ? <><CheckCircle2 size={18} className="text-green-400" /> Password updated!</> :
@@ -300,9 +300,9 @@ export default function ProfileDialog({ isOpen, onClose, initialName }: ProfileD
                                     className={rowHeaderClass}
                                 >
                                     <span className="flex items-center gap-2.5">
-                                        <Database size={16} className="text-purple-500" /> Your Data
+                                        <Database size={16} className="text-brand-500" /> Your Data
                                     </span>
-                                    <ChevronDown size={16} className={`text-gray-400 transition-transform ${expanded === 'data' ? 'rotate-180' : ''}`} />
+                                    <ChevronDown size={16} className={`text-ink-500 dark:text-ink-400 transition-transform ${expanded === 'data' ? 'rotate-180' : ''}`} />
                                 </button>
                                 <AnimatePresence>
                                     {expanded === 'data' && (
@@ -317,20 +317,20 @@ export default function ProfileDialog({ isOpen, onClose, initialName }: ProfileD
                                                     <button
                                                         onClick={() => handleExport('csv')}
                                                         disabled={exporting !== null}
-                                                        className="flex-1 py-3 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 font-semibold text-sm hover:bg-gray-100 dark:hover:bg-gray-800 transition-all flex items-center justify-center gap-2 disabled:opacity-40"
+                                                        className="flex-1 py-3 rounded-xl bg-paper dark:bg-ink-900 border border-ink-200 dark:border-ink-700 text-ink-700 dark:text-ink-200 font-semibold text-sm hover:bg-ink-100 dark:hover:bg-ink-800 transition-all flex items-center justify-center gap-2 disabled:opacity-40"
                                                     >
                                                         {exporting === 'csv' ? <Loader2 className="animate-spin" size={16} /> : <Download size={16} />} CSV
                                                     </button>
                                                     <button
                                                         onClick={() => handleExport('json')}
                                                         disabled={exporting !== null}
-                                                        className="flex-1 py-3 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 font-semibold text-sm hover:bg-gray-100 dark:hover:bg-gray-800 transition-all flex items-center justify-center gap-2 disabled:opacity-40"
+                                                        className="flex-1 py-3 rounded-xl bg-paper dark:bg-ink-900 border border-ink-200 dark:border-ink-700 text-ink-700 dark:text-ink-200 font-semibold text-sm hover:bg-ink-100 dark:hover:bg-ink-800 transition-all flex items-center justify-center gap-2 disabled:opacity-40"
                                                     >
                                                         {exporting === 'json' ? <Loader2 className="animate-spin" size={16} /> : <Download size={16} />} JSON
                                                     </button>
                                                 </div>
                                                 {exportError && <div className={errorBoxClass}>{exportError}</div>}
-                                                <p className="text-[11px] text-gray-400 dark:text-gray-500 ml-1">
+                                                <p className="text-[11px] text-ink-500 dark:text-ink-400 dark:text-ink-500 ml-1">
                                                     Downloads every mood, note and reflection across all years.
                                                 </p>
                                             </div>
@@ -370,7 +370,7 @@ export default function ProfileDialog({ isOpen, onClose, initialName }: ProfileD
                                                 <input
                                                     type="text"
                                                     autoComplete="off"
-                                                    className="w-full px-4 py-3 rounded-xl bg-white dark:bg-gray-900 border border-red-200 dark:border-red-900/40 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-900 outline-none transition-all text-gray-900 dark:text-white text-sm"
+                                                    className="w-full px-4 py-3 rounded-xl bg-paper dark:bg-ink-900 border border-red-200 dark:border-red-900/40 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-900 outline-none transition-all text-ink-900 dark:text-white text-sm"
                                                     value={deleteConfirm}
                                                     onChange={(e) => setDeleteConfirm(e.target.value)}
                                                     placeholder='Type "DELETE" to confirm'

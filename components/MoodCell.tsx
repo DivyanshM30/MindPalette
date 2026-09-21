@@ -1,4 +1,5 @@
 'use client'
+import MoodIcon from '@/components/MoodIcon'
 import { motion } from 'framer-motion'
 import { cn, MoodGrade, MOODS } from '@/lib/utils'
 
@@ -24,18 +25,19 @@ export default function MoodCell({ date, mood, onClick, disabled }: MoodCellProp
             onClick={onClick}
             className={cn(
                 "w-9 h-9 rounded-lg flex items-center justify-center text-sm font-extrabold transition-all relative group shadow-sm",
-                moodConfig ? `${moodConfig.color} shadow-md hover:shadow-lg` : "bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700",
-                isToday && !mood && "ring-2 ring-purple-400 dark:ring-purple-500 ring-offset-2 dark:ring-offset-gray-900 animate-pulse",
-                moodConfig ? "text-white" : "text-gray-400 dark:text-gray-500"
+                moodConfig ? `${moodConfig.color} shadow-md hover:shadow-lg` : "bg-ink-100 dark:bg-ink-800 hover:bg-ink-200 dark:hover:bg-ink-700 border border-ink-200 dark:border-ink-700",
+                isToday && !mood && "ring-2 ring-brand-400 dark:ring-brand-500 ring-offset-2 dark:ring-offset-ink-900 animate-pulse",
+                moodConfig ? "text-white" : "text-ink-500 dark:text-ink-400 dark:text-ink-500"
             )}
+            aria-label={`${date.toLocaleDateString()}: ${mood ? MOODS[mood].label : 'Not logged'}`}
             title={date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
         >
             {mood ? (
-                <span className="text-lg drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]">
-                    {MOODS[mood].emoji}
+                <span className="flex items-center justify-center">
+                    <MoodIcon mood={mood} size={20} className="text-ink-900" />
                 </span>
             ) : (
-                <span className="opacity-0 group-hover:opacity-60 transition-opacity text-xs font-bold text-gray-500 dark:text-gray-400">
+                <span className="opacity-0 group-hover:opacity-60 transition-opacity text-xs font-bold text-ink-500 dark:text-ink-400">
                     +
                 </span>
             )}

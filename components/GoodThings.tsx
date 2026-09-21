@@ -71,10 +71,10 @@ export default function GoodThings({ moods }: GoodThingsProps) {
                         </div>
                         <span className="text-xs font-semibold uppercase tracking-widest text-amber-600 dark:text-amber-400">Remember this?</span>
                     </div>
-                    <p className="text-gray-800 dark:text-gray-100 leading-relaxed">
+                    <p className="text-ink-800 dark:text-ink-100 leading-relaxed">
                         &ldquo;{memory.positive_note}&rdquo;
                     </p>
-                    <p className="text-xs text-gray-400 dark:text-gray-500 mt-3">
+                    <p className="text-xs text-ink-500 dark:text-ink-400 dark:text-ink-500 mt-3">
                         {formatDay(memory.date, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
                     </p>
                 </div>
@@ -83,12 +83,12 @@ export default function GoodThings({ moods }: GoodThingsProps) {
             {/* This month's gratitude reel */}
             {monthThings.length > 0 && (
                 <div className="glass rounded-3xl border border-white/30 dark:border-white/10 p-6 shadow-lg relative overflow-hidden">
-                    <div className="absolute -z-10 -bottom-8 -left-8 w-40 h-40 bg-gradient-to-tr from-pink-400/15 to-transparent rounded-full blur-[40px]" />
+                    <div className="absolute -z-10 -bottom-8 -left-8 w-40 h-40 bg-gradient-to-tr from-brand-400/15 to-transparent rounded-full blur-[40px]" />
                     <div className="flex items-center gap-2 mb-3">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white shadow-md shadow-purple-500/30">
+                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-brand-500 flex items-center justify-center text-white shadow-md shadow-brand-500/30">
                             <Sparkles size={16} />
                         </div>
-                        <span className="text-sm font-bold text-gray-900 dark:text-white flex-1">
+                        <span className="text-sm font-bold text-ink-900 dark:text-white flex-1">
                             {monthThings.length} good thing{monthThings.length === 1 ? '' : 's'} happened in {monthName}
                         </span>
                         {pageCount > 1 && (
@@ -97,18 +97,18 @@ export default function GoodThings({ moods }: GoodThingsProps) {
                                     onClick={() => setPage(safePage - 1)}
                                     disabled={safePage === 0}
                                     aria-label="Previous good things"
-                                    className="w-7 h-7 rounded-full flex items-center justify-center bg-white/70 dark:bg-gray-900/70 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-purple-50 dark:hover:bg-purple-900/30 transition-colors disabled:opacity-30 disabled:hover:bg-white/70 dark:disabled:hover:bg-gray-900/70"
+                                    className="w-7 h-7 rounded-full flex items-center justify-center bg-paper/70 dark:bg-ink-900/70 border border-ink-200 dark:border-ink-700 text-ink-600 dark:text-ink-300 hover:bg-brand-50 dark:hover:bg-brand-900/30 transition-colors disabled:opacity-30 disabled:hover:bg-paper/70 dark:disabled:hover:bg-ink-900/70"
                                 >
                                     <ChevronLeft size={15} />
                                 </button>
-                                <span className="text-[11px] text-gray-400 dark:text-gray-500 tabular-nums" aria-live="polite">
+                                <span className="text-[11px] text-ink-500 dark:text-ink-400 dark:text-ink-500 tabular-nums" aria-live="polite">
                                     {safePage + 1}/{pageCount}
                                 </span>
                                 <button
                                     onClick={() => setPage(safePage + 1)}
                                     disabled={safePage === pageCount - 1}
                                     aria-label="Next good things"
-                                    className="w-7 h-7 rounded-full flex items-center justify-center bg-white/70 dark:bg-gray-900/70 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-purple-50 dark:hover:bg-purple-900/30 transition-colors disabled:opacity-30 disabled:hover:bg-white/70 dark:disabled:hover:bg-gray-900/70"
+                                    className="w-7 h-7 rounded-full flex items-center justify-center bg-paper/70 dark:bg-ink-900/70 border border-ink-200 dark:border-ink-700 text-ink-600 dark:text-ink-300 hover:bg-brand-50 dark:hover:bg-brand-900/30 transition-colors disabled:opacity-30 disabled:hover:bg-paper/70 dark:disabled:hover:bg-ink-900/70"
                                 >
                                     <ChevronRight size={15} />
                                 </button>
@@ -130,12 +130,12 @@ export default function GoodThings({ moods }: GoodThingsProps) {
                                 <div
                                     key={m.date}
                                     role="listitem"
-                                    className="rounded-2xl bg-white/70 dark:bg-gray-900/70 border border-gray-100 dark:border-gray-800 p-4 min-h-[104px]"
+                                    className="rounded-2xl bg-paper/70 dark:bg-ink-900/70 border border-ink-100 dark:border-ink-800 p-4 min-h-[104px]"
                                 >
-                                    <p className="text-xs font-semibold text-purple-500 dark:text-purple-400 mb-1.5">
+                                    <p className="text-xs font-semibold text-brand-500 dark:text-brand-400 mb-1.5">
                                         {formatDay(m.date, { weekday: 'short', month: 'short', day: 'numeric' })}
                                     </p>
-                                    <p className="text-sm text-gray-700 dark:text-gray-200 leading-relaxed line-clamp-4">
+                                    <p className="text-sm text-ink-700 dark:text-ink-200 leading-relaxed line-clamp-4">
                                         {m.positive_note}
                                     </p>
                                 </div>

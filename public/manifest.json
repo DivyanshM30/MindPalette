@@ -4,10 +4,14 @@
   "description": "A beautiful, personal space to log your daily moods and see your year in pixels",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0a0a0f",
-  "theme_color": "#a855f7",
+  "background_color": "#fbf0f2",
+  "theme_color": "#93465f",
   "orientation": "portrait-primary",
-  "categories": ["health", "lifestyle", "productivity"],
+  "categories": [
+    "health",
+    "lifestyle",
+    "productivity"
+  ],
   "icons": [
     {
       "src": "/icons/logo.png",

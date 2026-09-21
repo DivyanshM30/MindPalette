@@ -118,28 +118,28 @@ export default function ShareCardDialog({ isOpen, onClose, year }: ShareCardDial
                         role="dialog"
                         aria-modal="true"
                         aria-label="Share your year"
-                        className="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto relative border border-white/20 z-10"
+                        className="bg-paper dark:bg-ink-900 rounded-3xl shadow-md w-full max-w-3xl max-h-[90vh] overflow-y-auto relative border border-white/20 z-10"
                     >
-                        <button onClick={onClose} aria-label="Close dialog" className="absolute top-4 right-4 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full text-gray-500 transition-colors z-20">
+                        <button onClick={onClose} aria-label="Close dialog" className="absolute top-4 right-4 p-2 hover:bg-ink-100 dark:hover:bg-ink-800 rounded-full text-ink-500 transition-colors z-20">
                             <X size={20} />
                         </button>
 
                         <div className="p-6 md:p-8">
                             <div className="flex items-center gap-2.5 mb-6">
-                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white shadow-lg shrink-0">
+                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-brand-500 flex items-center justify-center text-white shadow-lg shrink-0">
                                     <Share2 size={20} />
                                 </div>
                                 <div>
-                                    <h2 className="text-xl font-bold text-gray-900 dark:text-white leading-tight">Share your year</h2>
-                                    <p className="text-sm text-gray-500 dark:text-gray-400">A pixel portrait of {year} — notes stay private.</p>
+                                    <h2 className="text-xl font-bold text-ink-900 dark:text-white leading-tight">Share your year</h2>
+                                    <p className="text-sm text-ink-500 dark:text-ink-400">A pixel portrait of {year} — notes stay private.</p>
                                 </div>
                             </div>
 
                             <div className="grid md:grid-cols-[minmax(0,1fr)_260px] gap-6">
                                 {/* Preview */}
-                                <div className="rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800 p-4 flex items-center justify-center min-h-[320px]">
+                                <div className="rounded-2xl bg-ink-50 dark:bg-ink-800/50 border border-ink-100 dark:border-ink-800 p-4 flex items-center justify-center min-h-[320px]">
                                     {loading || !dataUrl ? (
-                                        <div className="flex flex-col items-center gap-2 text-gray-400 py-16">
+                                        <div className="flex flex-col items-center gap-2 text-ink-500 dark:text-ink-400 py-16">
                                             <Loader2 className="animate-spin" size={22} />
                                             <span className="text-sm">Painting your year…</span>
                                         </div>
@@ -156,7 +156,7 @@ export default function ShareCardDialog({ isOpen, onClose, year }: ShareCardDial
                                 {/* Controls */}
                                 <div className="space-y-5">
                                     <div>
-                                        <label className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-0.5">Palette</label>
+                                        <label className="text-xs font-semibold text-ink-500 dark:text-ink-400 dark:text-ink-500 uppercase tracking-widest ml-0.5">Palette</label>
                                         <div className="grid grid-cols-2 gap-2 mt-2">
                                             {THEMES.map(t => (
                                                 <button
@@ -165,8 +165,8 @@ export default function ShareCardDialog({ isOpen, onClose, year }: ShareCardDial
                                                     aria-pressed={theme.id === t.id}
                                                     className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-sm font-medium transition-all ${
                                                         theme.id === t.id
-                                                            ? 'border-purple-400 dark:border-purple-500 ring-2 ring-purple-200 dark:ring-purple-900/50 bg-purple-50/50 dark:bg-purple-900/10'
-                                                            : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                                                            ? 'border-brand-400 dark:border-brand-500 ring-2 ring-brand-200 dark:ring-brand-900/50 bg-brand-50/50 dark:bg-brand-900/10'
+                                                            : 'border-ink-200 dark:border-ink-700 hover:border-ink-300 dark:hover:border-ink-600'
                                                     }`}
                                                 >
                                                     <span className="flex gap-0.5 shrink-0">
@@ -174,23 +174,23 @@ export default function ShareCardDialog({ isOpen, onClose, year }: ShareCardDial
                                                             <span key={g} className="w-2 h-4 rounded-sm" style={{ backgroundColor: t.moods[g] }} />
                                                         ))}
                                                     </span>
-                                                    <span className="text-gray-700 dark:text-gray-200 truncate">{t.label}</span>
+                                                    <span className="text-ink-700 dark:text-ink-200 truncate">{t.label}</span>
                                                 </button>
                                             ))}
                                         </div>
                                     </div>
 
                                     {fullName && (
-                                        <label className="flex items-center justify-between gap-3 px-3.5 py-3 rounded-xl bg-gray-50 dark:bg-gray-800/60 border border-gray-100 dark:border-gray-800 cursor-pointer">
-                                            <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Include my name</span>
+                                        <label className="flex items-center justify-between gap-3 px-3.5 py-3 rounded-xl bg-ink-50 dark:bg-ink-800/60 border border-ink-100 dark:border-ink-800 cursor-pointer">
+                                            <span className="text-sm font-medium text-ink-700 dark:text-ink-200">Include my name</span>
                                             <button
                                                 type="button"
                                                 role="switch"
                                                 aria-checked={includeName}
                                                 onClick={() => setIncludeName(v => !v)}
-                                                className={`relative w-11 h-6 rounded-full transition-colors shrink-0 ${includeName ? 'bg-purple-500' : 'bg-gray-300 dark:bg-gray-600'}`}
+                                                className={`relative w-11 h-6 rounded-full transition-colors shrink-0 ${includeName ? 'bg-brand-500' : 'bg-ink-300 dark:bg-ink-600'}`}
                                             >
-                                                <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${includeName ? 'translate-x-5' : ''}`} />
+                                                <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-paper shadow transition-transform ${includeName ? 'translate-x-5' : ''}`} />
                                             </button>
                                         </label>
                                     )}
@@ -199,18 +199,18 @@ export default function ShareCardDialog({ isOpen, onClose, year }: ShareCardDial
                                         <button
                                             onClick={handleDownload}
                                             disabled={!dataUrl}
-                                            className="w-full py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold text-sm shadow-lg shadow-purple-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:hover:scale-100"
+                                            className="w-full py-3 rounded-xl bg-brand-500 hover:from-brand-600 hover:to-brand-600 text-white font-bold text-sm shadow-lg shadow-brand-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:hover:scale-100"
                                         >
                                             <Download size={17} /> Download PNG
                                         </button>
                                         <button
                                             onClick={handleCopy}
                                             disabled={!dataUrl}
-                                            className="w-full py-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 font-semibold text-sm hover:bg-gray-100 dark:hover:bg-gray-700 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-40"
+                                            className="w-full py-3 rounded-xl bg-paper dark:bg-ink-800 border border-ink-200 dark:border-ink-700 text-ink-700 dark:text-ink-200 font-semibold text-sm hover:bg-ink-100 dark:hover:bg-ink-700 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-40"
                                         >
                                             {copied ? <><Check size={17} className="text-green-500" /> Copied!</> : <><Copy size={17} /> Copy image</>}
                                         </button>
-                                        <p className="text-[11px] text-gray-400 dark:text-gray-500 text-center leading-relaxed pt-1">
+                                        <p className="text-[11px] text-ink-500 dark:text-ink-400 dark:text-ink-500 text-center leading-relaxed pt-1">
                                             Only your mood colours are shared — never your notes.
                                         </p>
                                     </div>
