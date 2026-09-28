@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import { Mail, Lock, Loader2, ArrowRight, User } from 'lucide-react'
@@ -13,6 +13,12 @@ export default function LoginPage() {
     const [isSignUp, setIsSignUp] = useState(false)
 
     const router = useRouter()
+
+    useEffect(() => {
+        if (new URLSearchParams(window.location.search).get('error') === 'auth_callback_error') {
+            setMessage({ text: 'This sign-in link is invalid, expired, or was opened in a different browser. Request a new link and open it in the browser where you requested it.', type: 'error' })
+        }
+    }, [])
 
 
     const handleAuth = async (e: React.FormEvent) => {
@@ -36,6 +42,9 @@ export default function LoginPage() {
                 // Supabase returns a user with empty identities when the email already exists
                 if (data.user && data.user.identities && data.user.identities.length === 0) {
                     setMessage({ text: 'An account with this email already exists. Try signing in instead!', type: 'error' })
+                } else if (data.session) {
+                    router.push('/')
+                    router.refresh()
                 } else {
                     setMessage({ text: 'Check your email for the confirmation link!', type: 'success' })
                 }
@@ -197,11 +206,11 @@ export default function LoginPage() {
 
                 {!isSignUp && (
                     <div className="mt-4 flex items-center justify-center gap-3 text-xs">
-                        <button onClick={handleForgotPassword} className="text-ink-500 dark:text-ink-400 dark:text-ink-500 hover:text-ink-600 dark:hover:text-ink-300 underline">
+                        <button disabled={loading} onClick={handleForgotPassword} className="text-ink-500 dark:text-ink-400 dark:text-ink-500 hover:text-ink-600 dark:hover:text-ink-300 underline">
                             Forgot password?
                         </button>
                         <span className="text-ink-300 dark:text-ink-400">|</span>
-                        <button onClick={handleMagicLink} className="text-ink-500 dark:text-ink-400 dark:text-ink-500 hover:text-ink-600 dark:hover:text-ink-300 underline">
+                        <button disabled={loading} onClick={handleMagicLink} className="text-ink-500 dark:text-ink-400 dark:text-ink-500 hover:text-ink-600 dark:hover:text-ink-300 underline">
                             Email me a sign-in link
                         </button>
                     </div>

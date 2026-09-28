@@ -1,5 +1,7 @@
 'use client'
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
+import { useActiveView } from './useActiveView'
+import { waitForMoodWrites } from '@/lib/mood-persistence'
 import { supabase } from '@/lib/supabase'
 import { Mood, MoodGrade } from '@/lib/types'
 import { useUser } from '@/contexts/UserContext'
@@ -14,43 +16,63 @@ export type MoodMap = Record<string, MoodEntry>
  */
 export function useMoods(year: number) {
     const { user, loading: userLoading } = useUser()
+    const ownerId = user?.id
     const [moods, setMoods] = useState<Mood[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(false)
+    const requestId = useRef(0)
+    const isActive = useActiveView()
+    const scope = `${ownerId ?? ''}:${year}`
+    const currentScope = useRef(scope)
+    currentScope.current = scope
+    const [loadedScope, setLoadedScope] = useState('')
 
     const refetch = useCallback(async () => {
-        if (!user) {
+        if (!isActive() || currentScope.current !== scope) return
+        const request = ++requestId.current
+        const isCurrent = () => isActive() && request === requestId.current && currentScope.current === scope
+        if (!ownerId) {
             setMoods([])
             setLoading(false)
+            setLoadedScope(scope)
             return
         }
         setError(false)
         setLoading(true)
         try {
+            await waitForMoodWrites(ownerId, String(year))
+            if (!isCurrent()) return
             const { data, error: fetchError } = await supabase
                 .from('moods')
                 .select('*')
-                .eq('user_id', user.id)
+                .eq('user_id', ownerId)
                 .gte('date', `${year}-01-01`)
                 .lte('date', `${year}-12-31`)
                 .order('date', { ascending: true })
 
             if (fetchError) throw fetchError
+            if (!isCurrent()) return
             setMoods(data || [])
         } catch (err) {
             console.error('Error fetching moods:', err)
-            setError(true)
+            if (isCurrent()) { setMoods([]); setError(true) }
         } finally {
-            setLoading(false)
+            if (isCurrent()) { setLoading(false); setLoadedScope(scope) }
         }
-    }, [user, year])
+    }, [ownerId, year, scope, isActive])
 
     useEffect(() => {
+        const requests = requestId
         if (!userLoading) refetch()
+        return () => { ++requests.current }
     }, [refetch, userLoading])
 
     // Optimistic local update; callers refetch() to roll back on failure.
     const mutate = useCallback((date: string, entry: MoodEntry) => {
+        if (!isActive() || currentScope.current !== scope) return
+        ++requestId.current
+        setLoading(false)
+        setLoadedScope(scope)
         setMoods(prev => {
             const idx = prev.findIndex(m => m.date === date)
             if (idx >= 0) {
@@ -61,15 +83,15 @@ export function useMoods(year: number) {
             const added = { id: `optimistic-${date}`, user_id: '', date, mood: entry.mood, note: entry.note, created_at: '' } as Mood
             return [...prev, added].sort((a, b) => a.date.localeCompare(b.date))
         })
-    }, [])
+    }, [scope, isActive])
 
     const moodMap: MoodMap = useMemo(() => {
         const map: MoodMap = {}
-        moods.forEach(m => { map[m.date] = { mood: m.mood, note: m.note || '' } })
+        if (loadedScope === scope) moods.forEach(m => { map[m.date] = { mood: m.mood, note: m.note || '' } })
         return map
-    }, [moods])
+    }, [moods, loadedScope, scope])
 
-    return { moods, moodMap, loading: userLoading || loading, error, refetch, mutate }
+    return { moods: loadedScope === scope ? moods : [], moodMap, loading: userLoading || loading || loadedScope !== scope, error, refetch, mutate }
 }
 
 /**

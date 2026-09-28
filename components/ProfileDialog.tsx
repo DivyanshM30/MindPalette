@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { X, User, Loader2, CheckCircle2, Lock, Download, Database, ChevronDown, Trash2, AlertTriangle } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
+import { useActiveView } from '@/lib/hooks/useActiveView'
 import { moodsToCsv, moodsToJson, downloadFile, MoodExportRow } from '@/lib/export'
 import { useUser } from '@/contexts/UserContext'
 
@@ -34,6 +35,7 @@ export default function ProfileDialog({ isOpen, onClose, initialName }: ProfileD
     const [deleteLoading, setDeleteLoading] = useState(false)
     const [deleteError, setDeleteError] = useState<string | null>(null)
     const { user } = useUser()
+    const isActive = useActiveView()
     const router = useRouter()
 
     useEffect(() => {
@@ -115,6 +117,7 @@ export default function ProfileDialog({ isOpen, onClose, initialName }: ProfileD
                 .eq('user_id', user.id)
                 .order('date', { ascending: true })
             if (exportFetchError) throw exportFetchError
+            if (!isActive()) return
             const rows = (data || []) as MoodExportRow[]
             if (rows.length === 0) {
                 setExportError('No moods to export yet.')
@@ -141,12 +144,15 @@ export default function ProfileDialog({ isOpen, onClose, initialName }: ProfileD
         try {
             const { error: deleteRpcError } = await supabase.rpc('delete_account')
             if (deleteRpcError) throw deleteRpcError
+            if (!isActive()) return
             // Account is gone server-side; clear the local session and leave.
             await supabase.auth.signOut()
             router.push('/login')
         } catch (err) {
             console.error('Error deleting account:', err)
-            setDeleteError(err instanceof Error ? err.message : 'Failed to delete account. Please try again.')
+            setDeleteError((err as { code?: string })?.code === 'PGRST202'
+                ? 'Account deletion is not available yet. Your account and entries have not been deleted. Please contact support.'
+                : err instanceof Error ? err.message : 'Failed to delete account. Please try again.')
             setDeleteLoading(false)
         }
     }
