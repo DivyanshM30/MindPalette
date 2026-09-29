@@ -1,7 +1,8 @@
 'use client'
 import { motion } from 'framer-motion'
 import { useState, useCallback } from 'react'
-import { supabase } from '@/lib/supabase'
+import { saveMood, waitForMoodWrites } from '@/lib/mood-persistence'
+import { useActiveView } from '@/lib/hooks/useActiveView'
 import { MoodGrade } from '@/lib/types'
 import { getDaysInMonth, MONTH_NAMES } from '@/lib/utils'
 import { AlertTriangle, Loader2, RotateCcw } from 'lucide-react'
@@ -18,7 +19,8 @@ interface MoodGridProps {
 }
 
 export default function MoodGrid({ showStats = true, year = new Date().getFullYear() }: MoodGridProps) {
-    const { user } = useUser()
+    const { user, isCurrentUser } = useUser()
+    const isActive = useActiveView()
     const { moods, moodMap, loading, error, refetch, mutate } = useMoods(year)
     const [dialogOpen, setDialogOpen] = useState(false)
     const [selectedDate, setSelectedDate] = useState<Date | null>(null)
@@ -45,20 +47,13 @@ export default function MoodGrid({ showStats = true, year = new Date().getFullYe
         setDialogOpen(false)
 
         try {
-            const { error: saveError } = await supabase
-                .from('moods')
-                .upsert({
-                    user_id: user.id,
-                    date: dateStr,
-                    mood,
-                    note
-                }, { onConflict: 'user_id,date' })
-
-            if (saveError) throw saveError
+            await saveMood({ user_id: user.id, date: dateStr, mood, note }, isCurrentUser)
         } catch (err) {
+            if (!isActive()) return
             console.error('Error saving mood:', err)
             showToast('Failed to save your mood. Please try again.', 'error')
-            refetch() // Roll back the optimistic update
+            await waitForMoodWrites(user.id, dateStr)
+            if (isActive()) void refetch() // Recover only after newer queued saves finish.
         }
     }
 

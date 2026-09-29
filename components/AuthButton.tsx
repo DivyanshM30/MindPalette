@@ -1,4 +1,5 @@
 'use client'
+import { useToast } from './Toast'
 import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -12,10 +13,16 @@ export default function AuthButton() {
     const { user } = useUser()
     const [isProfileOpen, setIsProfileOpen] = useState(false)
     const router = useRouter()
+    const { showToast } = useToast()
 
     const handleSignOut = async () => {
-        await supabase.auth.signOut()
-        router.push('/login')
+        try {
+            const { error } = await supabase.auth.signOut()
+            if (error) throw error
+            router.push('/login')
+        } catch {
+            showToast('Could not sign out. Please try again.', 'error')
+        }
     }
 
     return user ? (

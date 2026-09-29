@@ -10,9 +10,14 @@ import { MOODS } from '@/lib/utils'
 import CalendarPopup from './CalendarPopup'
 import { useToast } from './Toast'
 import { useUser } from '@/contexts/UserContext'
+import { saveMood, waitForMoodWrites } from '@/lib/mood-persistence'
+import { useActiveView } from '@/lib/hooks/useActiveView'
+
+type DayEntry = { mood: MoodGrade | null, note: string, positive: string }
 
 export default function DayView() {
-    const { user, loading: userLoading } = useUser()
+    const { user, loading: userLoading, isCurrentUser } = useUser()
+    const ownerId = user?.id
     const searchParams = useSearchParams()
     // Deep-link support (?date=YYYY-MM-DD), used by streak repair. Past dates only.
     const [selectedDate, setSelectedDate] = useState(() => {
@@ -23,111 +28,98 @@ export default function DayView() {
         }
         return new Date()
     })
-    const [moodData, setMoodData] = useState<{ mood: MoodGrade | null, note: string, positive: string } | null>(null)
+    const [moodData, setMoodData] = useState<DayEntry | null>(null)
     const [allMoodData, setAllMoodData] = useState<Record<string, { mood: MoodGrade, note: string }>>({})
     const [loading, setLoading] = useState(true)
     const [saving, setSaving] = useState(false)
     const [showCalendar, setShowCalendar] = useState(false)
     const [showMoodSelector, setShowMoodSelector] = useState(false)
 
-    // In-session drafts keyed by date (YYYY-MM-DD): keeps typed notes that
-    // can't be persisted yet (no mood selected) from being lost on navigation.
-    const draftsRef = useRef<Record<string, { note: string, positive: string }>>({})
-
+    // The provider resets this editor on identity changes. Keep every unsaved
+    // snapshot (including failed saves), not only notes without a mood.
+    const draftsRef = useRef<Record<string, DayEntry>>({})
+    const requestId = useRef(0)
+    const pendingSaves = useRef(0)
+    const isActive = useActiveView()
+    const dayKey = selectedDate.toLocaleDateString('en-CA')
+    const currentDay = useRef(dayKey)
+    currentDay.current = dayKey
+    const [loadedDay, setLoadedDay] = useState('')
+    const [loadError, setLoadError] = useState(false)
     const { showToast } = useToast()
 
     const fetchDayData = useCallback(async () => {
-        if (!user) { setLoading(false); return }
+        const request = ++requestId.current
+        const isCurrent = () => isActive() && request === requestId.current && currentDay.current === dayKey
+        if (!ownerId) { setLoading(false); return }
+        setLoading(true)
+        setLoadError(false)
         try {
-            const dateStr = selectedDate.toLocaleDateString('en-CA')
+            await waitForMoodWrites(ownerId, dayKey)
+            if (!isCurrent()) return
             const { data, error } = await supabase
-                .from('moods')
-                .select('*')
-                .eq('user_id', user.id)
-                .eq('date', dateStr)
-                .single()
+                .from('moods').select('*').eq('user_id', ownerId).eq('date', dayKey).maybeSingle()
+            if (error) throw error
+            if (!isCurrent()) return
+            setMoodData(draftsRef.current[dayKey] ?? (data ? {
+                mood: data.mood as MoodGrade, note: data.note || '', positive: data.positive_note || ''
+            } : { mood: null, note: '', positive: '' }))
 
-            if (error && error.code !== 'PGRST116') throw error
-
-            if (data) {
-                setMoodData({
-                    mood: data.mood as MoodGrade,
-                    note: data.note || '',
-                    positive: data.positive_note || ''
-                })
-            } else {
-                // No saved entry — restore any in-session draft for this date
-                const draft = draftsRef.current[dateStr]
-                setMoodData({ mood: null, note: draft?.note || '', positive: draft?.positive || '' })
-            }
-
-            // Also fetch all moods for calendar display
-            const { data: allData } = await supabase
-                .from('moods')
-                .select('*')
-                .eq('user_id', user.id)
-                .gte('date', `${selectedDate.getFullYear()}-01-01`)
-                .lte('date', `${selectedDate.getFullYear()}-12-31`)
-
-            if (allData) {
-                const dataMap: Record<string, { mood: MoodGrade, note: string }> = {}
-                allData.forEach((m: Mood) => {
-                    dataMap[m.date] = { mood: m.mood, note: m.note || '' }
-                })
-                setAllMoodData(dataMap)
-            }
+            const { data: allData, error: calendarError } = await supabase
+                .from('moods').select('*').eq('user_id', ownerId)
+                .gte('date', `${dayKey.slice(0, 4)}-01-01`).lte('date', `${dayKey.slice(0, 4)}-12-31`)
+            if (calendarError) throw calendarError
+            if (!isCurrent()) return
+            const dataMap: Record<string, { mood: MoodGrade, note: string }> = {}
+            allData?.forEach((m: Mood) => { dataMap[m.date] = { mood: m.mood, note: m.note || '' } })
+            setAllMoodData(dataMap)
         } catch (error) {
-            console.error('Error fetching day data:', error)
-            showToast('Failed to load this day. Please try again.', 'error')
+            if (isCurrent()) {
+                console.error('Error fetching day data:', error)
+                setLoadError(true)
+            }
         } finally {
-            setLoading(false)
+            if (isCurrent()) { setLoadedDay(dayKey); setLoading(false) }
         }
-    }, [selectedDate, user, showToast])
+    }, [dayKey, ownerId, isActive])
 
     useEffect(() => {
-        if (!userLoading) {
-            setLoading(true)
-            fetchDayData()
-        }
+        const requests = requestId
+        if (!userLoading) void fetchDayData()
+        return () => { ++requests.current }
     }, [fetchDayData, userLoading])
 
     const saveData = useCallback(async (mood: MoodGrade | null, note: string, positive: string) => {
-        if (!user) return
-
+        if (!ownerId || !mood || !isActive() || loading || loadError || loadedDay !== dayKey) return
+        const snapshot = { mood, note, positive }
+        draftsRef.current[dayKey] = snapshot
+        ++pendingSaves.current
         setSaving(true)
         try {
-            const dateStr = selectedDate.toLocaleDateString('en-CA')
-
-            if (mood) {
-                const { error } = await supabase
-                    .from('moods')
-                    .upsert({
-                        user_id: user.id,
-                        date: dateStr,
-                        mood,
-                        note: note || null,
-                        positive_note: positive || null
-                    }, { onConflict: 'user_id,date' })
-
-                if (error) throw error
-                delete draftsRef.current[dateStr]
-                showToast('Mood saved successfully.')
-            }
+            await saveMood({ user_id: ownerId, date: dayKey, mood, note: note || null, positive_note: positive || null }, isCurrentUser)
+            if (!isActive()) return
+            // A save acknowledgement must never discard edits typed afterward.
+            if (draftsRef.current[dayKey] === snapshot) delete draftsRef.current[dayKey]
+            setAllMoodData(prev => ({ ...prev, [dayKey]: { mood, note } }))
+            showToast('Mood saved successfully.')
         } catch (error) {
-            console.error('Error saving data:', error)
-            showToast('Failed to save. Please try again.', 'error')
+            if (isActive()) {
+                console.error('Error saving data:', error)
+                showToast('Failed to save. Your draft is kept in this tab; retry Save Entry.', 'error')
+            }
         } finally {
-            setSaving(false)
+            --pendingSaves.current
+            if (isActive()) setSaving(pendingSaves.current > 0)
         }
-    }, [user, selectedDate, showToast])
+    }, [ownerId, dayKey, showToast, isActive, isCurrentUser, loading, loadError, loadedDay])
 
     // If the user typed text but hasn't picked a mood, it can't be saved yet —
     // let them know it's kept as a draft when they navigate away.
     const warnIfUnsavedDraft = useCallback(() => {
-        if (moodData && !moodData.mood && (moodData.note.trim() || moodData.positive.trim())) {
-            showToast('Note kept as a draft — pick a mood to save it', 'info')
+        if (draftsRef.current[dayKey]) {
+            showToast('Unsaved changes kept in this tab — return to this day to save them.', 'info')
         }
-    }, [moodData, showToast])
+    }, [dayKey, showToast])
 
     const handleDateChange = (newDate: Date) => {
         warnIfUnsavedDraft()
@@ -154,18 +146,16 @@ export default function DayView() {
     }, [warnIfUnsavedDraft])
 
     const handleMoodSelect = useCallback(async (mood: MoodGrade) => {
+        if (loading || loadError || loadedDay !== dayKey || !isActive()) return
         setMoodData(prev => prev ? { ...prev, mood } : { mood, note: '', positive: '' })
         setShowMoodSelector(false)
         await saveData(mood, moodData?.note || '', moodData?.positive || '')
-    }, [moodData, saveData])
+    }, [moodData, saveData, loading, loadError, loadedDay, dayKey, isActive])
 
     const handleNoteChange = (field: 'note' | 'positive', value: string) => {
         const base = moodData ?? { mood: null, note: '', positive: '' }
         const next = { ...base, [field]: value }
-        if (!next.mood) {
-            // Not persistable yet — keep as an in-session draft for this date
-            draftsRef.current[selectedDate.toLocaleDateString('en-CA')] = { note: next.note, positive: next.positive }
-        }
+        draftsRef.current[dayKey] = next
         setMoodData(next)
     }
 
@@ -195,7 +185,7 @@ export default function DayView() {
     const isToday = new Date().toDateString() === selectedDate.toDateString()
     const dateStr = selectedDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
 
-    if (loading) {
+    if (userLoading || loading || loadedDay !== dayKey) {
         return (
             <div className="flex items-center justify-center min-h-[400px]">
                 <div className="flex flex-col items-center gap-3 text-ink-500 dark:text-ink-400">
@@ -204,6 +194,13 @@ export default function DayView() {
                 </div>
             </div>
         )
+    }
+
+    if (loadError) {
+        return <div role="alert" className="text-center space-y-4 py-12">
+            <p>Could not load this day. Your draft is kept in this tab.</p>
+            <button onClick={() => void fetchDayData()} className="px-5 py-3 rounded-xl bg-brand-500 text-white">Try again</button>
+        </div>
     }
 
     return (
